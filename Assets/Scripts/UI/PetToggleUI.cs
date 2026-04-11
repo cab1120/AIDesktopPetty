@@ -4,6 +4,7 @@ public class PetToggleUI : MonoBehaviour
 {
     public GameObject petIcon;
     public GameObject chatPanel;
+    public WindowSizeController windowSize;
 
     private bool isExpanded = false;
 
@@ -22,11 +23,15 @@ public class PetToggleUI : MonoBehaviour
         {
             petIcon.SetActive(false);
             chatPanel.SetActive(true);
+            
+            windowSize.ToggleWindow(isExpanded);
         }
         else
         {
             petIcon.SetActive(true);
             chatPanel.SetActive(false);
+            
+            windowSize.ToggleWindow(isExpanded);
         }
     }
 }
