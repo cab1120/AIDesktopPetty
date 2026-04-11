@@ -38,7 +38,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 290, y: 0}
+  m_AnchoredPosition: {x: 35.004997, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5220944487770873173
@@ -69,7 +69,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C\u704C"
+  m_text: "\u4F60\u597D"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0b02caf60c69df74b99a2df2e3bc57ea, type: 2}
   m_sharedMaterial: {fileID: -7522700429867343499, guid: 0b02caf60c69df74b99a2df2e3bc57ea, type: 2}
@@ -167,7 +167,7 @@ MonoBehaviour:
   m_IgnoreLayout: 0
   m_MinWidth: -1
   m_MinHeight: -1
-  m_PreferredWidth: 550
+  m_PreferredWidth: -1
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
@@ -239,7 +239,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding:
     m_Left: 25
-    m_Right: 25
+    m_Right: 35
     m_Top: 30
     m_Bottom: 30
   m_ChildAlignment: 2
@@ -316,7 +316,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 338.7215, y: 0}
+  m_AnchoredPosition: {x: 583.7165, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5220944489506652612
