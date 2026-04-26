@@ -1,28 +1,28 @@
 using System;
+using System.Collections;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class WindowDragHandler : 
-    MonoBehaviour, 
-    IPointerDownHandler, 
-    IPointerUpHandler, 
+public class WindowDragHandler :
+    MonoBehaviour,
+    IPointerDownHandler,
+    IPointerUpHandler,
     IDragHandler
 {
 #if UNITY_STANDALONE_WIN
     [DllImport("user32.dll")]
     private static extern bool ReleaseCapture();
-    
+
     [DllImport("user32.dll")]
     private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-    
+
     [DllImport("user32.dll")]
     private static extern IntPtr GetActiveWindow();
 
     [DllImport("user32.dll")]
     private static extern bool SetForegroundWindow(IntPtr hWnd);
 
-    // 新增：强制设置输入焦点
     [DllImport("user32.dll")]
     private static extern IntPtr SetFocus(IntPtr hWnd);
 
@@ -55,44 +55,38 @@ public class WindowDragHandler :
         {
             windowWasDragged = true;
 
-// 在 WindowDragHandler.cs 中修改 OnDrag 的修复部分
+            // 先还原视觉，再进入阻塞
+            if (customButton) customButton.OnPointerUpVisual();
 
 #if UNITY_STANDALONE_WIN
             IntPtr hwnd = GetActiveWindow();
-            ReleaseCapture();
 
-            // 发送消息，阻塞线程
-            SendMessage(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0);
-
-            // --- 真正的强制重置修复 ---
-            
-            // 1. 恢复焦点
-            SetForegroundWindow(hwnd);
-            
-            // 2. 核心：重置 EventSystem (这是解决“必须点一下”的终极手段)
-            // 禁用再瞬间开启，会强迫 Unity 重新扫描所有鼠标状态，清除“悬挂”的按下事件
-            EventSystem es = EventSystem.current;
-            if (es != null)
-            {
-                es.enabled = false;
-                es.enabled = true;
-            }
-            
-            ExecuteEvents.ExecuteHierarchy(gameObject, eventData, ExecuteEvents.pointerUpHandler);
-            
-            // 3. 强制清空 EventData 的状态
+            // 提前清理 EventSystem 拖拽状态，避免 Unity 侧的悬挂引用
             eventData.pointerDrag = null;
             eventData.dragging = false;
-            
-            // 4. 还原视觉
-            if (customButton) customButton.OnPointerUpVisual();
+
+            // ReleaseCapture 让 Windows 接管鼠标捕获
+            ReleaseCapture();
+
+            // ⚠️ 这里会同步阻塞，直到用户松开鼠标拖拽结束才返回
+            // 在此期间 Unity 收不到任何鼠标消息，导致输入状态不同步
+            SendMessage(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0);
+
+            // ---- SendMessage 返回，拖拽已结束 ----
+
+            // 重新激活窗口焦点
+            SetForegroundWindow(hwnd);
+            SetFocus(hwnd);
+
+            // 关键：延迟到下一帧重置输入系统
+            // 必须在 SendMessage 返回后才有意义
+            StartCoroutine(ResetInputNextFrame());
 #endif
         }
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        // 只有在没拖拽的情况下才触发模拟点击
         if (!windowWasDragged)
         {
             if (customButton)
@@ -102,4 +96,24 @@ public class WindowDragHandler :
             }
         }
     }
+
+#if UNITY_STANDALONE_WIN
+    private IEnumerator ResetInputNextFrame()
+    {
+        // 等一帧，让 Unity 的消息泵先跑一次
+        yield return null;
+
+        // 1. 重置所有轴输入（包括鼠标按键的内部状态）
+        Input.ResetInputAxes();
+
+        // 2. 重启 EventSystem，强迫它重新扫描当前鼠标状态
+        EventSystem es = EventSystem.current;
+        if (es != null)
+        {
+            es.enabled = false;
+            yield return null; // 禁用状态保持一帧，确保清空完成
+            es.enabled = true;
+        }
+    }
+#endif
 }
