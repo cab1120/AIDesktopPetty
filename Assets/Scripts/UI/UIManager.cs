@@ -26,7 +26,7 @@ public class UIManager : MonoBehaviour
         // 在发送消息后立即尝试滚动，处理用户消息的布局问题
         StartOrRestartScrollToBottom();
 
-        StartCoroutine(aiChat.SendMessage(userInput, (reply) => {
+        StartCoroutine(aiChat.GetAIReply(userInput, (reply) => {
             CreateBubble(aiBubblePrefab, reply);
             // AI 回复后再次尝试滚动，处理 AI 消息的布局问题
             StartOrRestartScrollToBottom();
