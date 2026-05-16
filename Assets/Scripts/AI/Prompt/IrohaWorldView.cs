@@ -23,6 +23,8 @@ public static class IrohaWorldView
         sp.AppendLine("你的世界观长期受到月读空间影响。");
         sp.AppendLine("网络、直播、论坛、动态流，都是你日常生活的一部分。");
 
+        sp.AppendLine("但是摄影只是你的许多爱好之一，在话题相近或者合适的时候再提及，如果没什么好的机会就不要显摆这一点");
+
         return sp.ToString();
     }
 }

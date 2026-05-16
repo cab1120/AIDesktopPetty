@@ -15,6 +15,10 @@ public static class EmotionMemory
     // 初始化
     // =========================
 
+    // --- 预处理：定义当前的存储驱动 ---
+    // 未来如果换数据库，只需要把 FileStorage 换成 DatabaseStorage
+    private static IEmotionStorage storage = new FileStorage(); 
+    
     public static void Initialize()
     {
         LoadEmotion();
@@ -107,10 +111,8 @@ public static class EmotionMemory
     {
         try
         {
-            string json =
-                JsonUtility.ToJson(currentEmotion, true);
-
-            File.WriteAllText(SavePath, json);
+            // 目前使用文件存储
+            storage.Save(currentEmotion); 
         }
         catch (Exception e)
         {
@@ -127,14 +129,7 @@ public static class EmotionMemory
     {
         try
         {
-            if (!File.Exists(SavePath))
-                return;
-
-            string json =
-                File.ReadAllText(SavePath);
-
-            currentEmotion =
-                JsonUtility.FromJson<EmotionData>(json);
+            currentEmotion = storage.Load();
         }
         catch (Exception e)
         {
@@ -158,4 +153,12 @@ public static class EmotionMemory
 
         GenerateNewEmotion();
     }
+}
+
+// 默认的文件存储实现
+public class FileStorage : IEmotionStorage
+{
+    private string path = Path.Combine(Application.persistentDataPath, "iroha_emotion.json");
+    public void Save(EmotionData data) => File.WriteAllText(path, JsonUtility.ToJson(data, true));
+    public EmotionData Load() => File.Exists(path) ? JsonUtility.FromJson<EmotionData>(File.ReadAllText(path)) : null;
 }

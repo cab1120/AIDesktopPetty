@@ -102,6 +102,14 @@ public static class EmotionGenerator
             }
         }
         // =========================
+        // 生理状态系统
+        // =========================
+        float strength = IrohaStatusContext.GetPhysicalStrength();
+        if (strength < 0.4f) {
+            weights[EmotionType.Tired] += 30;
+            weights[EmotionType.Sleepy] += 20;
+        }
+        // =========================
         // 情绪惯性系统
         // =========================
 
@@ -142,13 +150,14 @@ public static class EmotionGenerator
 
         EmotionType selected = WeightedRandom(weights);
 
+        
+        float intensityBase = UnityEngine.Random.Range(0.35f, 0.8f);// 彩叶情绪强度不会特别高
+        if (strength < 0.3f) intensityBase -= 0.1f;
+        
         EmotionData result = new EmotionData()
         {
             CurrentEmotion = selected,
-
-            // 彩叶情绪强度不会特别高
-            Intensity = UnityEngine.Random.Range(0.35f, 0.8f),
-
+            Intensity = Mathf.Clamp(intensityBase, 0.1f, 1.0f),
             // 持续时间
             RemainingMinutes = UnityEngine.Random.Range(40, 180),
             
