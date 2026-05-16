@@ -53,7 +53,10 @@ public static class EmotionMemory
 
         return currentEmotion;
     }
-
+    public static EmotionData PeekCurrentEmotion()
+    {
+        return currentEmotion; // 可能为 null，调用方自己判断
+    }
     // =========================
     // 设置情绪
     // =========================

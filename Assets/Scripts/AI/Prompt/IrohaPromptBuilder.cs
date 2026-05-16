@@ -7,22 +7,21 @@ public static class IrohaPromptBuilder
         string searchResults,
         string userMemory)
     {
-       /* EmotionData emotion = EmotionGenerator.GenerateEmotion();
+        EmotionData emotion = EmotionGenerator.GenerateEmotion();
 
         string emotionPrompt =
-            IrohaEmotionPromptBuilder.Build(emotion);*/
-        
+            IrohaEmotionPromptBuilder.Build(emotion);
+
         return
-            IrohaCorePersonality.Build()+"111"
-            + "\n"
-            + IrohaWorldView.Build()
-            + "\n"
-            + IrohaDataState.Build()
-            + "\n"
-            + IrohaMemoryContext.Build(userMemory)
-            + "\n"
-            + IrohaRealtimeContext.Build(currentTime, searchResults);
-        /*+ "\n"
-            + emotionPrompt*/
+            IrohaCorePersonality.Build() + "\n"
+                                         + IrohaWorldView.Build()
+                                         + "\n"
+                                         + IrohaDataState.Build()
+                                         + "\n"
+                                         + IrohaMemoryContext.Build(userMemory)
+                                         + "\n"
+                                         + IrohaRealtimeContext.Build(currentTime, searchResults)
+                                         + "\n"
+                                         + emotionPrompt;
     }
 }

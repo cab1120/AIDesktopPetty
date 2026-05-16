@@ -105,7 +105,7 @@ public static class EmotionGenerator
         // 情绪惯性系统
         // =========================
 
-        EmotionData previous = EmotionMemory.GetCurrentEmotion();
+        EmotionData previous = EmotionMemory.PeekCurrentEmotion();
 
         if (previous != null)
         {
