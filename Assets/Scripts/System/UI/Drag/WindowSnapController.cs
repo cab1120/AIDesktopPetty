@@ -72,11 +72,11 @@ public class WindowSnapController : MonoBehaviour
     // 当前是否处于半隐藏状态
     private bool isHidden = false;
 
-    // ✅ 新增：缓存窗口尺寸，隐藏后 GetWindowRect 位置会变，需要用原始尺寸计算
+    //缓存窗口尺寸，隐藏后 GetWindowRect 位置会变，需要用原始尺寸计算
     private int cachedWindowWidth;
     private int cachedWindowHeight;
 
-    // ✅ 新增：缓存吸附后窗口的 Y 坐标（左右吸附用），防止隐藏后丢失原始位置
+    //缓存吸附后窗口的 Y 坐标（左右吸附用），防止隐藏后丢失原始位置
     private int cachedSnapY;
 
     void Start()

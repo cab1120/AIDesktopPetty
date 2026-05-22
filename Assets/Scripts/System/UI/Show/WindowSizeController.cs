@@ -27,8 +27,8 @@ public class WindowSizeController : MonoBehaviour
     public int expandedWidth = 432;
     public int expandedHeight = 768;
 
-    public int collapsedWidth = 120;
-    public int collapsedHeight = 120;
+    public int collapsedWidth = 180;
+    public int collapsedHeight = 250;
     
     public CanvasScaler canvasScaler;
 
