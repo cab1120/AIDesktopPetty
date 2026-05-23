@@ -25,10 +25,6 @@ public class UIManager : MonoBehaviour
     }
     public void OnSendButtonClick()
     {
-        // 只有按下了回车键（Return 或 KeypadEnter）才触发发送逻辑
-        if (!Input.GetKeyDown(KeyCode.Return) && !Input.GetKeyDown(KeyCode.KeypadEnter)) 
-            return;
-        
         string userInput = inputField.text;
         if (string.IsNullOrEmpty(userInput)) return;
 

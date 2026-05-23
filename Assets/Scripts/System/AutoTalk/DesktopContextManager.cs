@@ -56,9 +56,9 @@ public class DesktopContextManager : MonoBehaviour
 
                 Debug.Log("当前窗口: " + title);
 
-                //OnWindowChanged?.Invoke(title);
+                OnWindowChanged?.Invoke(title);
 
-                bubbleUI.ShowBubble(title);
+                //bubbleUI.ShowBubble(title);
             }
         }
 

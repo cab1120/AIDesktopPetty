@@ -6,16 +6,68 @@ using UnityEngine.Networking;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text;
+using System.IO;
 
 public class AIChat : MonoBehaviour
 {
+    // --- 请求锁 ---
+    private bool isProcessingBubble = false;
     // --- 配置信息 ---
-    private string siliconFlowKey = "sk-vuauywtlrpdgiekcmxlypyozmucyqrurdjnefouewksedbhs";
-    private string bochaApiKey = "sk-af4692e1ef2142b8ba9319c047db60ba";
+    private string siliconFlowKey;
+    private string bochaApiKey;
     
     private string siliconFlowUrl = "https://api.siliconflow.cn/v1/chat/completions";
-    private string bochaUrl = "https://api.bochaai.com/v1/web-search"; // 请以博查官方文档最新URL为准
+    private string bochaUrl = "https://api.bochaai.com/v1/web-search"; 
 
+    [System.Serializable]
+    public class ApiConfig {
+        public string siliconFlowKey;
+        public string bochaApiKey;
+    }
+    void Awake()
+    {
+        RunLog();
+        
+        LoadConfig();
+    }
+
+    private void RunLog()
+    {
+        // 指定日志文件保存到程序根目录下的 log.txt
+        string logPath = Path.Combine(Application.dataPath, "../run_log.txt");
+        Application.logMessageReceived += (condition, stackTrace, type) => {
+            File.AppendAllText(logPath, $"[{System.DateTime.Now}] [{type}] {condition}\n");
+            if (type == LogType.Exception || type == LogType.Error) {
+                File.AppendAllText(logPath, stackTrace + "\n");
+            }
+        };
+    }
+    private void LoadConfig()
+    {
+        // 路径：Assets/StreamingAssets/config.json
+        string path = Path.Combine(Application.streamingAssetsPath, "config.json");
+    
+        if (File.Exists(path))
+        {
+            try 
+            {
+                string json = File.ReadAllText(path);
+                // 使用 Newtonsoft.Json 解析
+                ApiConfig config = JsonConvert.DeserializeObject<ApiConfig>(json);
+            
+                if (config != null)
+                {
+                    siliconFlowKey = config.siliconFlowKey;
+                    bochaApiKey = config.bochaApiKey;
+                    Debug.Log("API 密钥通过 Newtonsoft 加载成功");
+                }
+            }
+            catch (System.Exception e) { Debug.LogError("解析 JSON 失败: " + e.Message); }
+        }
+        else { Debug.LogError("找不到配置文件: " + path); }
+        
+    }
+    
     // 主调用接口
     public IEnumerator GetAIReply(string userMessage, System.Action<string> callback)
     {
@@ -39,17 +91,43 @@ public class AIChat : MonoBehaviour
         yield return StartCoroutine(CallDeepSeek(systemPrompt, userMessage, callback));
     }
     
+    public IEnumerator GetAIBubbleReply(string context, Action<string> callback)
+    {
+        if (isProcessingBubble) yield break; // 防止并发请求
+        isProcessingBubble = true;
+
+        string searchResults = "";
+    
+        // 策略优化：只有包含特定关键词才搜索，否则留空
+        if (NeedSearch(context)) {
+            yield return StartCoroutine(SearchWeb(context, (results) => {
+                searchResults = results;
+            }));
+        }
+
+        string currentTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss dddd");
+        string systemPrompt = AIBubblePrompt(searchResults, currentTime, null);
+
+        yield return StartCoroutine(CallDeepSeek(systemPrompt, context, (reply) => {
+            isProcessingBubble = false;
+            callback?.Invoke(reply);
+        }));
+    }
+
+    private bool NeedSearch(string title) {
+        // 仅针对视频、特定网页进行搜索，减少开销
+        return title.Contains("Bilibili") || title.Contains("YouTube") || title.Contains("新闻") || title.Contains("-");
+    }
     //AI人格设定
 
-    private string AIPrompt(
-        string searchResults,
-        string currentTime,
-        string userMemory)
+    private string AIPrompt(string searchResults, string currentTime, string userMemory)
     {
-        return IrohaPromptBuilder.Build(
-            currentTime,
-            searchResults,
-            userMemory);
+        return IrohaPromptBuilder.Build(currentTime, searchResults, userMemory);
+    }
+    
+    private string AIBubblePrompt(string searchResults, string currentTime, string userMemory)
+    {
+        return IrohaPromptBuilder.BubbleBuild(currentTime, searchResults, userMemory);
     }
     
     
