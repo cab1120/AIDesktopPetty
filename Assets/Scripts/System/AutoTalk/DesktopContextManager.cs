@@ -24,14 +24,14 @@ public class DesktopContextManager : MonoBehaviour
     public Action<string> OnWindowChanged;
     
     //测试用
-    public TextMeshProUGUI textMeshPro;
+    public BubbleUIManager bubbleUI;
 
     void Start()
     {
         InvokeRepeating(
             nameof(CheckWindow),
             1f,
-            3f); // 每3秒检测一次
+            6f); // 每6秒检测一次
     }
 
     const int nChars = 256;
@@ -56,9 +56,9 @@ public class DesktopContextManager : MonoBehaviour
 
                 Debug.Log("当前窗口: " + title);
 
-                OnWindowChanged?.Invoke(title);
-                
-                //textMeshPro.text = title;
+                //OnWindowChanged?.Invoke(title);
+
+                bubbleUI.ShowBubble(title);
             }
         }
 
