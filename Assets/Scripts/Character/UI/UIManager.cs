@@ -15,8 +15,20 @@ public class UIManager : MonoBehaviour
 
     private Coroutine currentScrollCoroutine; // 用于管理滚到底部的协程，避免重复启动
 
+    public void OnInputEndEdit(string str)
+    {
+        // 只有是因为按下回车才触发（排除点击别处导致的失去焦点）
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            OnSendButtonClick();
+        }
+    }
     public void OnSendButtonClick()
     {
+        // 只有按下了回车键（Return 或 KeypadEnter）才触发发送逻辑
+        if (!Input.GetKeyDown(KeyCode.Return) && !Input.GetKeyDown(KeyCode.KeypadEnter)) 
+            return;
+        
         string userInput = inputField.text;
         if (string.IsNullOrEmpty(userInput)) return;
 

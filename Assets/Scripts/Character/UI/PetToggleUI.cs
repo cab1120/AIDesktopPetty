@@ -7,7 +7,11 @@ public class PetToggleUI : MonoBehaviour
     public GameObject chatPanel;
     public WindowSizeController windowSize;
 
+    public GameObject ExpandButton;
+    public GameObject Functions;
+    
     private bool isExpanded = false;
+    private bool isExtended = false;
 
     void Awake()
     {
@@ -38,5 +42,26 @@ public class PetToggleUI : MonoBehaviour
             
             windowSize.ToggleWindow(isExpanded);
         }
+    }
+
+    public void ToggleButton()
+    {
+        if (isExtended)
+        { 
+            Functions.SetActive(false);
+            ExpandButton.SetActive(true);
+        }
+        else
+        {
+            Functions.SetActive(true);
+            ExpandButton.SetActive(false);
+        }
+        
+        isExtended = !isExtended;
+    }
+
+    public void ExitButton()
+    {
+        Application.Quit();
     }
 }
