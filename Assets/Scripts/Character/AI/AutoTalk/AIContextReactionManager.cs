@@ -25,11 +25,11 @@ public class AIContextReactionManager
         contextManager.OnWindowChanged -= OnWindowChanged;
     }
 
-    void OnWindowChanged(string title)
+    void OnWindowChanged(string title,string processName)
     {
         Debug.Log("正在检测："+title);
 
-        if (!ContextEvaluator.IsInteresting(title))
+        if (!ContextEvaluator.IsInteresting(title,processName))
         {
             Debug.Log("关键词检测不通过");
             return;
@@ -45,7 +45,7 @@ public class AIContextReactionManager
 
         if (Time.time < lastReactionTime + cooldown)
         {
-            Debug.Log("时间过短"+Time.time+"<"+lastReactionTime+"+"+cooldown);
+            Debug.Log("时间冷却中"+Time.time+"<"+lastReactionTime+"+"+cooldown);
             return;
         }
         
@@ -62,6 +62,7 @@ public class AIContextReactionManager
 
     void OnReactionGenerated(string reply)
     {
+        if (reply.Contains("[IGNORE]")) return;
         bubbleUI.ShowBubble(reply);
     }
 }

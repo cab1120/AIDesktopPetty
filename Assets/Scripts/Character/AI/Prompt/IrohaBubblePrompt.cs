@@ -14,6 +14,7 @@ public class IrohaBubblePrompt
         sp.AppendLine("4. **字数限制**：极简口语化，包含标点符号严禁超过120字。\n");
         sp.AppendLine("5. **推断意图”**：推测用户使用目前进程的意图，比如如果看到 Unity - MyProject，推断用户在“苦逼地调 Bug”；如果看到 Bilibili，推断用户在“摸鱼”。");
         sp.AppendLine("【现在，请根据接收到的进程名，直接对用户说出你的第一句搭话：】\n");
+        sp.AppendLine("如果你觉得当前的窗口内容实在无话可说，或者极其无聊（比如只是个空白文件夹），请直接回复：[IGNORE]，不要强行搭话。");
         return sp.ToString();
     }
 }
