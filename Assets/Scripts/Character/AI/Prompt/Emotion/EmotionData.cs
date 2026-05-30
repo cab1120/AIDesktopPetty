@@ -17,7 +17,7 @@ public class EmotionData
     // 持续时间
     public int RemainingMinutes;
 
-    // 时间戳
+    // 开始时间
     public long LastUpdateTicks;
 
     public DateTime GetLastUpdateTime()
@@ -31,9 +31,3 @@ public class EmotionData
     }
 }
 
-public interface IEmotionStorage
-{
-    void Save(EmotionData data);
-    EmotionData Load();
-    //List<EmotionData> GetHistory(int limit); // 预留获取历史的能力
-}

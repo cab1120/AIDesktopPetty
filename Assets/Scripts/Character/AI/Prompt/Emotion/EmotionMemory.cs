@@ -4,6 +4,9 @@ using UnityEngine;
 
 public static class EmotionMemory
 {
+    //默认id
+    private const string DefaultUserId = "DefaultUser";
+    private const string DefaultCharacterId = "DefaultCharacter";
     // 当前情绪缓存
     private static EmotionData currentEmotion;
 
@@ -17,7 +20,7 @@ public static class EmotionMemory
 
     // --- 预处理：定义当前的存储驱动 ---
     // 未来如果换数据库，只需要把 FileStorage 换成 DatabaseStorage
-    private static IEmotionStorage storage = new FileStorage(); 
+    private static IEmotionStorage storage = new SQLiteEmotionStorage(); 
     
     public static void Initialize()
     {
@@ -26,14 +29,8 @@ public static class EmotionMemory
         // 如果没有存档
         if (currentEmotion == null)
         {
-            GenerateNewEmotion();
+            GenerateNewEmotion(DefaultUserId,DefaultCharacterId);
             return;
-        }
-
-        // 检查情绪是否过期
-        if (IsEmotionExpired())
-        {
-            GenerateNewEmotion();
         }
     }
 
@@ -41,18 +38,20 @@ public static class EmotionMemory
     // 获取当前情绪
     // =========================
 
-    public static EmotionData GetCurrentEmotion()
+    public static EmotionData GetCurrentEmotion(string userId,string characterId)
     {
+        LoadEmotion(userId, characterId);
+        
         // 防止忘记初始化
         if (currentEmotion == null)
         {
-            Initialize();
+            GenerateNewEmotion(userId,characterId);
         }
 
         // 每次获取时检查是否过期
         if (IsEmotionExpired())
         {
-            GenerateNewEmotion();
+            GenerateNewEmotion(userId,characterId);
         }
 
         return currentEmotion;
@@ -69,7 +68,7 @@ public static class EmotionMemory
     {
         currentEmotion = data;
 
-        SaveEmotion();
+        
     }
 
     // =========================
@@ -95,29 +94,31 @@ public static class EmotionMemory
     // 生成新情绪
     // =========================
 
-    public static void GenerateNewEmotion()
+    public static void GenerateNewEmotion(string userId,string characterId)
     {
         EmotionData newEmotion =
             EmotionGenerator.GenerateEmotion();
 
         SetEmotion(newEmotion);
+        
+        SaveEmotion(userId, characterId);
     }
 
     // =========================
     // 保存情绪
     // =========================
 
-    private static void SaveEmotion()
+    private static void SaveEmotion(string userId = DefaultUserId,string characterId = DefaultCharacterId)
     {
         try
         {
-            // 目前使用文件存储
-            storage.Save(currentEmotion); 
+            storage.Save(
+                currentEmotion,
+                userId, characterId);
         }
         catch (Exception e)
         {
-            Debug.LogError(
-                $"Emotion Save Failed: {e}");
+            Debug.LogError($"Emotion Save Failed: {e}");
         }
     }
 
@@ -125,16 +126,18 @@ public static class EmotionMemory
     // 读取情绪
     // =========================
 
-    private static void LoadEmotion()
+    private static void LoadEmotion(string userId = DefaultUserId,string characterId = DefaultCharacterId)
     {
         try
         {
-            currentEmotion = storage.Load();
+            currentEmotion = storage.LoadLatest(
+                userId,
+                characterId
+            );
         }
         catch (Exception e)
         {
-            Debug.LogError(
-                $"Emotion Load Failed: {e}");
+            Debug.LogError($"Emotion Load Failed: {e}");
         }
     }
 
@@ -146,19 +149,19 @@ public static class EmotionMemory
     {
         currentEmotion = null;
 
-        if (File.Exists(SavePath))
-        {
-            File.Delete(SavePath);
-        }
+        storage.DeleteAll(
+            DefaultUserId,
+            DefaultCharacterId
+        );
 
-        GenerateNewEmotion();
+        GenerateNewEmotion(DefaultUserId,DefaultCharacterId);
     }
 }
 
 // 默认的文件存储实现
-public class FileStorage : IEmotionStorage
+/*public class FileStorage : IEmotionStorage
 {
     private string path = Path.Combine(Application.persistentDataPath, "iroha_emotion.json");
     public void Save(EmotionData data) => File.WriteAllText(path, JsonUtility.ToJson(data, true));
     public EmotionData Load() => File.Exists(path) ? JsonUtility.FromJson<EmotionData>(File.ReadAllText(path)) : null;
-}
+}*/

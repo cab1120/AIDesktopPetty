@@ -163,7 +163,8 @@ public static class EmotionGenerator
             
         };
         result.SetLastUpdate(now);
-        EmotionMemory.SetEmotion(result);
+        
+        //EmotionMemory.SetEmotion(result);
 
         return result;
     }
