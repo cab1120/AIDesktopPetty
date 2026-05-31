@@ -8,9 +8,7 @@ public class SQLiteEmotionStorage : IEmotionStorage
     private const int DefaultKeepCount = 20;
 
     public void Save(
-        EmotionData data,
-        string userId = "DefaultUser",
-        string characterId = "DefaultCharacter")
+        EmotionData data)
     {
         if (data == null)
             return;
@@ -19,7 +17,7 @@ public class SQLiteEmotionStorage : IEmotionStorage
             DatabaseManager.Initialize();
 
             EmotionRecord record =
-                EmotionDataMapper.ToRecord(data,userId, characterId);
+                EmotionDataMapper.ToRecord(data);
 
             DatabaseManager.Connection.Insert(record);
 
@@ -37,8 +35,8 @@ public class SQLiteEmotionStorage : IEmotionStorage
     }
 
     public EmotionData LoadLatest(
-        string userId = "DefaultUser",
-        string characterId = "DefaultCharacter")
+        string userId,
+        string characterId)
     {
         DatabaseManager.Initialize();
 
@@ -102,7 +100,7 @@ public class SQLiteEmotionStorage : IEmotionStorage
         DatabaseManager.Initialize();
 
         DatabaseManager.Connection.Execute(
-            "DELETE FROM EmotionRecord WHERE UserId = ? AND CharacterId = ?",
+            "DELETE FROM EmotionState WHERE UserId = ? AND CharacterId = ?",
             userId,
             characterId
         );
@@ -110,7 +108,7 @@ public class SQLiteEmotionStorage : IEmotionStorage
 }
 public interface IEmotionStorage
 {
-    void Save(EmotionData data, string userId = "DefaultUser",string characterId = "DefaultCharacter");
+    void Save(EmotionData data);
 
     EmotionData LoadLatest(
         string userId = "DefaultUser",

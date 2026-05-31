@@ -7,6 +7,7 @@ public class EmotionData
     // --- 预处理：为数据库新增字段 ---
     public string Id = Guid.NewGuid().ToString(); // 每一条情绪记录的唯一ID
     public string UserId = "DefaultUser";       // 预留多用户支持
+    public string CharacterId { get; set; } = "DefaultCharacter";
 
     
     public EmotionType CurrentEmotion;

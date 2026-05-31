@@ -24,7 +24,7 @@ public static class EmotionMemory
     
     public static void Initialize()
     {
-        LoadEmotion();
+        LoadEmotion(DefaultUserId,DefaultCharacterId);
 
         // 如果没有存档
         if (currentEmotion == null)
@@ -64,11 +64,11 @@ public static class EmotionMemory
     // 设置情绪
     // =========================
 
-    public static void SetEmotion(EmotionData data)
+    public static void SetEmotion(EmotionData data,string userId,string characterId)
     {
         currentEmotion = data;
-
-        
+        currentEmotion.UserId = userId;
+        currentEmotion.CharacterId = characterId;
     }
 
     // =========================
@@ -99,22 +99,21 @@ public static class EmotionMemory
         EmotionData newEmotion =
             EmotionGenerator.GenerateEmotion();
 
-        SetEmotion(newEmotion);
+        SetEmotion(newEmotion,userId, characterId);
         
-        SaveEmotion(userId, characterId);
+        SaveEmotion();
     }
 
     // =========================
     // 保存情绪
     // =========================
 
-    private static void SaveEmotion(string userId = DefaultUserId,string characterId = DefaultCharacterId)
+    private static void SaveEmotion()
     {
         try
         {
             storage.Save(
-                currentEmotion,
-                userId, characterId);
+                currentEmotion);
         }
         catch (Exception e)
         {
@@ -126,7 +125,7 @@ public static class EmotionMemory
     // 读取情绪
     // =========================
 
-    private static void LoadEmotion(string userId = DefaultUserId,string characterId = DefaultCharacterId)
+    private static void LoadEmotion(string userId,string characterId)
     {
         try
         {

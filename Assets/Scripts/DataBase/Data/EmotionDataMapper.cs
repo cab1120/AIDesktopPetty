@@ -2,7 +2,7 @@ using System;
 
 public static class EmotionDataMapper
 {
-    public static EmotionRecord ToRecord(EmotionData data, string userId = "DefaultUser", string characterId = "DefaultCharacter")
+    public static EmotionRecord ToRecord(EmotionData data)
     {
         if (data == null)
             return null;
@@ -14,11 +14,11 @@ public static class EmotionDataMapper
 
         return new EmotionRecord
         {
-            EmotionId = Guid.NewGuid().ToString(),
+            EmotionId = data.Id,
 
-            UserId = userId,
+            UserId = data.UserId,
 
-            CharacterId = characterId,
+            CharacterId = data.CharacterId,
 
             EmotionType = data.CurrentEmotion.ToString(),
             Intensity = data.Intensity,
@@ -43,6 +43,7 @@ public static class EmotionDataMapper
         {
             Id = record.EmotionId,
             UserId = record.UserId,
+            CharacterId = record.CharacterId,
             CurrentEmotion = parsedEmotion,
             Intensity = record.Intensity,
             RemainingMinutes = record.RemainingMinutes,
