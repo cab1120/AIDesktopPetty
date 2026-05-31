@@ -9,9 +9,13 @@ public class ChatMessageData
 
     [Indexed, NotNull]
     public string UserId { get; set; }
+    
+    public string UserName { get; set; }
 
     [Indexed, NotNull]
     public string CharacterId { get; set; }
+    
+    public string CharacterName { get; set; }
 
     [Indexed]
     public string EmotionId { get; set; }

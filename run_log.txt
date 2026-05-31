@@ -1,0 +1,2 @@
+[2026/5/31 18:03:24] [Log] API 密钥通过 Newtonsoft 加载成功
+[2026/5/31 18:03:24] [Log] Database initialized: E:\unity\AIDesktopPetty\Assets\StreamingAssets\iroha_ai.db
