@@ -71,18 +71,72 @@ public class AIChat : MonoBehaviour
     // 主调用接口
     public IEnumerator GetAIReply(string userMessage, System.Action<string> callback)
     {
-        string searchResults = "";
-
-        // 1. 先去博查进行联网搜索
-        yield return StartCoroutine(SearchWeb(userMessage, (results) => {
-            searchResults = results;
-        }));
-
-        // 2. 获取当前时间
         string currentTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss dddd");
+        
+        string recentContext =
+            ChatContextTextBuilder.BuildRecentContextText(
+                ChatMessageService.UserId,
+                ChatMessageService.CharacterId,
+                8
+            );
+        
+        SearchDecision decision = null;
+
+        yield return StartCoroutine(
+            SearchDecisionService.Decide(
+                userMessage,
+                recentContext,
+                CallDeepSeekRaw,
+                result => decision = result
+            )
+        );
+        
+        string searchResults = "";
+        
+        // 1. 先看缓存
+        if (SearchCacheService.TryGetRecent(userMessage, out SearchCacheEntry cached))
+        {
+            decision = new SearchDecision
+            {
+                NeedSearch = true,
+                Query = cached.Query,
+                Reason = "用户当前话题可能延续之前的月读空间链路。"
+            };
+            Debug.Log("从缓存读取搜索结果");
+            searchResults = cached.Results;
+        }
+        else
+        {
+            // 2. 再进行规则过滤 + AI 判断
+            yield return StartCoroutine(
+                SearchDecisionService.Decide(
+                    userMessage,
+                    recentContext,
+                    CallDeepSeekRaw,
+                    result => decision = result
+                )
+            );
+
+            if (decision != null && decision.NeedSearch)
+            {
+                yield return StartCoroutine(SearchWeb(decision.Query, results =>
+                {
+                    searchResults = results;
+                }));
+
+                SearchCacheService.Add(
+                    decision.Query,
+                    searchResults,
+                    decision.Reason
+                );
+            }
+        }
+        
+        string searchBlock = SearchResultFormatter.FormatForPrompt(searchResults, decision);
+
 
         // 3. 构建增强型 System Prompt
-        string systemPrompt =AIPrompt(searchResults, currentTime,null);
+        string systemPrompt =AIPrompt(searchBlock, currentTime,recentContext);
         
         
         //callback(systemPrompt);
@@ -180,24 +234,37 @@ public class AIChat : MonoBehaviour
         }
     }
 
-    // --- 第二 step：调用 DeepSeek ---
+    /// <summary>
+    /// 获取回答内容
+    /// </summary>
+    /// <param name="systemPrompt"></param>
+    /// <param name="userMessage"></param>
+    /// <param name="callback"></param>
+    /// <returns></returns>
     private IEnumerator CallDeepSeek(string systemPrompt, string userMessage, System.Action<string> callback)
     {
         JObject root = new JObject();
         root["model"] = "Pro/deepseek-ai/DeepSeek-V3";
-        root["messages"] = new JArray(
-            new JObject { { "role", "system" }, { "content", systemPrompt } },
-            new JObject { { "role", "user" }, { "content", userMessage } }
+        
+        root["messages"] = ChatContextBuilder.BuildMessages(
+            systemPrompt,
+            userMessage,
+            ChatMessageService.UserId,
+            ChatMessageService.CharacterId
         );
+        
         root["stream"] = false;
         root["temperature"] = 0.8; // 增加随机性和灵性，建议 0.7 - 0.9 之间
         root["presence_penalty"] = 0.6; // 减少重复话术的概率
         root["max_tokens"] = 1024;
 
         byte[] bodyRaw = Encoding.UTF8.GetBytes(root.ToString());
+        
         UnityWebRequest request = new UnityWebRequest(siliconFlowUrl, "POST");
+        
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
+        
         request.SetRequestHeader("Content-Type", "application/json");
         request.SetRequestHeader("Authorization", "Bearer " + siliconFlowKey);
 
@@ -209,9 +276,85 @@ public class AIChat : MonoBehaviour
         }
         else
         {
-            JObject obj = JObject.Parse(request.downloadHandler.text);
-            string reply = obj["choices"][0]["message"]["content"].ToString();
-            callback(reply);
+            try
+            {
+                JObject obj = JObject.Parse(request.downloadHandler.text);
+                string result = obj["choices"]?[0]?["message"]?["content"]?.ToString();
+                callback(result ?? "");
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("搜索决策返回解析失败：" + e.Message);
+                callback("");
+            }
+        }
+    }
+    /// <summary>
+    /// 判断是否需要联网搜索
+    /// </summary>
+    /// <param name="systemPrompt"></param>
+    /// <param name="userMessage"></param>
+    /// <param name="callback"></param>
+    /// <returns></returns>
+    private IEnumerator CallDeepSeekRaw(
+        string systemPrompt,
+        string userMessage,
+        System.Action<string> callback)
+    {
+        JObject root = new JObject();
+
+        root["model"] = "Pro/deepseek-ai/DeepSeek-V3";
+
+        root["messages"] = new JArray(
+            new JObject
+            {
+                { "role", "system" },
+                { "content", systemPrompt }
+            },
+            new JObject
+            {
+                { "role", "user" },
+                { "content", userMessage }
+            }
+        );
+
+        root["stream"] = false;
+        root["temperature"] = 0.1;
+        root["presence_penalty"] = 0.0;
+        root["max_tokens"] = 256;
+
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(root.ToString());
+
+        UnityWebRequest request =
+            new UnityWebRequest(siliconFlowUrl, "POST");
+
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.SetRequestHeader("Authorization", "Bearer " + siliconFlowKey);
+
+        yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogWarning("搜索决策调用失败：" + request.error);
+            callback("");
+        }
+        else
+        {
+            try
+            {
+                JObject obj = JObject.Parse(request.downloadHandler.text);
+                string result = obj["choices"]?[0]?["message"]?["content"]?.ToString();
+                callback(result ?? "");
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("搜索决策返回解析失败：" + e.Message);
+                callback("");
+            }
         }
     }
 }
+

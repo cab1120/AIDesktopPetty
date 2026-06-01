@@ -2,10 +2,11 @@ using System.Text;
 
 public static class IrohaRealtimeContext
 {
-    public static string Build(string currentTime, string searchResults)
+    public static string BuildForBubble(string currentTime, string searchResults)
     {
         StringBuilder sp = new StringBuilder();
 
+        sp.Append(searchResults);
         sp.AppendLine("### 月读空间链路 ###");
 
         sp.AppendLine($"[当前时间坐标：{currentTime}]");
@@ -44,5 +45,10 @@ public static class IrohaRealtimeContext
         }
 
         return sp.ToString();
+    }
+    
+    public static string BuildForChat(string searchResults)
+    {
+        return searchResults;
     }
 }

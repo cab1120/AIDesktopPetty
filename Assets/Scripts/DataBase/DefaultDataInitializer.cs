@@ -25,9 +25,9 @@ public static class DefaultDataInitializer
         user = new UserData
         {
             UserId = DefaultUserId,
-            UserName = "默认用户",
-            PasswordHash = "LocalUser",
-            Role = "User",
+            UserName = "DefaultUser",
+            PasswordHash = PasswordHasher.Hash("123456"),
+            Role = "Admin",
             CreatedAtTicks = DateTime.Now.Ticks,
             LastLoginAtTicks = DateTime.Now.Ticks
         };
@@ -48,7 +48,7 @@ public static class DefaultDataInitializer
         {
             CharacterId = DefaultCharacterId,
             UserId = DefaultUserId,
-            CharacterName = "酒寄彩叶",
+            CharacterName = "DefaultCharacter",
             PromptJson = "",
             IsActive = true,
             CreatedAtTicks = DateTime.Now.Ticks

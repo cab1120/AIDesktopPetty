@@ -23,6 +23,7 @@ public class ChatHistoryPanel : MonoBehaviour
     [Header("List UI")]
     public Transform listContent;
     public GameObject historyItemPrefab;
+    public int loadRecent = 10;
 
     private readonly List<ChatHistoryItemUI> currentItems =
         new List<ChatHistoryItemUI>();
@@ -45,7 +46,7 @@ public class ChatHistoryPanel : MonoBehaviour
     public void LoadRecent()
     {
         List<ChatMessageData> messages =
-            ChatMessageService.GetRecent(5);
+            ChatMessageService.GetRecent(loadRecent);
 
         RefreshList(messages);
     }

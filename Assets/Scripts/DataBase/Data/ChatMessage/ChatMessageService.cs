@@ -3,13 +3,13 @@ using UnityEngine;
 
 public static class ChatMessageService
 {
-    public const string DefaultUserId = "DefaultUser";
-    public const string DefaultUserName = "默认用户";
+    public const string UserId = "DefaultUser";
+    public const string UserName = "默认用户";
 
-    public const string DefaultCharacterId = "DefaultCharacter";
-    public const string DefaultCharacterName = "酒寄彩叶";
+    public const string CharacterId = "DefaultCharacter";
+    public const string CharacterName = "酒寄彩叶";
 
-    private const int MaxMessageCount = 5; 
+    private const int MaxMessageCount = 100; 
     // 调试阶段 5，后期改成 100
 
     public static void SaveUserMessage(string content)
@@ -28,18 +28,18 @@ public static class ChatMessageService
             return;
 
         ChatMessageRepository.AddMessage(
-            DefaultUserId,
-            DefaultCharacterId,
+            UserId,
+            CharacterId,
             sender,
             content,
             null,
-            DefaultUserName,
-            DefaultCharacterName
+            UserName,
+            CharacterName
         );
 
         ChatMessageRepository.TrimOldMessages(
-            DefaultUserId,
-            DefaultCharacterId,
+            UserId,
+            CharacterId,
             MaxMessageCount
         );
 
@@ -55,22 +55,22 @@ public static class ChatMessageService
 
         if (string.IsNullOrEmpty(condition.UserId))
         {
-            condition.UserId = DefaultUserId;
+            condition.UserId = UserId;
         }
 
         if (string.IsNullOrEmpty(condition.CharacterId))
         {
-            condition.CharacterId = DefaultCharacterId;
+            condition.CharacterId = CharacterId;
         }
 
         return ChatMessageRepository.SearchMessages(condition);
     }
 
-    public static List<ChatMessageData> GetRecent(int limit = 5)
+    public static List<ChatMessageData> GetRecent(int limit)
     {
         return ChatMessageRepository.GetRecentMessages(
-            DefaultUserId,
-            DefaultCharacterId,
+            UserId,
+            CharacterId,
             limit
         );
     }
@@ -83,8 +83,8 @@ public static class ChatMessageService
     public static int Count()
     {
         return ChatMessageRepository.Count(
-            DefaultUserId,
-            DefaultCharacterId
+            UserId,
+            CharacterId
         );
     }
 }
