@@ -21,6 +21,40 @@ public static class CharacterRepository
             .Table<CharacterProfileData>()
             .FirstOrDefault(c => c.UserId == userId && c.IsActive);
     }
+    
+    public static List<CharacterProfileData> SearchByCharacterName(string keyword)
+    {
+        DatabaseManager.Initialize();
+
+        if (string.IsNullOrWhiteSpace(keyword))
+            return GetAll();
+
+        return DatabaseManager.Connection
+            .Table<CharacterProfileData>()
+            .Where(c => c.CharacterName.Contains(keyword))
+            .OrderBy(c => c.CharacterName)
+            .ToList();
+    }
+    
+    public static List<CharacterProfileData> SearchByCharacterNameForUser(
+        string userId,
+        string keyword)
+    {
+        DatabaseManager.Initialize();
+
+        var query = DatabaseManager.Connection
+            .Table<CharacterProfileData>()
+            .Where(c => c.UserId == userId);
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            query = query.Where(c => c.CharacterName.Contains(keyword));
+        }
+
+        return query
+            .OrderBy(c => c.CharacterName)
+            .ToList();
+    }
 
     public static List<CharacterProfileData> GetAll()
     {
