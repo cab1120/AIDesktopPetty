@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PetToggleUI : MonoBehaviour
 {
@@ -6,6 +7,7 @@ public class PetToggleUI : MonoBehaviour
     public GameObject petIcon;
     public GameObject chatPanel;
     public WindowSizeController windowSize;
+    public CanvasScaler canvasScaler;
 
     public GameObject ExpandButton;
     public GameObject Functions;
@@ -19,8 +21,6 @@ public class PetToggleUI : MonoBehaviour
     }
     void Start()
     {
-        // 初始状态：只显示头像
-        petIcon.SetActive(true);
         chatPanel.SetActive(false);
     }
 
@@ -32,14 +32,14 @@ public class PetToggleUI : MonoBehaviour
         {
             petIcon.SetActive(false);
             chatPanel.SetActive(true);
-            
+            canvasScaler.enabled = true;
             windowSize.ToggleWindow(isExpanded);
         }
         else
         {
             petIcon.SetActive(true);
             chatPanel.SetActive(false);
-            
+            canvasScaler.enabled = false;
             windowSize.ToggleWindow(isExpanded);
         }
     }

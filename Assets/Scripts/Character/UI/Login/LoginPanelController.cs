@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -13,6 +14,13 @@ public class LoginPanelController : MonoBehaviour
     public TMP_Text messageText;
     public GameObject loginPanel;
     public GameObject desktopPetPanel;
+
+    private void Start()
+    {
+        loginPanel.SetActive(true);
+        desktopPetPanel.SetActive(false);
+        messageText.text = "";
+    }
 
     public void OnClickLogin()
     {

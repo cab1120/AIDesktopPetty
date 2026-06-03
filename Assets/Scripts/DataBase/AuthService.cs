@@ -37,10 +37,19 @@ public static class AuthService
         user.LastLoginAtTicks = DateTime.Now.Ticks;
         DatabaseManager.Connection.Update(user);
 
-        CharacterRepository.SetActiveCharacter(user.UserId, character.CharacterId);
+        bool activeSuccess = CharacterRepository.SetActiveCharacter(
+            user.UserName,
+            character.CharacterName,
+            out string activeError
+        );
+        if (!activeSuccess)
+        {
+            error = activeError;
+            return false;
+        }
 
         GlobalSession.SetSession(user, character);
-
+        GlobalSession.RefreshCurrentCharacterFromDatabase();
         return true;
     }
 }

@@ -19,6 +19,9 @@ public class UserManagePanelController : MonoBehaviour
     [Header("Detail")]
     public TMP_Text selectedInfoText;
     public TMP_Text messageText;
+    
+    [Header("Controller")]
+    public WindowSizeController windowSize;
 
     private UserData selectedUser;
     private List<UserData> cachedUsers = new List<UserData>();
@@ -33,7 +36,7 @@ public class UserManagePanelController : MonoBehaviour
         RefreshList(searchInput.text);
     }
 
-    public void RefreshList(string keyword = "")
+    public void RefreshList(string keyword = "", bool updateMessage = true)
     {
         ClearList();
 
@@ -47,7 +50,10 @@ public class UserManagePanelController : MonoBehaviour
 
         selectedUser = null;
         selectedInfoText.text = "当前未选择用户";
-        messageText.text = $"已加载 {cachedUsers.Count} 个用户";
+        if (updateMessage)
+        {
+            messageText.text = $"已加载 {cachedUsers.Count} 个角色";
+        }
     }
 
     public void SelectUser(UserData user)
@@ -88,19 +94,26 @@ public class UserManagePanelController : MonoBehaviour
             return;
         }
 
-        bool success = UserRepository.DeleteUser(
-            selectedUser.UserId,
+        bool success = UserRepository.DeleteUserByName(
+            selectedUser.UserName,
             out string error
         );
 
-        messageText.text = success ? "删除成功" : error;
-
-        RefreshList(searchInput.text);
+        if (success)
+        {
+            RefreshList(searchInput.text, false);
+            messageText.text = "删除成功";
+        }
+        else
+        {
+            messageText.text = error;
+        }
     }
 
     public void OnClickBack()
     {
         userManagePanel.SetActive(false);
+        windowSize.ToggleWindow(false);
         controlPanel.SetActive(true);
     }
 

@@ -2,30 +2,30 @@ using System;
 
 public static class DefaultDataInitializer
 {
-    public const string DefaultUserId = "DefaultUser";
-    public const string DefaultCharacterId = "DefaultCharacter";
+    public const string DefaultUserName = "DefaultUser";
+    public const string DefaultCharacterName = "DefaultCharacter";
 
     public static void Initialize()
     {
         CreateDefaultUser();
         CreateDefaultCharacter();
         UserCharacterStateRepository.GetOrCreate(
-            DefaultUserId,
-            DefaultCharacterId
+            DefaultUserName,
+            DefaultCharacterName
         );
     }
 
     private static void CreateDefaultUser()
     {
-        var user = DatabaseManager.Connection.Find<UserData>(DefaultUserId);
+        var user = UserRepository.GetByUserName(DefaultUserName);
 
         if (user != null)
             return;
 
         user = new UserData
         {
-            UserId = DefaultUserId,
-            UserName = "DefaultUser",
+            UserId = Guid.NewGuid().ToString(),
+            UserName = DefaultUserName,
             PasswordHash = PasswordHasher.Hash("123456"),
             Role = "Admin",
             CreatedAtTicks = DateTime.Now.Ticks,
@@ -37,18 +37,16 @@ public static class DefaultDataInitializer
 
     private static void CreateDefaultCharacter()
     {
-        var character = DatabaseManager.Connection.Find<CharacterProfileData>(
-            DefaultCharacterId
-        );
+        var character = CharacterRepository.GetByName(DefaultCharacterName);
 
         if (character != null)
             return;
 
         character = new CharacterProfileData
         {
-            CharacterId = DefaultCharacterId,
-            UserId = DefaultUserId,
-            CharacterName = "DefaultCharacter",
+            CharacterId = Guid.NewGuid().ToString(),
+            UserName = DefaultUserName,
+            CharacterName =  DefaultCharacterName,
             PromptJson = "",
             IsActive = true,
             CreatedAtTicks = DateTime.Now.Ticks

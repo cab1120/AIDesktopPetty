@@ -83,7 +83,7 @@ public class CharacterModifyPanelController : MonoBehaviour
         if (!isEditMode)
         {
             bool success = CharacterRepository.AddCharacter(
-                GlobalSession.CurrentUserId,
+                GlobalSession.CurrentUserName,
                 characterNameInput.text,
                 loadedPromptJson,
                 isActiveToggle.isOn,
@@ -108,8 +108,8 @@ public class CharacterModifyPanelController : MonoBehaviour
                     ? editingCharacter.PromptJson
                     : loadedPromptJson;
 
-            bool success = CharacterRepository.UpdateCharacter(
-                editingCharacter.CharacterId,
+            bool success = CharacterRepository.UpdateCharacterByName(
+                editingCharacter.CharacterName,
                 newCharacterName,
                 newPromptJson,
                 isActiveToggle.isOn,
@@ -122,9 +122,11 @@ public class CharacterModifyPanelController : MonoBehaviour
                 return;
             }
         }
-
+        
         panel.SetActive(false);
-        owner.RefreshList();
+        GlobalSession.RefreshCurrentCharacterFromDatabase();
+        owner.RefreshList("", false);
+        owner.ShowMessage("修改成功");
     }
 
     public void OnClickCancel()

@@ -13,13 +13,13 @@ public static class CharacterRepository
             .FirstOrDefault(c => c.CharacterName == characterName);
     }
 
-    public static CharacterProfileData GetActiveCharacter(string userId)
+    public static CharacterProfileData GetActiveCharacter(string userName)
     {
         DatabaseManager.Initialize();
 
         return DatabaseManager.Connection
             .Table<CharacterProfileData>()
-            .FirstOrDefault(c => c.UserId == userId && c.IsActive);
+            .FirstOrDefault(c => c.UserName == userName && c.IsActive);
     }
     
     public static List<CharacterProfileData> SearchByCharacterName(string keyword)
@@ -37,14 +37,14 @@ public static class CharacterRepository
     }
     
     public static List<CharacterProfileData> SearchByCharacterNameForUser(
-        string userId,
+        string userName,
         string keyword)
     {
         DatabaseManager.Initialize();
 
         var query = DatabaseManager.Connection
             .Table<CharacterProfileData>()
-            .Where(c => c.UserId == userId);
+            .Where(c => c.UserName == userName);
 
         if (!string.IsNullOrWhiteSpace(keyword))
         {
@@ -66,19 +66,19 @@ public static class CharacterRepository
             .ToList();
     }
 
-    public static List<CharacterProfileData> GetByUserId(string userId)
+    public static List<CharacterProfileData> GetByUserName(string userName)
     {
         DatabaseManager.Initialize();
 
         return DatabaseManager.Connection
             .Table<CharacterProfileData>()
-            .Where(c => c.UserId == userId)
+            .Where(c => c.UserName == userName)
             .OrderBy(c => c.CharacterName)
             .ToList();
     }
 
     public static bool AddCharacter(
-        string userId,
+        string userName,
         string characterName,
         string promptJson,
         bool isActive,
@@ -86,6 +86,12 @@ public static class CharacterRepository
     {
         error = "";
 
+        if (string.IsNullOrWhiteSpace(userName))
+        {
+            error = "用户名不能为空";
+            return false;
+        }
+        
         if (string.IsNullOrWhiteSpace(characterName))
         {
             error = "角色名不能为空";
@@ -100,13 +106,13 @@ public static class CharacterRepository
 
         if (isActive)
         {
-            DisableAllCharacters(userId);
+            DisableAllCharacters(userName);
         }
 
         CharacterProfileData character = new CharacterProfileData
         {
             CharacterId = Guid.NewGuid().ToString(),
-            UserId = userId,
+            UserName = userName,
             CharacterName = characterName,
             PromptJson = promptJson ?? "",
             IsActive = isActive,
@@ -115,7 +121,7 @@ public static class CharacterRepository
 
         DatabaseManager.Connection.Insert(character);
 
-        EnsureAtLeastOneActive(userId);
+        EnsureAtLeastOneActive(userName);
 
         return true;
     }
@@ -137,6 +143,12 @@ public static class CharacterRepository
             error = "角色不存在";
             return false;
         }
+        
+        if (characterName == GlobalSession.CurrentCharacterName)
+        {
+            error = "默认角色不能删除";
+            return false;
+        }
 
         var sameName = GetByName(characterName);
 
@@ -151,7 +163,7 @@ public static class CharacterRepository
 
         if (isActive)
         {
-            DisableAllCharacters(character.UserId);
+            DisableAllCharacters(character.UserName);
             character.IsActive = true;
         }
         else
@@ -161,7 +173,7 @@ public static class CharacterRepository
 
         DatabaseManager.Connection.Update(character);
 
-        if (!EnsureAtLeastOneActive(character.UserId))
+        if (!EnsureAtLeastOneActive(character.UserName))
         {
             character.IsActive = true;
             DatabaseManager.Connection.Update(character);
@@ -171,16 +183,66 @@ public static class CharacterRepository
 
         return true;
     }
+    
+    public static bool UpdateCharacterByName(
+        string oldCharacterName,
+        string newCharacterName,
+        string promptJson,
+        bool isActive,
+        out string error)
+    {
+        error = "";
+
+        var character = GetByName(oldCharacterName);
+
+        if (character == null)
+        {
+            error = "角色不存在";
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(newCharacterName))
+        {
+            newCharacterName = character.CharacterName;
+        }
+
+        var sameName = GetByName(newCharacterName);
+
+        if (sameName != null && sameName.CharacterId != character.CharacterId)
+        {
+            error = "角色名已被使用";
+            return false;
+        }
+
+        character.CharacterName = newCharacterName;
+        character.PromptJson = promptJson ?? character.PromptJson;
+
+        if (isActive)
+        {
+            DisableAllCharacters(character.UserName);
+            character.IsActive = true;
+        }
+        else
+        {
+            int activeCount = GetActiveCharacterCount(character.UserName);
+
+            if (character.IsActive && activeCount <= 1)
+            {
+                error = "至少需要启用一个角色";
+                return false;
+            }
+
+            character.IsActive = false;
+        }
+
+        DatabaseManager.Connection.Update(character);
+
+        return true;
+    }
 
     public static bool DeleteCharacter(string characterId, out string error)
     {
         error = "";
-
-        if (characterId == DefaultDataInitializer.DefaultCharacterId)
-        {
-            error = "默认角色不能删除";
-            return false;
-        }
 
         var character =
             DatabaseManager.Connection.Find<CharacterProfileData>(characterId);
@@ -191,11 +253,56 @@ public static class CharacterRepository
             return false;
         }
 
-        string userId = character.UserId;
+        if (character.CharacterName == DefaultDataInitializer.DefaultCharacterName)
+        {
+            error = "默认角色不能删除";
+            return false;
+        }
+
+        string userName = character.UserName;
 
         DatabaseManager.Connection.Delete(character);
 
-        if (!EnsureAtLeastOneActive(userId))
+        if (!EnsureAtLeastOneActive(userName))
+        {
+            error = "删除失败：至少需要保留一个启用角色";
+            return false;
+        }
+
+        return true;
+    }
+    
+    public static bool DeleteCharacterByName(string characterName, out string error)
+    {
+        error = "";
+
+        if (characterName == DefaultDataInitializer.DefaultCharacterName)
+        {
+            error = "默认角色不能删除";
+            return false;
+        }
+
+        var character = GetByName(characterName);
+
+        if (character == null)
+        {
+            error = "角色不存在";
+            return false;
+        }
+
+        string userName = character.UserName;
+
+        var characters = GetByUserName(userName);
+
+        if (characters.Count <= 1)
+        {
+            error = "至少需要保留一个角色";
+            return false;
+        }
+
+        DatabaseManager.Connection.Delete(character);
+
+        if (!EnsureAtLeastOneActive(userName))
         {
             error = "删除失败：至少需要保留一个启用角色";
             return false;
@@ -204,25 +311,40 @@ public static class CharacterRepository
         return true;
     }
 
-    public static bool SetActiveCharacter(string userId, string characterId)
+    public static bool SetActiveCharacter(string userName, string characterName,out string error)
     {
-        var character =
-            DatabaseManager.Connection.Find<CharacterProfileData>(characterId);
+        error = "";
+        
+        var character = GetByName(characterName);
 
         if (character == null)
             return false;
+        
+        if (character == null)
+        {
+            error = "角色不存在";
+            return false;
+        }
 
-        DisableAllCharacters(userId);
+        if (character.UserName != userName)
+        {
+            error = "该角色不属于当前用户";
+            return false;
+        }
+
+        DisableAllCharacters(userName);
 
         character.IsActive = true;
         DatabaseManager.Connection.Update(character);
+        
+        GlobalSession.SetCurrentCharacter(character);
 
         return true;
     }
 
-    private static void DisableAllCharacters(string userId)
+    private static void DisableAllCharacters(string userName)
     {
-        var characters = GetByUserId(userId);
+        var characters = GetByUserName(userName);
 
         foreach (var c in characters)
         {
@@ -231,9 +353,9 @@ public static class CharacterRepository
         }
     }
 
-    private static bool EnsureAtLeastOneActive(string userId)
+    private static bool EnsureAtLeastOneActive(string userName)
     {
-        var characters = GetByUserId(userId);
+        var characters = GetByUserName(userName);
 
         if (characters.Count == 0)
             return false;
@@ -246,6 +368,38 @@ public static class CharacterRepository
         var first = characters[0];
         first.IsActive = true;
         DatabaseManager.Connection.Update(first);
+
+        return true;
+    }
+    
+    public static int GetActiveCharacterCount(string userName)
+    {
+        DatabaseManager.Initialize();
+
+        return DatabaseManager.Connection
+            .Table<CharacterProfileData>()
+            .Count(c => c.UserName == userName && c.IsActive);
+    }
+
+    public static bool ValidateActiveCharacterState(
+        string userName,
+        out string error)
+    {
+        error = "";
+
+        int activeCount = GetActiveCharacterCount(userName);
+
+        if (activeCount == 0)
+        {
+            error = "至少需要启用一个角色";
+            return false;
+        }
+
+        if (activeCount > 1)
+        {
+            error = "最多只能启用一个角色，请先取消多余启用角色";
+            return false;
+        }
 
         return true;
     }

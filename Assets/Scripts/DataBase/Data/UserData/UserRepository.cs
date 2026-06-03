@@ -124,13 +124,47 @@ public static class UserRepository
     {
         error = "";
 
-        if (userId == DefaultDataInitializer.DefaultUserId)
+        var user = DatabaseManager.Connection.Find<UserData>(userId);
+
+        if (user == null)
+        {
+            error = "用户不存在";
+            return false;
+        }
+
+        if (user.UserName == DefaultDataInitializer.DefaultUserName)
         {
             error = "默认管理员不能删除";
             return false;
         }
 
-        var user = DatabaseManager.Connection.Find<UserData>(userId);
+        if (user.UserName == GlobalSession.CurrentUserName)
+        {
+            error = "当前登录用户不能删除自己";
+            return false;
+        }
+
+        DatabaseManager.Connection.Delete(user);
+        return true;
+    }
+    
+    public static bool DeleteUserByName(string userName, out string error)
+    {
+        error = "";
+
+        if (userName == DefaultDataInitializer.DefaultUserName)
+        {
+            error = "默认管理员不能删除";
+            return false;
+        }
+
+        if (userName == GlobalSession.CurrentUserName)
+        {
+            error = "当前登录用户不能删除自己";
+            return false;
+        }
+
+        var user = GetByUserName(userName);
 
         if (user == null)
         {

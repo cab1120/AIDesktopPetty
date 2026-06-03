@@ -30,7 +30,7 @@ public class WindowSizeController : MonoBehaviour
     public int collapsedWidth = 180;
     public int collapsedHeight = 250;
     
-    public CanvasScaler canvasScaler;
+    
 
     const uint SWP_NOMOVE = 0x0002;//位置不移动
     
@@ -61,7 +61,6 @@ public class WindowSizeController : MonoBehaviour
 
     void Expand()
     {
-        canvasScaler.enabled = true;
 #if UNITY_STANDALONE_WIN
 
         SetWindowPos(
@@ -79,7 +78,6 @@ public class WindowSizeController : MonoBehaviour
 
     void Collapse()
     {
-        canvasScaler.enabled = false;
 #if UNITY_STANDALONE_WIN
 
         SetWindowPos(
@@ -96,14 +94,13 @@ public class WindowSizeController : MonoBehaviour
     }
     private void CollapseFirst()
     {
-        canvasScaler.enabled = false;
 #if UNITY_STANDALONE_WIN
      
         SetWindowPos(
             hwnd,
             HWND_TOPMOST,
-            100,
-            100,
+            0,
+            0,
             collapsedWidth,
             collapsedHeight,
             0

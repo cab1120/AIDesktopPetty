@@ -5,6 +5,8 @@ public class ControlPanelController : MonoBehaviour
     public GameObject controlPanel;
     public GameObject userManagePanel;
     public GameObject characterManagePanel;
+    public GameObject petPanel;
+    public WindowSizeController windowSize;
 
     public void OnClickUserManage()
     {
@@ -12,6 +14,7 @@ public class ControlPanelController : MonoBehaviour
             return;
 
         controlPanel.SetActive(false);
+        windowSize.ToggleWindow(true);
         userManagePanel.SetActive(true);
     }
 
@@ -21,11 +24,13 @@ public class ControlPanelController : MonoBehaviour
             return;
 
         controlPanel.SetActive(false);
+        windowSize.ToggleWindow(true);
         characterManagePanel.SetActive(true);
     }
 
     public void OnClickBack()
     {
+        petPanel.SetActive(true);
         controlPanel.SetActive(false);
     }
 }

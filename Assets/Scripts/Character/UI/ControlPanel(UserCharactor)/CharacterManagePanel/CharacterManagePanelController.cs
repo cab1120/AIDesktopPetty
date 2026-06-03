@@ -19,6 +19,9 @@ public class CharacterManagePanelController : MonoBehaviour
     [Header("Detail")]
     public TMP_Text selectedInfoText;
     public TMP_Text messageText;
+    
+    [Header("Controller")]
+    public WindowSizeController windowSize;
 
     private CharacterProfileData selectedCharacter;
     private List<CharacterProfileData> cachedCharacters =
@@ -34,22 +37,20 @@ public class CharacterManagePanelController : MonoBehaviour
         RefreshList(searchInput.text);
     }
 
-    public void RefreshList(string keyword = "")
+    public void RefreshList(string keyword = "", bool updateMessage = true)
     {
         ClearList();
 
         if (GlobalSession.IsAdmin())
         {
-            cachedCharacters =
-                CharacterRepository.SearchByCharacterName(keyword);
+            cachedCharacters = CharacterRepository.SearchByCharacterName(keyword);
         }
         else
         {
-            cachedCharacters =
-                CharacterRepository.SearchByCharacterNameForUser(
-                    GlobalSession.CurrentUserId,
-                    keyword
-                );
+            cachedCharacters = CharacterRepository.SearchByCharacterNameForUser(
+                GlobalSession.CurrentUserName,
+                keyword
+            );
         }
 
         foreach (var character in cachedCharacters)
@@ -60,7 +61,11 @@ public class CharacterManagePanelController : MonoBehaviour
 
         selectedCharacter = null;
         selectedInfoText.text = "当前未选择角色";
-        messageText.text = $"已加载 {cachedCharacters.Count} 个角色";
+
+        if (updateMessage)
+        {
+            messageText.text = $"已加载 {cachedCharacters.Count} 个角色";
+        }
     }
 
     public void SelectCharacter(CharacterProfileData character)
@@ -71,7 +76,7 @@ public class CharacterManagePanelController : MonoBehaviour
             $"当前选中角色：\n" +
             $"CharacterId：{character.CharacterId}\n" +
             $"角色名：{character.CharacterName}\n" +
-            $"所属用户ID：{character.UserId}\n" +
+            $"所属用户名：{character.UserName}\n" +
             $"是否启用：{character.IsActive}\n" +
             $"PromptJson：\n{character.PromptJson}\n" +
             $"创建时间：{new System.DateTime(character.CreatedAtTicks)}";
@@ -101,19 +106,38 @@ public class CharacterManagePanelController : MonoBehaviour
             return;
         }
 
-        bool success = CharacterRepository.DeleteCharacter(
-            selectedCharacter.CharacterId,
+        bool success = CharacterRepository.DeleteCharacterByName(
+            selectedCharacter.CharacterName,
             out string error
         );
 
-        messageText.text = success ? "删除成功" : error;
-
-        RefreshList(searchInput.text);
+        if (success)
+        {
+            RefreshList(searchInput.text, false);
+            messageText.text = "删除成功";
+            GlobalSession.RefreshCurrentCharacterFromDatabase();
+        }
+        else
+        {
+            messageText.text = error;
+        }
     }
 
     public void OnClickBack()
     {
+        bool valid = CharacterRepository.ValidateActiveCharacterState(
+            GlobalSession.CurrentUserName,
+            out string error
+        );
+
+        if (!valid)
+        {
+            messageText.text = error;
+            return;
+        }
+        
         characterManagePanel.SetActive(false);
+        windowSize.ToggleWindow(false);
         controlPanel.SetActive(true);
     }
 
@@ -123,5 +147,10 @@ public class CharacterManagePanelController : MonoBehaviour
         {
             Destroy(contentRoot.GetChild(i).gameObject);
         }
+    }
+
+    public void ShowMessage(string text)
+    {
+        messageText.text =  text;
     }
 }

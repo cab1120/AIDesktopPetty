@@ -44,4 +44,27 @@ public static class GlobalSession
     {
         return CurrentRole == "Guest";
     }
+    
+    public static void SetCurrentCharacter(CharacterProfileData character)
+    {
+        if (character == null)
+            return;
+
+        CurrentCharacterId = character.CharacterId;
+        CurrentCharacterName = character.CharacterName;
+    }
+
+    public static void RefreshCurrentCharacterFromDatabase()
+    {
+        if (string.IsNullOrEmpty(CurrentUserName))
+            return;
+
+        var activeCharacter =
+            CharacterRepository.GetActiveCharacter(CurrentUserName);
+
+        if (activeCharacter != null)
+        {
+            SetCurrentCharacter(activeCharacter);
+        }
+    }
 }

@@ -8,7 +8,7 @@ public class CharacterProfileData
     public string CharacterId { get; set; } = Guid.NewGuid().ToString();
 
     [Indexed, NotNull]
-    public string UserId { get; set; }
+    public string UserName { get; set; }
 
     [NotNull]
     public string CharacterName { get; set; }

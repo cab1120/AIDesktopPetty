@@ -4,9 +4,11 @@ using TMPro;
 public class DesktopPetPanelController : MonoBehaviour
 {
     public GameObject controlPanel;
+    public GameObject petPanel;
 
     public GameObject userManageButton;
     public GameObject characterManageButton;
+    
 
     public TMP_Text permissionMessageText;
 
@@ -38,6 +40,7 @@ public class DesktopPetPanelController : MonoBehaviour
 
     public void OnClickOpenControlPanel()
     {
+        petPanel.SetActive(false);
         controlPanel.SetActive(true);
         RefreshPermissionUI();
     }

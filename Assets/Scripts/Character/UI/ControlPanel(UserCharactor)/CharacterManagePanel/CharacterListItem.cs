@@ -17,7 +17,7 @@ public class CharacterListItem : MonoBehaviour
 
         infoText.text =
             $"角色名：{character.CharacterName}\n" +
-            $"所属用户ID：{character.UserId}\n" +
+            $"所属用户名：{character.UserName}\n" +
             $"是否启用：{character.IsActive}\n" +
             $"Prompt长度：{(character.PromptJson == null ? 0 : character.PromptJson.Length)}\n" +
             $"创建时间：{new System.DateTime(character.CreatedAtTicks)}";

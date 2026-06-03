@@ -8,10 +8,10 @@ public class EmotionRecord
     public string EmotionId { get; set; } = Guid.NewGuid().ToString();
 
     [Indexed, NotNull]
-    public string UserId { get; set; } = "DefaultUser";
+    public string UserId { get; set; }
 
     [Indexed, NotNull]
-    public string CharacterId { get; set; } = "DefaultCharacter";
+    public string CharacterId { get; set; }
 
     [NotNull]
     public string EmotionType { get; set; } 
