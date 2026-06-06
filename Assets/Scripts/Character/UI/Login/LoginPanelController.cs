@@ -20,6 +20,9 @@ public class LoginPanelController : MonoBehaviour
         loginPanel.SetActive(true);
         desktopPetPanel.SetActive(false);
         messageText.text = "";
+        userNameInput.text = "DefaultUser";
+        passwordInput.text = "123456";
+        characterNameInput.text = "DefaultCharacter";
     }
 
     public void OnClickLogin()

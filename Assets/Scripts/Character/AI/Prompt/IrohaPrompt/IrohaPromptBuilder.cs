@@ -17,11 +17,10 @@ public static class IrohaPromptBuilder
                                          + IrohaWorldView.Build() + "\n"
                                          + "### 实时环境描述 ###\n"
                                          + $"- 电脑系统时间：{currentTime}\n"
-                                         + $"- 角色长期心境：{IrohaStatusContext.LongTermMood}\n\n"
-                                         + IrohaDataState.Build() + "\n"
+                                         + $"- 角色长期心境：{IrohaStatusContext.LongTermMood}\n"//
                                          + IrohaMemoryContext.Build(userMemory) + "\n"
-                                         + IrohaRealtimeContext.BuildForChat(searchResults) + "\n"
-                                         + emotionPrompt + "\n"// 情绪和风格限制放在最后，权重最高
+                                         + IrohaRealtimeContext.BuildForChat(searchResults) + "\n"//111
+                                         + emotionPrompt + "\n"// 情绪和风格限制放在最后，权重最高//111
                                           +IrohaProhibitedItems.Build();
     }
     
@@ -41,7 +40,6 @@ public static class IrohaPromptBuilder
                                          + "### 实时环境描述 ###\n"
                                          + $"- 电脑系统时间：{currentTime}\n"
                                          + $"- 角色长期心境：{IrohaStatusContext.LongTermMood}\n\n"
-                                         + IrohaDataState.Build() + "\n"
                                          + IrohaMemoryContext.Build(userMemory) + "\n"
                                          + IrohaRealtimeContext.BuildForBubble(currentTime, searchResults) + "\n"
                                          + emotionPrompt + "\n" // 情绪和风格限制放在最后，权重最高

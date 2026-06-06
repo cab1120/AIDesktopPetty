@@ -4,6 +4,8 @@ public class AppInitializer : MonoBehaviour
 {
     private void Awake()
     {
+        //IrohaPromptJsonExporter.Export();
+        
         DatabaseManager.Initialize();
 
         DefaultDataInitializer.Initialize();

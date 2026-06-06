@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 
 public static class DefaultDataInitializer
 {
@@ -47,7 +48,8 @@ public static class DefaultDataInitializer
             CharacterId = Guid.NewGuid().ToString(),
             UserName = DefaultUserName,
             CharacterName =  DefaultCharacterName,
-            PromptJson = "",
+            PromptJson = File.ReadAllText(
+                "E:\\unity\\AIDesktopPetty\\Assets\\StreamingAssets\\DefaultCharacterPrompt.json"),
             IsActive = true,
             CreatedAtTicks = DateTime.Now.Ticks
         };

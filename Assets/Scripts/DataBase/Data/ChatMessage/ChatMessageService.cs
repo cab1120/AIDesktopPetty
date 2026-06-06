@@ -3,11 +3,6 @@ using UnityEngine;
 
 public static class ChatMessageService
 {
-    public const string UserId = "DefaultUser";
-    public const string UserName = "默认用户";
-
-    public const string CharacterId = "DefaultCharacter";
-    public const string CharacterName = "酒寄彩叶";
 
     private const int MaxMessageCount = 100; 
     // 调试阶段 5，后期改成 100
@@ -28,18 +23,18 @@ public static class ChatMessageService
             return;
 
         ChatMessageRepository.AddMessage(
-            UserId,
-            CharacterId,
+            GlobalSession.CurrentUserId,
+            GlobalSession.CurrentCharacterId,
             sender,
             content,
             null,
-            UserName,
-            CharacterName
+            GlobalSession.CurrentUserName,
+            GlobalSession.CurrentCharacterName
         );
 
         ChatMessageRepository.TrimOldMessages(
-            UserId,
-            CharacterId,
+            GlobalSession.CurrentUserId,
+            GlobalSession.CurrentCharacterId,
             MaxMessageCount
         );
 
@@ -53,15 +48,15 @@ public static class ChatMessageService
             condition = new ChatMessageSearchCondition();
         }
 
-        if (string.IsNullOrEmpty(condition.UserId))
+        /*if (string.IsNullOrEmpty(condition.UserId))
         {
-            condition.UserId = UserId;
+            condition.UserId =GlobalSession.CurrentUserId;
         }
 
         if (string.IsNullOrEmpty(condition.CharacterId))
         {
-            condition.CharacterId = CharacterId;
-        }
+            condition.CharacterId = GlobalSession.CurrentCharacterId;
+        }*/
 
         return ChatMessageRepository.SearchMessages(condition);
     }
@@ -69,8 +64,8 @@ public static class ChatMessageService
     public static List<ChatMessageData> GetRecent(int limit)
     {
         return ChatMessageRepository.GetRecentMessages(
-            UserId,
-            CharacterId,
+            GlobalSession.CurrentUserId,
+            GlobalSession.CurrentCharacterId,
             limit
         );
     }
@@ -83,8 +78,8 @@ public static class ChatMessageService
     public static int Count()
     {
         return ChatMessageRepository.Count(
-            UserId,
-            CharacterId
+            GlobalSession.CurrentUserId,
+            GlobalSession.CurrentCharacterId
         );
     }
 }

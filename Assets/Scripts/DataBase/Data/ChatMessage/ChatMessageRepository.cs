@@ -64,7 +64,7 @@ public static class ChatMessageRepository
         IEnumerable<ChatMessageData> query =
             DatabaseManager.Connection.Table<ChatMessageData>();
 
-        if (!string.IsNullOrEmpty(condition.UserId))
+        /*if (!string.IsNullOrEmpty(condition.UserId))
         {
             query = query.Where(m => m.UserId == condition.UserId);
         }
@@ -72,7 +72,7 @@ public static class ChatMessageRepository
         if (!string.IsNullOrEmpty(condition.CharacterId))
         {
             query = query.Where(m => m.CharacterId == condition.CharacterId);
-        }
+        }*/
 
         if (!string.IsNullOrEmpty(condition.UserNameKeyword))
         {

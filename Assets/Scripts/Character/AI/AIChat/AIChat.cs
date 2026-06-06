@@ -75,8 +75,8 @@ public class AIChat : MonoBehaviour
         
         string recentContext =
             ChatContextTextBuilder.BuildRecentContextText(
-                ChatMessageService.UserId,
-                ChatMessageService.CharacterId,
+                GlobalSession.CurrentUserId,
+                GlobalSession.CurrentCharacterId,
                 8
             );
         
@@ -172,16 +172,44 @@ public class AIChat : MonoBehaviour
         // 仅针对视频、特定网页进行搜索，减少开销
         return title.Contains("Bilibili") || title.Contains("YouTube") || title.Contains("新闻") || title.Contains("-");
     }
-    //AI人格设定
-
+    
+    /// <summary>
+    /// 构建ai提示词
+    /// </summary>
+    /// <param name="联网搜索结果"></param>
+    /// <param name="当下时间"></param>
+    /// <param name="与用户相关记忆"></param>
+    /// <returns></returns>
     private string AIPrompt(string searchResults, string currentTime, string userMemory)
     {
-        return IrohaPromptBuilder.Build(currentTime, searchResults, userMemory);
+        PromptContext context = new PromptContext
+        {
+            CurrentTime = currentTime,
+            SearchResults = searchResults,
+            UserMemory = userMemory,
+            Emotion = EmotionMemory.GetCurrentEmotion(
+                GlobalSession.CurrentUserName,
+                GlobalSession.CurrentCharacterName
+            )
+        };
+
+        return CharacterPromptBuilder.BuildChatPrompt(context);
     }
     
     private string AIBubblePrompt(string searchResults, string currentTime, string userMemory)
     {
-        return IrohaPromptBuilder.BubbleBuild(currentTime, searchResults, userMemory);
+        PromptContext context = new PromptContext
+        {
+            CurrentTime = currentTime,
+            SearchResults = searchResults,
+            UserMemory = userMemory,
+            Emotion = EmotionMemory.GetCurrentEmotion(
+                GlobalSession.CurrentUserName,
+                GlobalSession.CurrentCharacterName
+            )
+        };
+
+        return CharacterPromptBuilder.BuildBubblePrompt(context);
     }
     
     
@@ -249,8 +277,8 @@ public class AIChat : MonoBehaviour
         root["messages"] = ChatContextBuilder.BuildMessages(
             systemPrompt,
             userMessage,
-            ChatMessageService.UserId,
-            ChatMessageService.CharacterId
+            GlobalSession.CurrentUserId,
+            GlobalSession.CurrentCharacterId
         );
         
         root["stream"] = false;
