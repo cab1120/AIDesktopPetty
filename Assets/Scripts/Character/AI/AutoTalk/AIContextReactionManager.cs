@@ -1,19 +1,16 @@
 using UnityEngine;
 
-public class AIContextReactionManager
-    : MonoBehaviour
+public class AIContextReactionManager : MonoBehaviour
 {
     public DesktopContextManager contextManager;
-
     public BubbleUIManager bubbleUI;
-
     public AIChat aiChat;
 
     private float lastReactionTime;
+    public float globalCooldown = 3f;
 
-    private string lastContext;
-
-    public float cooldown = 3f;
+    private string pendingTitle;
+    private string pendingProcessName;
 
     void OnEnable()
     {
@@ -25,44 +22,79 @@ public class AIContextReactionManager
         contextManager.OnWindowChanged -= OnWindowChanged;
     }
 
-    void OnWindowChanged(string title,string processName)
+    void OnWindowChanged(string title, string processName)
     {
-        Debug.Log("正在检测："+title);
+        Debug.Log("正在检测：" + title);
 
-        if (!ContextEvaluator.IsInteresting(title,processName))
+        if (Time.time < lastReactionTime + globalCooldown)
         {
-            Debug.Log("关键词检测不通过");
+            InteractionEventService.RecordBubbleSuppressed(
+                title,
+                processName,
+                "全局冷却中"
+            );
             return;
         }
 
+        bool canTrigger = InteractionEventService.CanTriggerBubble(
+            title,
+            processName,
+            out string contextKey,
+            out string reason
+        );
 
-        if (title == lastContext)
+        if (!canTrigger)
         {
-            Debug.Log("重复窗口");
+            InteractionEventService.RecordBubbleSuppressed(
+                title,
+                processName,
+                reason
+            );
             return;
         }
-            
 
-        if (Time.time < lastReactionTime + cooldown)
-        {
-            Debug.Log("时间冷却中"+Time.time+"<"+lastReactionTime+"+"+cooldown);
-            return;
-        }
-        
-        Debug.Log("检测通过");
-        
-        lastContext = title;
+        pendingTitle = title;
+        pendingProcessName = processName;
 
         lastReactionTime = Time.time;
 
+        InteractionEventService.RecordBubbleRequested(title, processName);
+
+        string aiContext =
+            $"窗口标题：{title}\n进程名：{processName}";
+
         StartCoroutine(aiChat.GetAIBubbleReply(
-                title,
-                OnReactionGenerated));
+            aiContext,
+            OnReactionGenerated
+        ));
     }
 
     void OnReactionGenerated(string reply)
     {
-        if (reply.Contains("[IGNORE]")) return;
+        if (string.IsNullOrWhiteSpace(reply))
+        {
+            InteractionEventService.RecordBubbleIgnored(
+                pendingTitle,
+                pendingProcessName
+            );
+            return;
+        }
+
+        if (reply.Contains("[IGNORE]"))
+        {
+            InteractionEventService.RecordBubbleIgnored(
+                pendingTitle,
+                pendingProcessName
+            );
+            return;
+        }
+
         bubbleUI.ShowBubble(reply);
+
+        InteractionEventService.RecordBubbleShown(
+            pendingTitle,
+            pendingProcessName,
+            reply
+        );
     }
 }

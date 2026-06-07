@@ -34,6 +34,10 @@ public class PetToggleUI : MonoBehaviour
             chatPanel.SetActive(true);
             canvasScaler.enabled = true;
             windowSize.ToggleWindow(isExpanded);
+            
+            RelationshipService.OnOpenPetPanel(); // 更新好感度
+            InteractionEventService.RecordPetExpanded(); // 记录展开事件
+
         }
         else
         {
@@ -41,6 +45,8 @@ public class PetToggleUI : MonoBehaviour
             chatPanel.SetActive(false);
             canvasScaler.enabled = false;
             windowSize.ToggleWindow(isExpanded);
+            
+            InteractionEventService.RecordPetCollapsed(); // 记录关闭事件
         }
     }
 

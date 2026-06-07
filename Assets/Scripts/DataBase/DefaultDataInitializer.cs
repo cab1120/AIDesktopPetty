@@ -10,10 +10,6 @@ public static class DefaultDataInitializer
     {
         CreateDefaultUser();
         CreateDefaultCharacter();
-        UserCharacterStateRepository.GetOrCreate(
-            DefaultUserName,
-            DefaultCharacterName
-        );
     }
 
     private static void CreateDefaultUser()

@@ -50,6 +50,15 @@ public static class AuthService
 
         GlobalSession.SetSession(user, character);
         GlobalSession.RefreshCurrentCharacterFromDatabase();
+        
+        //登录立赠1好感度
+        UserCharacterStateRepository.GetOrCreate(
+            GlobalSession.CurrentUserId,
+            GlobalSession.CurrentCharacterId
+        );
+
+        RelationshipService.OnLogin();
+        
         return true;
     }
 }

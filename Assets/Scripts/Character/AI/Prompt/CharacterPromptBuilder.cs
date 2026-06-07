@@ -69,6 +69,12 @@ public static class CharacterPromptBuilder
         sp.AppendLine(string.IsNullOrWhiteSpace(context.UserMemory)
             ? "你还在慢慢了解用户。"
             : context.UserMemory);
+        
+        if (!string.IsNullOrWhiteSpace(context.RelationshipText))
+        {
+            sp.AppendLine("### 用户与角色关系状态 ###");
+            sp.AppendLine(context.RelationshipText);
+        }
 
         sp.AppendLine("### 实时信息处理规则 ###");
         CharacterPromptProfile profile =

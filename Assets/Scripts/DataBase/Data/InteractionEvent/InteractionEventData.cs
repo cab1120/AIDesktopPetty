@@ -15,8 +15,13 @@ public class InteractionEventData
 
     [NotNull]
     public string EventType { get; set; } // 事件类型
+    
+    public string EventSource { get; set; } // 事件原因
 
     public string Description { get; set; } // 描述
+    
+    [Indexed]
+    public string ContextKey { get; set; } // 防止重复
 
     public float EmotionImpact { get; set; } //情绪影响
 

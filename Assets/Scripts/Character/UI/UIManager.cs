@@ -29,7 +29,10 @@ public class UIManager : MonoBehaviour
         if (string.IsNullOrEmpty(userInput)) return;
 
         CreateBubble(userBubblePrefab, userInput);
+        
         ChatMessageService.SaveUserMessage(userInput);
+        RelationshipService.OnUserSendMessage(userInput);
+        
         inputField.text = "";
 
         // 在发送消息后立即尝试滚动，处理用户消息的布局问题
@@ -39,6 +42,7 @@ public class UIManager : MonoBehaviour
             CreateBubble(aiBubblePrefab, reply);
             
             ChatMessageService.SaveAssistantMessage(reply);
+            RelationshipService.OnAssistantReplyFinished();
 
             // AI 回复后再次尝试滚动，处理 AI 消息的布局问题
             StartOrRestartScrollToBottom();

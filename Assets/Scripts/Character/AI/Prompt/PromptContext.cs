@@ -7,4 +7,6 @@ public class PromptContext
     public string SearchResults;
     public string UserMemory;
     public EmotionData Emotion;
+    
+    public string RelationshipText;
 }

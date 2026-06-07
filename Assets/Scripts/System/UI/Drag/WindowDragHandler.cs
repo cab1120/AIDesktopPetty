@@ -71,6 +71,8 @@ public class WindowDragHandler :
             // ⚠️ 这里会同步阻塞，直到用户松开鼠标拖拽结束才返回
             // 在此期间 Unity 收不到任何鼠标消息，导致输入状态不同步
             SendMessage(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0);
+            
+            InteractionEventService.RecordPetDragged(); // 记录拖拽互动事件
 
             // ---- SendMessage 返回，拖拽已结束 ----
 

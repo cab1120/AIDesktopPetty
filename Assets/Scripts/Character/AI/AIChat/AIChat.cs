@@ -71,6 +71,7 @@ public class AIChat : MonoBehaviour
     // 主调用接口
     public IEnumerator GetAIReply(string userMessage, System.Action<string> callback)
     {
+        
         string currentTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss dddd");
         
         string recentContext =
@@ -190,9 +191,10 @@ public class AIChat : MonoBehaviour
             Emotion = EmotionMemory.GetCurrentEmotion(
                 GlobalSession.CurrentUserName,
                 GlobalSession.CurrentCharacterName
-            )
+            ),
+            RelationshipText = RelationshipService.BuildRelationshipPromptText()
         };
-
+        
         return CharacterPromptBuilder.BuildChatPrompt(context);
     }
     
@@ -206,7 +208,8 @@ public class AIChat : MonoBehaviour
             Emotion = EmotionMemory.GetCurrentEmotion(
                 GlobalSession.CurrentUserName,
                 GlobalSession.CurrentCharacterName
-            )
+            ),
+            RelationshipText = RelationshipService.BuildRelationshipPromptText()
         };
 
         return CharacterPromptBuilder.BuildBubblePrompt(context);
