@@ -83,14 +83,14 @@ public class AIChat : MonoBehaviour
         
         SearchDecision decision = null;
 
-        yield return StartCoroutine(
+        /*yield return StartCoroutine(
             SearchDecisionService.Decide(
                 userMessage,
                 recentContext,
                 CallDeepSeekRaw,
                 result => decision = result
             )
-        );
+        );*/
         
         string searchResults = "";
         

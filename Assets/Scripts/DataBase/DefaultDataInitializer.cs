@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using UnityEngine;
 
 public static class DefaultDataInitializer
 {
@@ -36,16 +37,23 @@ public static class DefaultDataInitializer
     {
         var character = CharacterRepository.GetByName(DefaultCharacterName);
 
-        if (character != null)
-            return;
+        string promptPath = Path.Combine(
+            Application.streamingAssetsPath,
+            "DefaultCharacterPrompt.json"
+        );
+
+        if (!File.Exists(promptPath))
+        {
+            Debug.LogError(
+                $"默认角色 Prompt 文件不存在: {promptPath}");
+        }
 
         character = new CharacterProfileData
         {
             CharacterId = Guid.NewGuid().ToString(),
             UserName = DefaultUserName,
             CharacterName =  DefaultCharacterName,
-            PromptJson = File.ReadAllText(
-                "E:\\unity\\AIDesktopPetty\\Assets\\StreamingAssets\\DefaultCharacterPrompt.json"),
+            PromptJson = File.ReadAllText(promptPath),
             IsActive = true,
             CreatedAtTicks = DateTime.Now.Ticks
         };

@@ -10,16 +10,10 @@ public static class EmotionMemory
     // 当前情绪缓存
     private static EmotionData currentEmotion;
 
-    // 存档路径
-    private static readonly string SavePath =
-        Path.Combine(Application.persistentDataPath, "iroha_emotion.json");
-
     // =========================
     // 初始化
     // =========================
-
-    // --- 预处理：定义当前的存储驱动 ---
-    // 未来如果换数据库，只需要把 FileStorage 换成 DatabaseStorage
+    
     private static IEmotionStorage storage = new SQLiteEmotionStorage(); 
     
     public static void Initialize()

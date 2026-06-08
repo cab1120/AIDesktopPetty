@@ -6,10 +6,10 @@ public static class DatabaseManager
 {
     public static SQLiteConnection Connection { get; private set; }
 
-   /*private static string DbPath =>
-        Path.Combine(Application.persistentDataPath, "iroha_ai.db");*/
    private static string DbPath =>
-       @"E:\unity\AIDesktopPetty\Assets\StreamingAssets\iroha_ai.db";
+        Path.Combine(Application.persistentDataPath, "iroha_ai.db");
+   /*private static string DbPath =>
+       @"E:\unity\AIDesktopPetty\Assets\StreamingAssets\iroha_ai.db";*/
 
     public static void Initialize()
     {
