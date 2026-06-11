@@ -109,6 +109,7 @@ public class CharacterModifyPanelController : MonoBehaviour
                     : loadedPromptJson;
 
             bool success = CharacterRepository.UpdateCharacterByName(
+                editingCharacter.UserName,
                 editingCharacter.CharacterName,
                 newCharacterName,
                 newPromptJson,

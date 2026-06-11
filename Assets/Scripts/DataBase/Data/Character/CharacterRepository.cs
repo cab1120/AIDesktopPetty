@@ -13,6 +13,19 @@ public static class CharacterRepository
             .FirstOrDefault(c => c.CharacterName == characterName);
     }
 
+    public static CharacterProfileData GetByUserAndName(
+        string userName,
+        string characterName)
+    {
+        DatabaseManager.Initialize();
+
+        return DatabaseManager.Connection
+            .Table<CharacterProfileData>()
+            .FirstOrDefault(c =>
+                c.UserName == userName &&
+                c.CharacterName == characterName);
+    }
+
     public static CharacterProfileData GetActiveCharacter(string userName)
     {
         DatabaseManager.Initialize();
@@ -98,7 +111,7 @@ public static class CharacterRepository
             return false;
         }
 
-        if (GetByName(characterName) != null)
+        if (GetByUserAndName(userName, characterName) != null)
         {
             error = "角色名已存在";
             return false;
@@ -150,7 +163,7 @@ public static class CharacterRepository
             return false;
         }
 
-        var sameName = GetByName(characterName);
+        var sameName = GetByUserAndName(character.UserName, characterName);
 
         if (sameName != null && sameName.CharacterId != characterId)
         {
@@ -185,6 +198,7 @@ public static class CharacterRepository
     }
     
     public static bool UpdateCharacterByName(
+        string userName,
         string oldCharacterName,
         string newCharacterName,
         string promptJson,
@@ -193,7 +207,7 @@ public static class CharacterRepository
     {
         error = "";
 
-        var character = GetByName(oldCharacterName);
+        var character = GetByUserAndName(userName, oldCharacterName);
 
         if (character == null)
         {
@@ -206,7 +220,7 @@ public static class CharacterRepository
             newCharacterName = character.CharacterName;
         }
 
-        var sameName = GetByName(newCharacterName);
+        var sameName = GetByUserAndName(userName, newCharacterName);
 
         if (sameName != null && sameName.CharacterId != character.CharacterId)
         {
@@ -272,7 +286,10 @@ public static class CharacterRepository
         return true;
     }
     
-    public static bool DeleteCharacterByName(string characterName, out string error)
+    public static bool DeleteCharacterByName(
+        string userName,
+        string characterName,
+        out string error)
     {
         error = "";
 
@@ -282,15 +299,13 @@ public static class CharacterRepository
             return false;
         }
 
-        var character = GetByName(characterName);
+        var character = GetByUserAndName(userName, characterName);
 
         if (character == null)
         {
             error = "角色不存在";
             return false;
         }
-
-        string userName = character.UserName;
 
         var characters = GetByUserName(userName);
 
@@ -315,7 +330,7 @@ public static class CharacterRepository
     {
         error = "";
         
-        var character = GetByName(characterName);
+        var character = GetByUserAndName(userName, characterName);
 
         if (character == null)
             return false;

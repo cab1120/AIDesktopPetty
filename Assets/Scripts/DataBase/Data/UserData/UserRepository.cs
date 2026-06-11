@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
+using UnityEngine;
 
 public static class UserRepository
 {
@@ -47,25 +49,25 @@ public static class UserRepository
 
         if (string.IsNullOrWhiteSpace(userName))
         {
-            error = "用户名不能为空";
+            error = "User name cannot be empty";
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(password))
         {
-            error = "密码不能为空";
+            error = "Password cannot be empty";
             return false;
         }
 
         if (role != "Admin" && role != "User" && role != "Guest")
         {
-            error = "权限类型不合法";
+            error = "Invalid role type";
             return false;
         }
 
         if (GetByUserName(userName) != null)
         {
-            error = "用户名已存在";
+            error = "User name already exists";
             return false;
         }
 
@@ -80,7 +82,38 @@ public static class UserRepository
         };
 
         DatabaseManager.Connection.Insert(user);
+
+        if (!CreateDefaultCharacterForUser(user.UserName, out error))
+        {
+            DatabaseManager.Connection.Delete(user);
+            return false;
+        }
+
         return true;
+    }
+
+    private static bool CreateDefaultCharacterForUser(
+        string userName,
+        out string error)
+    {
+        string promptPath = Path.Combine(
+            Application.streamingAssetsPath,
+            "DefaultCharacterPrompt.json"
+        );
+
+        if (!File.Exists(promptPath))
+        {
+            error = "Default character prompt file does not exist";
+            return false;
+        }
+
+        return CharacterRepository.AddCharacter(
+            userName,
+            DefaultDataInitializer.DefaultCharacterName,
+            File.ReadAllText(promptPath),
+            true,
+            out error
+        );
     }
 
     public static bool UpdateUser(
@@ -96,7 +129,7 @@ public static class UserRepository
 
         if (user == null)
         {
-            error = "用户不存在";
+            error = "User does not exist";
             return false;
         }
 
@@ -104,7 +137,7 @@ public static class UserRepository
 
         if (sameNameUser != null && sameNameUser.UserId != userId)
         {
-            error = "用户名已被其他用户使用";
+            error = "User name is already used by another user";
             return false;
         }
 
@@ -128,19 +161,19 @@ public static class UserRepository
 
         if (user == null)
         {
-            error = "用户不存在";
+            error = "User does not exist";
             return false;
         }
 
         if (user.UserName == DefaultDataInitializer.DefaultUserName)
         {
-            error = "默认管理员不能删除";
+            error = "Default admin cannot be deleted";
             return false;
         }
 
         if (user.UserName == GlobalSession.CurrentUserName)
         {
-            error = "当前登录用户不能删除自己";
+            error = "Current login user cannot delete itself";
             return false;
         }
 
@@ -154,13 +187,13 @@ public static class UserRepository
 
         if (userName == DefaultDataInitializer.DefaultUserName)
         {
-            error = "默认管理员不能删除";
+            error = "Default admin cannot be deleted";
             return false;
         }
 
         if (userName == GlobalSession.CurrentUserName)
         {
-            error = "当前登录用户不能删除自己";
+            error = "Current login user cannot delete itself";
             return false;
         }
 
@@ -168,7 +201,7 @@ public static class UserRepository
 
         if (user == null)
         {
-            error = "用户不存在";
+            error = "User does not exist";
             return false;
         }
 

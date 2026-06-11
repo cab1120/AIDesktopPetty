@@ -26,7 +26,10 @@ public static class AuthService
             return false;
         }
 
-        var character = CharacterRepository.GetByName(characterName);
+        var character = CharacterRepository.GetByUserAndName(
+            user.UserName,
+            characterName
+        );
 
         if (character == null)
         {

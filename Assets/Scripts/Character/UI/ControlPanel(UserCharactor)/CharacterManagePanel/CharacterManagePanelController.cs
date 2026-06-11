@@ -107,6 +107,7 @@ public class CharacterManagePanelController : MonoBehaviour
         }
 
         bool success = CharacterRepository.DeleteCharacterByName(
+            selectedCharacter.UserName,
             selectedCharacter.CharacterName,
             out string error
         );

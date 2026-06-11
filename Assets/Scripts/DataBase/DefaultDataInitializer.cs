@@ -35,7 +35,10 @@ public static class DefaultDataInitializer
 
     private static void CreateDefaultCharacter()
     {
-        var character = CharacterRepository.GetByName(DefaultCharacterName);
+        var character = CharacterRepository.GetByUserAndName(
+            DefaultUserName,
+            DefaultCharacterName
+        );
         
         if (character != null)
             return;

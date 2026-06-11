@@ -7,7 +7,8 @@ public static class CharacterPromptLoader
 {
     public static CharacterPromptProfile LoadCurrentProfile()
     {
-        var character = CharacterRepository.GetByName(
+        var character = CharacterRepository.GetByUserAndName(
+            GlobalSession.CurrentUserName,
             GlobalSession.CurrentCharacterName
         );
 
