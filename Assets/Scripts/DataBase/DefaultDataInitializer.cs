@@ -36,6 +36,9 @@ public static class DefaultDataInitializer
     private static void CreateDefaultCharacter()
     {
         var character = CharacterRepository.GetByName(DefaultCharacterName);
+        
+        if (character != null)
+            return;
 
         string promptPath = Path.Combine(
             Application.streamingAssetsPath,
