@@ -5,7 +5,6 @@ public static class ChatMessageService
 {
 
     private const int MaxMessageCount = 100; 
-    // 调试阶段 5，后期改成 100
 
     public static void SaveUserMessage(string content)
     {
