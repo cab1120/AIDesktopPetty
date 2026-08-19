@@ -1,49 +1,65 @@
-using System;
-using System.Runtime.InteropServices;
 using UnityEngine;
+
+using Platform.Windows;
+
 
 public class BorderlessWindow : MonoBehaviour
 {
-#if UNITY_STANDALONE_WIN
+    [SerializeField]
+    private bool borderlessOnStartup = true;
 
-    [DllImport("user32.dll")]
-    private static extern IntPtr GetActiveWindow();
 
-    [DllImport("user32.dll")]
-    private static extern int SetWindowLong(
-        IntPtr hWnd,
-        int nIndex,
-        int dwNewLong);
-
-    [DllImport("user32.dll")]
-    private static extern int GetWindowLong(
-        IntPtr hWnd,
-        int nIndex);
-
-    [DllImport("user32.dll")]
-    private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
-
-    const uint SWP_NOMOVE = 0x0002;
-    const uint SWP_NOSIZE = 0x0001;
-    const uint SWP_FRAMECHANGED = 0x0020; // 核心：强制刷新框架样式
-    const uint SWP_NOZORDER = 0x0004;
-#endif
-
-    void Awake()
+    private void Awake()
     {
-#if UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
 
-        IntPtr hwnd = GetActiveWindow();
-        int style = GetWindowLong(hwnd, -16);
-    
-        style &= ~(0x00C00000 | 0x00800000 | 0x00400000); // 一次性去掉边框和标题栏
-    
-        SetWindowLong(hwnd, -16, style);
-    
-        // 关键修复：通知系统窗口样式已变，请立刻刷新
-        SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0, 
-            SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+        ApplyBorderless(
+            borderlessOnStartup
+        );
 
 #endif
+    }
+
+
+    /// <summary>
+    /// 设置桌宠窗口是否使用无边框模式。
+    /// </summary>
+    public void ApplyBorderless(bool enabled)
+    {
+        IWindowService windowService = WindowsPlatformBootstrap.WindowService;
+
+
+        if (windowService == null)
+        {
+            Debug.LogError(
+                "[BorderlessWindow] " +
+                "WindowService is not available."
+            );
+
+            return;
+        }
+
+
+        if (!windowService.IsInitialized)
+        {
+            Debug.LogError(
+                "[BorderlessWindow] " +
+                "WindowService is not initialized."
+            );
+
+            return;
+        }
+
+
+        bool success = windowService.SetBorderless(enabled);
+
+
+        if (!success)
+        {
+            Debug.LogError(
+                "[BorderlessWindow] " +
+                $"Failed to set borderless={enabled}."
+            );
+        }
     }
 }

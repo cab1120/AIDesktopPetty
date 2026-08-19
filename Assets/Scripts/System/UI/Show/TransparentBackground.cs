@@ -1,40 +1,79 @@
-using System;
-using System.Runtime.InteropServices;
 using UnityEngine;
 
-public class TransparentBackground : MonoBehaviour
+using Platform.Windows;
+
+
+public sealed class TransparentBackground
+    : MonoBehaviour
 {
-    [DllImport("user32.dll")]
-    private static extern IntPtr GetActiveWindow();
+    [SerializeField]
+    private bool transparentOnStartup =
+        true;
 
-    [DllImport("user32.dll")]
-    private static extern int SetWindowLong(IntPtr hWnd, int nIndex, uint dwNewLong);
 
-    [DllImport("dwmapi.dll")]
-    private static extern uint DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS margins);
+    private void Start()
+    {
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
 
-    [StructLayout(LayoutKind.Sequential)]
-    private struct MARGINS {
-        public int cxLeftWidth;
-        public int cxRightWidth;
-        public int cyTopHeight;
-        public int cyBottomHeight;
+        ApplyTransparency(
+            transparentOnStartup
+        );
+
+#endif
     }
 
-    const int GWL_STYLE = -16;
-    const uint WS_POPUP = 0x80000000;
-    const uint WS_VISIBLE = 0x10000000;
 
-    void Start()
+    /// <summary>
+    /// 设置 Windows 桌宠窗口是否使用
+    /// DWM 透明背景支持。
+    ///
+    /// 这里只表达 Unity 侧需求，
+    /// 不包含任何 Win32 / DWM 实现。
+    /// </summary>
+    public void ApplyTransparency(
+        bool enabled)
     {
-#if  UNITY_STANDALONE_WIN
-        IntPtr hwnd = GetActiveWindow();
+        IWindowService windowService =
+            WindowsPlatformBootstrap
+                .WindowService;
 
 
+        if (windowService == null)
+        {
+            Debug.LogError(
+                "[TransparentBackground] " +
+                "WindowService is not available."
+            );
 
-        //扩展框架到客户区（实现 Alpha 透明的关键）
-        MARGINS margins = new MARGINS { cxLeftWidth = -1 };
-        DwmExtendFrameIntoClientArea(hwnd, ref margins);
-#endif
+            return;
+        }
+
+
+        if (!windowService.IsInitialized)
+        {
+            Debug.LogError(
+                "[TransparentBackground] " +
+                "WindowService is not initialized."
+            );
+
+            return;
+        }
+
+
+        bool success =
+            windowService
+                .SetTransparentBackground(
+                    enabled
+                );
+
+
+        if (!success)
+        {
+            Debug.LogError(
+                "[TransparentBackground] " +
+                "Failed to set transparent " +
+                $"background={enabled}."
+            );
+        }
     }
 }
