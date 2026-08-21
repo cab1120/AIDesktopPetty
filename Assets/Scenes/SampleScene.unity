@@ -526,8 +526,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   petIcon: {fileID: 1828856895}
   chatPanel: {fileID: 1457891981}
-  windowSize: {fileID: 91917237}
-  canvasScaler: {fileID: 1934134423}
   ExpandButton: {fileID: 1980177790}
   Functions: {fileID: 1640790650}
 --- !u!114 &91917237
@@ -542,10 +540,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b90ac72d8a2c5ea428cacfea7fcaeb0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  expandedWidth: 432
-  expandedHeight: 768
-  collapsedWidth: 180
-  collapsedHeight: 250
+  expandedSize:
+    Width: 432
+    Height: 768
+  collapsedSize:
+    Width: 180
+    Height: 250
+  alwaysOnTop: 1
 --- !u!114 &91917239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -571,6 +572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 593735c218a566d4b90b30323daaa43a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  transparentOnStartup: 1
 --- !u!114 &91917241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2674,8 +2676,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 775616491}
+  - component: {fileID: 775616492}
   m_Layer: 0
-  m_Name: AppRoot
+  m_Name: Layout
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2696,6 +2699,51 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &775616492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 775616490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9ca5fd9793969e42b260247b6f9c7d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvasScaler: {fileID: 1934134423}
+  windowSizeController: {fileID: 91917237}
+  layoutProfiles:
+  - Mode: 0
+    WindowWidth: 180
+    WindowHeight: 250
+    ReferenceResolution: {x: 180, y: 250}
+    MatchWidthOrHeight: 0.5
+  - Mode: 1
+    WindowWidth: 180
+    WindowHeight: 250
+    ReferenceResolution: {x: 180, y: 250}
+    MatchWidthOrHeight: 0.5
+  - Mode: 2
+    WindowWidth: 432
+    WindowHeight: 768
+    ReferenceResolution: {x: 720, y: 1280}
+    MatchWidthOrHeight: 0.5
+  - Mode: 3
+    WindowWidth: 180
+    WindowHeight: 250
+    ReferenceResolution: {x: 180, y: 250}
+    MatchWidthOrHeight: 0.5
+  - Mode: 4
+    WindowWidth: 432
+    WindowHeight: 768
+    ReferenceResolution: {x: 432, y: 768}
+    MatchWidthOrHeight: 0.5
+  - Mode: 5
+    WindowWidth: 432
+    WindowHeight: 768
+    ReferenceResolution: {x: 432, y: 768}
+    MatchWidthOrHeight: 0.5
 --- !u!1001 &799394257
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6833,7 +6881,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f138f4d00e86ee4b8bbd29e81302c2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvasScaler: {fileID: 1934134423}
   chatPanel: {fileID: 1457891981}
   historyPanel: {fileID: 1845887698}
   contentInput: {fileID: 1845887697}
@@ -7368,7 +7415,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1934134420}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
@@ -7376,7 +7423,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 720, y: 1280}
+  m_ReferenceResolution: {x: 180, y: 250}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3

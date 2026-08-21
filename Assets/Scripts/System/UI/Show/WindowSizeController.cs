@@ -1,111 +1,243 @@
-using System;
-using System.Runtime.InteropServices;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class WindowSizeController : MonoBehaviour
+using Platform.Windows;
+
+
+public sealed class WindowSizeController
+    : MonoBehaviour
 {
-#if UNITY_STANDALONE_WIN
+    // ======================================================
+    // Logical Window Sizes
+    // ======================================================
 
-    [DllImport("user32.dll")]
-    private static extern IntPtr GetActiveWindow();
+    [Header("Logical Window Size")]
 
-    [DllImport("user32.dll")]
-    private static extern bool SetWindowPos(
-        IntPtr hWnd,
-        IntPtr hWndInsertAfter,
-        int X,
-        int Y,
-        int cx,
-        int cy,
-        uint uFlags);
+    [SerializeField]
+    private WindowLogicalSize
+        expandedSize =
+            new WindowLogicalSize(
+                432,
+                768
+            );
 
-    static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
 
-#endif
+    [SerializeField]
+    private WindowLogicalSize
+        collapsedSize =
+            new WindowLogicalSize(
+                180,
+                250
+            );
 
-    public int expandedWidth = 432;
-    public int expandedHeight = 768;
 
-    public int collapsedWidth = 180;
-    public int collapsedHeight = 250;
-    
-    
+    // ======================================================
+    // Window Policy
+    // ======================================================
 
-    const uint SWP_NOMOVE = 0x0002;//位置不移动
-    
-    const uint SWP_NOZORDER = 0x0004;   // 忽略窗口层级顺序参数
-    const uint SWP_SHOWWINDOW = 0x0040; // 窗口大小改变后强制显示窗口
-    
-    IntPtr hwnd;
+    [Header("Window Policy")]
 
-    void Start()
+    [SerializeField]
+    private bool alwaysOnTop =
+        true;
+
+
+    private IWindowService
+        _windowService;
+
+
+    // ======================================================
+    // Unity Lifecycle
+    // ======================================================
+
+    private void Start()
     {
-#if UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
 
-        hwnd = GetActiveWindow();
-#endif
+        _windowService =
+            WindowsPlatformBootstrap
+                .WindowService;
+
+
+        if (_windowService ==
+            null)
+        {
+            Debug.LogError(
+                "[WindowSizeController] " +
+                "WindowService is not available."
+            );
+
+
+            return;
+        }
+
+
+        if (!_windowService
+                .IsInitialized)
+        {
+            Debug.LogError(
+                "[WindowSizeController] " +
+                "WindowService is not initialized."
+            );
+
+
+            return;
+        }
+
+
+        // TopMost 与 Resize 已经完全独立。
+        if (alwaysOnTop)
+        {
+            _windowService
+                .SetTopMost(
+                    true
+                );
+        }
+
 
         CollapseFirst();
+
+#endif
     }
 
-    
 
-    public void ToggleWindow(bool isExpanded)
+    // ======================================================
+    // Public Window State API
+    // ======================================================
+
+    public void ToggleWindow(
+        bool isExpanded)
     {
         if (isExpanded)
+        {
             Expand();
+        }
         else
+        {
             Collapse();
+        }
     }
 
-    void Expand()
+
+    public void Expand()
     {
-#if UNITY_STANDALONE_WIN
-
-        SetWindowPos(
-            hwnd,
-            HWND_TOPMOST,
-            0,
-            0,
-            expandedWidth,
-            expandedHeight,
-            SWP_NOMOVE
+        ApplySize(
+            expandedSize,
+            "Expanded"
         );
-
-#endif
     }
 
-    void Collapse()
+
+    public void Collapse()
     {
-#if UNITY_STANDALONE_WIN
-
-        SetWindowPos(
-            hwnd,
-            HWND_TOPMOST,
-            0,
-            0,
-            collapsedWidth,
-            collapsedHeight,
-            SWP_NOMOVE
+        ApplySize(
+            collapsedSize,
+            "Collapsed"
         );
-
-#endif
     }
+
+
+    // ======================================================
+    // Initial State
+    // ======================================================
+
     private void CollapseFirst()
     {
-#if UNITY_STANDALONE_WIN
-     
-        SetWindowPos(
-            hwnd,
-            HWND_TOPMOST,
-            0,
-            0,
-            collapsedWidth,
-            collapsedHeight,
-            0
+        ApplySize(
+            collapsedSize,
+            "InitialCollapsed"
         );
-     
+    }
+
+
+    // ======================================================
+    // Internal
+    // ======================================================
+
+    private void ApplySize(
+        WindowLogicalSize size,
+        string stateName)
+    {
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+
+        if (_windowService ==
+            null)
+        {
+            Debug.LogError(
+                "[WindowSizeController] " +
+                "Cannot resize: " +
+                "WindowService is null."
+            );
+
+
+            return;
+        }
+
+
+        bool success =
+            _windowService
+                .SetLogicalSize(
+                    size
+                );
+
+
+        if (!success)
+        {
+            Debug.LogError(
+                "[WindowSizeController] " +
+                $"Failed to apply " +
+                $"{stateName} size: {size}"
+            );
+        }
+
+#endif
+    }
+    public bool SetLogicalSize(
+        int width,
+        int height)
+    {
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+
+    if (_windowService == null)
+    {
+        Debug.LogError(
+            "[WindowSizeController] " +
+            "WindowService is null."
+        );
+
+        return false;
+    }
+
+
+    WindowLogicalSize size =
+        new WindowLogicalSize(
+            width,
+            height
+        );
+
+
+    bool success =
+        _windowService
+            .SetLogicalSize(
+                size
+            );
+
+
+    if (!success)
+    {
+        Debug.LogError(
+            "[WindowSizeController] " +
+            $"Failed to set logical size: " +
+            $"{width}x{height}"
+        );
+    }
+
+
+    return success;
+
+#else
+
+        return false;
+
 #endif
     }
 }

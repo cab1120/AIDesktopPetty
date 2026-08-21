@@ -45,7 +45,7 @@ namespace Platform.Windows.Native
 
 
         // ======================================================
-        // Window Style
+        // Style
         // ======================================================
 
         [DllImport(
@@ -67,6 +67,57 @@ namespace Platform.Windows.Native
             ExactSpelling = true)]
         internal static extern int
             DP_SetTransparentBackground(
+                int enabled);
+
+
+        // ======================================================
+        // Geometry
+        // ======================================================
+
+        [DllImport(
+            LibraryName,
+            CallingConvention = CallingConvention.Cdecl,
+            ExactSpelling = true)]
+        internal static extern int
+            DP_GetWindowRect(
+                out NativeRect rect);
+
+
+        [DllImport(
+            LibraryName,
+            CallingConvention = CallingConvention.Cdecl,
+            ExactSpelling = true)]
+        internal static extern int
+            DP_SetWindowBounds(
+                int x,
+                int y,
+                int width,
+                int height);
+
+
+        // ======================================================
+        // Monitor / DPI
+        // ======================================================
+
+        [DllImport(
+            LibraryName,
+            CallingConvention = CallingConvention.Cdecl,
+            ExactSpelling = true)]
+        internal static extern int
+            DP_GetCurrentMonitorInfo(
+                out NativeMonitorInfo info);
+
+
+        // ======================================================
+        // Z Order
+        // ======================================================
+
+        [DllImport(
+            LibraryName,
+            CallingConvention = CallingConvention.Cdecl,
+            ExactSpelling = true)]
+        internal static extern int
+            DP_SetTopMost(
                 int enabled);
 
 

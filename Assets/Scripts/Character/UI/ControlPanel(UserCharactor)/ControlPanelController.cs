@@ -14,8 +14,12 @@ public class ControlPanelController : MonoBehaviour
             return;
 
         controlPanel.SetActive(false);
-        windowSize.ToggleWindow(true);
         userManagePanel.SetActive(true);
+        DesktopPetLayoutController
+            .Instance
+            .ApplyLayout(
+                DesktopPetLayoutMode.Management
+            );
     }
 
     public void OnClickCharacterManage()
@@ -24,8 +28,12 @@ public class ControlPanelController : MonoBehaviour
             return;
 
         controlPanel.SetActive(false);
-        windowSize.ToggleWindow(true);
         characterManagePanel.SetActive(true);
+        DesktopPetLayoutController
+            .Instance
+            .ApplyLayout(
+                DesktopPetLayoutMode.Management
+            );
     }
 
     public void OnClickBack()

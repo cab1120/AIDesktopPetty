@@ -6,8 +6,6 @@ public class PetToggleUI : MonoBehaviour
     public static PetToggleUI instance;
     public GameObject petIcon;
     public GameObject chatPanel;
-    public WindowSizeController windowSize;
-    public CanvasScaler canvasScaler;
 
     public GameObject ExpandButton;
     public GameObject Functions;
@@ -18,6 +16,8 @@ public class PetToggleUI : MonoBehaviour
     void Awake()
     {
         instance = this;
+        
+        
     }
     void Start()
     {
@@ -32,8 +32,12 @@ public class PetToggleUI : MonoBehaviour
         {
             petIcon.SetActive(false);
             chatPanel.SetActive(true);
-            canvasScaler.enabled = true;
-            windowSize.ToggleWindow(isExpanded);
+            DesktopPetLayoutController
+                .Instance
+                .ApplyLayout(
+                    DesktopPetLayoutMode
+                        .Chat
+                );
             
             RelationshipService.OnOpenPetPanel(); // 更新好感度
             InteractionEventService.RecordPetExpanded(); // 记录展开事件
@@ -43,8 +47,12 @@ public class PetToggleUI : MonoBehaviour
         {
             petIcon.SetActive(true);
             chatPanel.SetActive(false);
-            canvasScaler.enabled = false;
-            windowSize.ToggleWindow(isExpanded);
+            DesktopPetLayoutController
+                .Instance
+                .ApplyLayout(
+                    DesktopPetLayoutMode
+                        .PetCollapsed
+                );
             
             InteractionEventService.RecordPetCollapsed(); // 记录关闭事件
         }

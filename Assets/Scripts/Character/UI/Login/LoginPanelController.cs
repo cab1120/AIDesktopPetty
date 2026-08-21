@@ -19,6 +19,14 @@ public class LoginPanelController : MonoBehaviour
     {
         loginPanel.SetActive(true);
         desktopPetPanel.SetActive(false);
+        
+        // 登录页拥有整个应用启动布局的控制权。
+        DesktopPetLayoutController
+            .Instance
+            .ApplyLayout(
+                DesktopPetLayoutMode.Login
+            );
+        
         messageText.text = "";
         userNameInput.text = "DefaultUser";
         passwordInput.text = "123456";
@@ -44,5 +52,16 @@ public class LoginPanelController : MonoBehaviour
 
         loginPanel.SetActive(false);
         desktopPetPanel.SetActive(true);
+        
+        // =============================================
+        // Enter Desktop Pet Initial State
+        // =============================================
+
+        DesktopPetLayoutController
+            .Instance
+            .ApplyLayout(
+                DesktopPetLayoutMode
+                    .PetCollapsed
+            );
     }
 }

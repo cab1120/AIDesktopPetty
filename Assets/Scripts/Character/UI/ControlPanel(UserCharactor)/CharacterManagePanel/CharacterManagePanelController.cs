@@ -138,8 +138,13 @@ public class CharacterManagePanelController : MonoBehaviour
         }
         
         characterManagePanel.SetActive(false);
-        windowSize.ToggleWindow(false);
         controlPanel.SetActive(true);
+        DesktopPetLayoutController
+            .Instance
+            .ApplyLayout(
+                DesktopPetLayoutMode
+                    .ControlPanel
+            );
     }
 
     private void ClearList()

@@ -2,11 +2,9 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ChatHistoryPanel : MonoBehaviour
 {
-    public CanvasScaler canvasScaler;
     
     [Header("Panels")]
     public GameObject chatPanel;
@@ -31,16 +29,26 @@ public class ChatHistoryPanel : MonoBehaviour
     public void Open()
     {
         chatPanel.SetActive(false);
-        historyPanel.SetActive(true);
-        canvasScaler.enabled = false;
+        historyPanel.SetActive(true); 
+        DesktopPetLayoutController
+            .Instance
+            .ApplyLayout(
+                DesktopPetLayoutMode
+                    .ChatHistory
+            );
         LoadRecent();
     }
 
     public void Close()
     {
         historyPanel.SetActive(false);
-        chatPanel.SetActive(true);
-        canvasScaler.enabled = true;
+        chatPanel.SetActive(true); 
+        DesktopPetLayoutController
+            .Instance
+            .ApplyLayout(
+                DesktopPetLayoutMode
+                    .Chat
+            );
     }
 
     public void LoadRecent()

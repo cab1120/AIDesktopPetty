@@ -26,5 +26,25 @@ namespace Platform.Windows
         /// </summary>
         bool SetTransparentBackground(
             bool enabled);
+        
+        /// <summary>
+        /// 按 Windows logical size 调整窗口。
+        /// </summary>
+        bool SetLogicalSize(
+            WindowLogicalSize size);
+
+
+        /// <summary>
+        /// 设置是否保持为 TopMost。
+        /// </summary>
+        bool SetTopMost(
+            bool enabled);
+
+
+        /// <summary>
+        /// 获取窗口当前所在显示器。
+        /// </summary>
+        bool TryGetCurrentMonitorInfo(
+            out WindowMonitorInfo info);
     }
 }

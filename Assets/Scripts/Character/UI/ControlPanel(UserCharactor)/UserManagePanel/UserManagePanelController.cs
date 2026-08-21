@@ -19,9 +19,6 @@ public class UserManagePanelController : MonoBehaviour
     [Header("Detail")]
     public TMP_Text selectedInfoText;
     public TMP_Text messageText;
-    
-    [Header("Controller")]
-    public WindowSizeController windowSize;
 
     private UserData selectedUser;
     private List<UserData> cachedUsers = new List<UserData>();
@@ -113,8 +110,13 @@ public class UserManagePanelController : MonoBehaviour
     public void OnClickBack()
     {
         userManagePanel.SetActive(false);
-        windowSize.ToggleWindow(false);
         controlPanel.SetActive(true);
+        DesktopPetLayoutController
+            .Instance
+            .ApplyLayout(
+                DesktopPetLayoutMode
+                    .ControlPanel
+            );
     }
 
     private void ClearList()
