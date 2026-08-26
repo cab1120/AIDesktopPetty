@@ -139,6 +139,40 @@ namespace Platform.Windows.Native
             ExactSpelling = true)]
         internal static extern int
             DP_GetLastErrorDomain();
+        
+        // ======================================================
+        // Desktop Pointer
+        // ======================================================
+
+        [DllImport(
+            LibraryName,
+            CallingConvention = CallingConvention.Cdecl,
+            ExactSpelling = true)]
+        internal static extern int
+            DP_GetCursorPosition(
+                out NativePoint point);
+
+
+        [DllImport(
+            LibraryName,
+            CallingConvention = CallingConvention.Cdecl,
+            ExactSpelling = true)]
+        internal static extern int
+            DP_IsLeftMouseButtonDown();
+
+
+        // ======================================================
+        // Monitor Query
+        // ======================================================
+
+        [DllImport(
+            LibraryName,
+            CallingConvention = CallingConvention.Cdecl,
+            ExactSpelling = true)]
+        internal static extern int
+            DP_IsPointOnAnyMonitor(
+                int x,
+                int y);
 
 #endif
     }

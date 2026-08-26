@@ -650,5 +650,217 @@ namespace Platform.Windows
         }
 
 #endif
+        
+        
+        public bool TryGetWindowRect(
+            out WindowRect rect)
+        {
+            rect =
+                default;
+
+
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+
+            if (!EnsureInitialized(
+                    nameof(TryGetWindowRect)))
+            {
+                return false;
+            }
+
+
+            int result =
+                WindowsNativeMethods
+                    .DP_GetWindowRect(
+                        out NativeRect native
+                    );
+
+
+            if (result == 0)
+            {
+                LogNativeFailure(
+                    "DP_GetWindowRect"
+                );
+
+
+                return false;
+            }
+
+
+            rect =
+                ConvertRect(
+                    native
+                );
+
+
+            return true;
+
+#else
+
+            return false;
+
+#endif
+        }
+        
+        
+        public bool SetPhysicalBounds(
+            int x,
+            int y,
+            int width,
+            int height)
+        {
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+
+            if (!EnsureInitialized(
+                    nameof(SetPhysicalBounds)))
+            {
+                return false;
+            }
+
+
+            if (width <= 0 ||
+                height <= 0)
+            {
+                Debug.LogError(
+                    "[WindowsWindowService] " +
+                    "Invalid physical bounds: " +
+                    $"{x},{y},{width},{height}"
+                );
+
+
+                return false;
+            }
+
+
+            int result =
+                WindowsNativeMethods
+                    .DP_SetWindowBounds(
+                        x,
+                        y,
+                        width,
+                        height
+                    );
+
+
+            if (result == 0)
+            {
+                LogNativeFailure(
+                    "DP_SetWindowBounds"
+                );
+
+
+                return false;
+            }
+
+
+            return true;
+
+#else
+
+            return false;
+
+#endif
+        }
+        
+        
+        public bool TryGetCursorPosition(
+            out WindowPoint point)
+        {
+            point =
+                default;
+
+
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+
+            if (!EnsureInitialized(
+                    nameof(TryGetCursorPosition)))
+            {
+                return false;
+            }
+
+
+            int result =
+                WindowsNativeMethods
+                    .DP_GetCursorPosition(
+                        out NativePoint native
+                    );
+
+
+            if (result == 0)
+            {
+                LogNativeFailure(
+                    "DP_GetCursorPosition"
+                );
+
+
+                return false;
+            }
+
+
+            point =
+                new WindowPoint(
+                    native.X,
+                    native.Y
+                );
+
+
+            return true;
+
+#else
+
+            return false;
+
+#endif
+        }
+        
+        
+        public bool IsLeftMouseButtonDown()
+        {
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+
+            if (!IsInitialized)
+            {
+                return false;
+            }
+
+
+            return
+                WindowsNativeMethods
+                    .DP_IsLeftMouseButtonDown()
+                != 0;
+
+#else
+
+            return false;
+
+#endif
+        }
+        
+        public bool IsPointOnAnyMonitor(
+            int x,
+            int y)
+        {
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+
+            if (!IsInitialized)
+            {
+                return false;
+            }
+
+
+            return
+                WindowsNativeMethods
+                    .DP_IsPointOnAnyMonitor(
+                        x,
+                        y
+                    )
+                != 0;
+
+#else
+
+            return false;
+
+#endif
+        }
+        
     }
 }

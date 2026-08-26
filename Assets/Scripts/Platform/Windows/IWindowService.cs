@@ -46,5 +46,49 @@ namespace Platform.Windows
         /// </summary>
         bool TryGetCurrentMonitorInfo(
             out WindowMonitorInfo info);
+        
+        // ======================================================
+        // Physical Window Placement
+        // ======================================================
+        
+        bool TryGetWindowRect(
+            out WindowRect rect);
+
+
+        bool SetPhysicalBounds(
+            int x,
+            int y,
+            int width,
+            int height);
+
+
+        // ======================================================
+        // Desktop Pointer
+        // ======================================================
+
+        /// <summary>
+        /// 获取鼠标位置
+        /// </summary>
+        bool TryGetCursorPosition(
+            out WindowPoint point);
+
+        
+        /// <summary>
+        /// 检测鼠标点击
+        /// </summary>
+        bool IsLeftMouseButtonDown();
+
+
+        // ======================================================
+        // Monitor Query
+        // ======================================================
+
+        
+        /// <summary>
+        /// 检测鼠标所在的显示器
+        /// </summary>
+        bool IsPointOnAnyMonitor(
+            int x,
+            int y);
     }
 }
