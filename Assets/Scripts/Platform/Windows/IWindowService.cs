@@ -73,10 +73,6 @@ namespace Platform.Windows
             out WindowPoint point);
 
         
-        /// <summary>
-        /// 检测鼠标点击
-        /// </summary>
-        bool IsLeftMouseButtonDown();
 
 
         // ======================================================
@@ -90,5 +86,13 @@ namespace Platform.Windows
         bool IsPointOnAnyMonitor(
             int x,
             int y);
+        
+        /// <summary>
+        /// 开始 Windows 原生窗口拖动。
+        ///
+        /// 该调用会进入 Windows 的系统移动流程，
+        /// 并在拖动结束后返回。
+        /// </summary>
+        bool BeginWindowDrag();
     }
 }

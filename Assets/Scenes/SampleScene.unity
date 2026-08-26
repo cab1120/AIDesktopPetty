@@ -188,6 +188,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &22900114
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -600,6 +601,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   snapDistance: 20
   hideOffset: 80
+  autoHideCheckInterval: 0.05
 --- !u!114 &91917243
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1083,6 +1085,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &213248222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1226,6 +1229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &237751456
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1572,6 +1576,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &376614819
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2146,6 +2151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &557093163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2289,6 +2295,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &601620201
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2392,6 +2399,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &684784662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2629,6 +2637,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &771347035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3010,6 +3019,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &850780795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3248,6 +3258,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &904861834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3351,6 +3362,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &950432571
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3990,6 +4002,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &1072704930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4303,6 +4316,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &1226269774
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4792,6 +4806,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &1433018069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4983,6 +4998,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &1467925108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5664,6 +5680,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &1644273371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5882,6 +5899,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &1791129839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6353,6 +6371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &1825740467
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6513,6 +6532,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &1830581485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8240,6 +8260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &2129852470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8343,6 +8364,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragThreshold: 10
+  snapController: {fileID: 91917242}
 --- !u!114 &2133388068
 MonoBehaviour:
   m_ObjectHideFlags: 0

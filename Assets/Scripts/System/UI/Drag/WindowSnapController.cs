@@ -44,7 +44,6 @@ public sealed class WindowSnapController
         _windowService;
 
 
-    private bool _wasMouseDown;
 
 
     private bool _isHidden;
@@ -135,10 +134,7 @@ public sealed class WindowSnapController
             return;
         }
 
-
-        _wasMouseDown =
-            _windowService
-                .IsLeftMouseButtonDown();
+        
 
 #endif
     }
@@ -148,7 +144,6 @@ public sealed class WindowSnapController
     {
 #if UNITY_STANDALONE_WIN && !UNITY_EDITOR
 
-        HandleMouseRelease();
 
 
         if (Time.unscaledTime >=
@@ -164,37 +159,13 @@ public sealed class WindowSnapController
 
 #endif
     }
+    
 
 
-    // ======================================================
-    // Mouse Release
-    // ======================================================
-
-    private void HandleMouseRelease()
+    public void HandleWindowDragFinished()
     {
-        bool isMouseDown =
-            _windowService
-                .IsLeftMouseButtonDown();
-
-
-        // 与旧逻辑保持一致：
-        //
-        // 上一帧按下
-        // 当前帧松开
-        //
-        // → 检查窗口是否应该吸附。
-        if (_wasMouseDown &&
-            !isMouseDown)
-        {
-            TrySnapToEdge();
-        }
-
-
-        _wasMouseDown =
-            isMouseDown;
+        TrySnapToEdge();
     }
-
-
     // ======================================================
     // Snap
     // ======================================================

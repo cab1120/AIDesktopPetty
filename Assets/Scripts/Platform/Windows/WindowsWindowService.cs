@@ -813,28 +813,6 @@ namespace Platform.Windows
         }
         
         
-        public bool IsLeftMouseButtonDown()
-        {
-#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
-
-            if (!IsInitialized)
-            {
-                return false;
-            }
-
-
-            return
-                WindowsNativeMethods
-                    .DP_IsLeftMouseButtonDown()
-                != 0;
-
-#else
-
-            return false;
-
-#endif
-        }
-        
         public bool IsPointOnAnyMonitor(
             int x,
             int y)
@@ -854,6 +832,45 @@ namespace Platform.Windows
                         y
                     )
                 != 0;
+
+#else
+
+            return false;
+
+#endif
+        }
+// ======================================================
+// Window Drag
+// ======================================================
+
+        public bool BeginWindowDrag()
+        {
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+
+            if (!EnsureInitialized(
+                    nameof(BeginWindowDrag)))
+            {
+                return false;
+            }
+
+
+            int result =
+                WindowsNativeMethods
+                    .DP_BeginWindowDrag();
+
+
+            if (result == 0)
+            {
+                LogNativeFailure(
+                    "DP_BeginWindowDrag"
+                );
+
+
+                return false;
+            }
+
+
+            return true;
 
 #else
 

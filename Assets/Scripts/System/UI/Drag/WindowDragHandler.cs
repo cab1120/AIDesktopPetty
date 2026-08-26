@@ -1,121 +1,329 @@
-using System;
 using System.Collections;
-using System.Runtime.InteropServices;
+
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class WindowDragHandler :
-    MonoBehaviour,
-    IPointerDownHandler,
-    IPointerUpHandler,
-    IDragHandler
+using Platform.Windows;
+
+
+public sealed class WindowDragHandler
+    : MonoBehaviour,
+      IPointerDownHandler,
+      IPointerUpHandler,
+      IDragHandler
 {
-#if UNITY_STANDALONE_WIN
-    [DllImport("user32.dll")]
-    private static extern bool ReleaseCapture();
+    // ======================================================
+    // Configuration
+    // ======================================================
 
-    [DllImport("user32.dll")]
-    private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+    [Header("Drag")]
 
-    [DllImport("user32.dll")]
-    private static extern IntPtr GetActiveWindow();
+    [Tooltip(
+        "鼠标移动超过该 UI 距离后，" +
+        "才认为用户是在拖动窗口而不是点击。")]
+    [SerializeField]
+    private float dragThreshold =
+        10f;
 
-    [DllImport("user32.dll")]
-    private static extern bool SetForegroundWindow(IntPtr hWnd);
+    [Header("Snap")]
 
-    [DllImport("user32.dll")]
-    private static extern IntPtr SetFocus(IntPtr hWnd);
+    [SerializeField]
+    private WindowSnapController
+        snapController;
+    
+    // ======================================================
+    // Runtime State
+    // ======================================================
 
-    const int WM_NCLBUTTONDOWN = 0xA1;
-    const int HTCAPTION = 0x2;
-#endif
+    private Vector2
+        _startMousePosition;
 
-    public float dragThreshold = 10f;
-    private Vector2 startMousePos;
-    private bool windowWasDragged = false;
-    private CustomButtonClicker customButton;
 
-    void Awake()
+    private bool
+        _windowWasDragged;
+
+
+    private CustomButtonClicker
+        _customButton;
+
+
+    private IWindowService
+        _windowService;
+
+
+    // ======================================================
+    // Unity Lifecycle
+    // ======================================================
+
+    private void Awake()
     {
-        customButton = GetComponent<CustomButtonClicker>();
+        _customButton =
+            GetComponent<
+                CustomButtonClicker
+            >();
+        
     }
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        startMousePos = eventData.position;
-        windowWasDragged = false;
-        if (customButton) customButton.OnPointerDownVisual();
-    }
 
-    public void OnDrag(PointerEventData eventData)
+    private void Start()
     {
-        if (windowWasDragged) return;
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
 
-        if (Vector2.Distance(startMousePos, eventData.position) > dragThreshold)
+        _windowService =
+            WindowsPlatformBootstrap
+                .WindowService;
+
+
+        if (_windowService == null)
         {
-            windowWasDragged = true;
+            Debug.LogError(
+                "[WindowDragHandler] " +
+                "WindowService is not available."
+            );
 
-            // 先还原视觉，再进入阻塞
-            if (customButton) customButton.OnPointerUpVisual();
 
-#if UNITY_STANDALONE_WIN
-            IntPtr hwnd = GetActiveWindow();
+            return;
+        }
 
-            // 提前清理 EventSystem 拖拽状态，避免 Unity 侧的悬挂引用
-            eventData.pointerDrag = null;
-            eventData.dragging = false;
 
-            // ReleaseCapture 让 Windows 接管鼠标捕获
-            ReleaseCapture();
+        if (!_windowService
+                .IsInitialized)
+        {
+            Debug.LogError(
+                "[WindowDragHandler] " +
+                "WindowService is not initialized."
+            );
+        }
 
-            // ⚠️ 这里会同步阻塞，直到用户松开鼠标拖拽结束才返回
-            // 在此期间 Unity 收不到任何鼠标消息，导致输入状态不同步
-            SendMessage(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0);
-            
-            InteractionEventService.RecordPetDragged(); // 记录拖拽互动事件
-
-            // ---- SendMessage 返回，拖拽已结束 ----
-
-            // 重新激活窗口焦点
-            SetForegroundWindow(hwnd);
-            SetFocus(hwnd);
-
-            // 关键：延迟到下一帧重置输入系统
-            // 必须在 SendMessage 返回后才有意义
-            StartCoroutine(ResetInputNextFrame());
 #endif
+    }
+
+
+    // ======================================================
+    // Pointer Down
+    // ======================================================
+
+    public void OnPointerDown(
+        PointerEventData eventData)
+    {
+        _startMousePosition =
+            eventData.position;
+
+
+        _windowWasDragged =
+            false;
+
+
+        if (_customButton != null)
+        {
+            _customButton
+                .OnPointerDownVisual();
         }
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+
+    // ======================================================
+    // Drag
+    // ======================================================
+
+    public void OnDrag(
+        PointerEventData eventData)
     {
-        if (!windowWasDragged)
+        if (_windowWasDragged)
         {
-            if (customButton)
+            return;
+        }
+
+
+        float distance =
+            Vector2.Distance(
+                _startMousePosition,
+                eventData.position
+            );
+
+
+        if (distance <=
+            dragThreshold)
+        {
+            return;
+        }
+
+
+        _windowWasDragged =
+            true;
+
+
+        // ==================================================
+        // Restore Unity visual state before native move
+        // ==================================================
+
+        //
+        // Windows 接管移动后，
+        // Unity 主线程会暂时进入系统移动流程。
+        //
+        // 因此必须先恢复按钮视觉状态。
+        //
+
+        if (_customButton != null)
+        {
+            _customButton
+                .OnPointerUpVisual();
+        }
+
+
+        // ==================================================
+        // Release EventSystem drag ownership
+        // ==================================================
+
+        //
+        // 与旧实现保持一致：
+        //
+        // 防止 Windows 接管拖动后，
+        // Unity EventSystem 还认为这个对象
+        // 正处于 drag 状态。
+        //
+
+        eventData.pointerDrag =
+            null;
+
+
+        eventData.dragging =
+            false;
+
+
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+
+        if (_windowService == null ||
+            !_windowService.IsInitialized)
+        {
+            Debug.LogError(
+                "[WindowDragHandler] " +
+                "Cannot begin window drag: " +
+                "WindowService unavailable."
+            );
+
+
+            return;
+        }
+
+
+        // ==================================================
+        // Native system drag
+        // ==================================================
+
+        bool success =
+            _windowService
+                .BeginWindowDrag();
+
+
+        if (!success)
+        {
+            Debug.LogError(
+                "[WindowDragHandler] " +
+                "Native window drag failed."
+            );
+
+
+            StartCoroutine(
+                ResetInputNextFrame()
+            );
+
+
+            return;
+        }
+
+
+        // ==================================================
+        // Character / Business Event
+        // ==================================================
+
+        InteractionEventService
+            .RecordPetDragged();
+
+        // ==================================================
+        // Snap
+        // ==================================================
+        if (snapController != null)
+        {
+            snapController
+                .HandleWindowDragFinished();
+        }
+
+        // ==================================================
+        // Recover Unity Input
+        // ==================================================
+
+        StartCoroutine(
+            ResetInputNextFrame()
+        );
+
+#endif
+    }
+
+
+    // ======================================================
+    // Pointer Up
+    // ======================================================
+
+    public void OnPointerUp(
+        PointerEventData eventData)
+    {
+        // 如果整个操作没有进入窗口拖动，
+        // 就仍然把它当成普通点击。
+        if (!_windowWasDragged)
+        {
+            if (_customButton != null)
             {
-                customButton.OnPointerUpVisual();
-                customButton.PerformClick();
+                _customButton
+                    .OnPointerUpVisual();
+
+
+                _customButton
+                    .PerformClick();
             }
         }
     }
 
-#if UNITY_STANDALONE_WIN
-    private IEnumerator ResetInputNextFrame()
+
+    // ======================================================
+    // Input Recovery
+    // ======================================================
+
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+
+    private IEnumerator
+        ResetInputNextFrame()
     {
-        // 等一帧，让 Unity 的消息泵先跑一次
+        // 先允许 Unity Player
+        // 恢复一次自己的 message pump。
         yield return null;
 
-        // 1. 重置所有轴输入（包括鼠标按键的内部状态）
+
         Input.ResetInputAxes();
 
-        // 2. 重启 EventSystem，强迫它重新扫描当前鼠标状态
-        EventSystem es = EventSystem.current;
-        if (es != null)
+
+        EventSystem eventSystem =
+            EventSystem.current;
+
+
+        if (eventSystem == null)
         {
-            es.enabled = false;
-            yield return null; // 禁用状态保持一帧，确保清空完成
-            es.enabled = true;
+            yield break;
         }
+
+
+        eventSystem.enabled =
+            false;
+
+
+        // 保持一帧关闭，
+        // 清理之前的 Pointer / Drag 状态。
+        yield return null;
+
+
+        eventSystem.enabled =
+            true;
     }
+
 #endif
 }

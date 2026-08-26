@@ -153,13 +153,6 @@ namespace Platform.Windows.Native
                 out NativePoint point);
 
 
-        [DllImport(
-            LibraryName,
-            CallingConvention = CallingConvention.Cdecl,
-            ExactSpelling = true)]
-        internal static extern int
-            DP_IsLeftMouseButtonDown();
-
 
         // ======================================================
         // Monitor Query
@@ -174,6 +167,17 @@ namespace Platform.Windows.Native
                 int x,
                 int y);
 
+
+        // ======================================================
+        // Window Interaction
+        // ======================================================
+
+        [DllImport(
+            LibraryName,
+            CallingConvention = CallingConvention.Cdecl,
+            ExactSpelling = true)]
+        internal static extern int
+            DP_BeginWindowDrag();
 #endif
     }
 }
