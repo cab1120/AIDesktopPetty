@@ -94,5 +94,17 @@ namespace Platform.Windows
         /// 并在拖动结束后返回。
         /// </summary>
         bool BeginWindowDrag();
+        
+        /// <summary>
+        /// 设置整个 Windows 窗口是否允许鼠标输入穿透。
+        ///
+        /// true:
+        /// 鼠标事件交给窗口下方内容。
+        ///
+        /// false:
+        /// 窗口正常接受鼠标输入。
+        /// </summary>
+        bool SetClickThrough(
+            bool enabled);
     }
 }

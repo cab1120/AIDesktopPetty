@@ -878,6 +878,48 @@ namespace Platform.Windows
 
 #endif
         }
+        // ======================================================
+// Click Through
+// ======================================================
+
+        public bool SetClickThrough(
+            bool enabled)
+        {
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+
+            if (!EnsureInitialized(
+                    nameof(SetClickThrough)))
+            {
+                return false;
+            }
+
+
+            int result =
+                WindowsNativeMethods
+                    .DP_SetClickThrough(
+                        enabled ? 1 : 0
+                    );
+
+
+            if (result == 0)
+            {
+                LogNativeFailure(
+                    $"DP_SetClickThrough({enabled})"
+                );
+
+
+                return false;
+            }
+
+
+            return true;
+
+#else
+
+            return false;
+
+#endif
+        }
         
     }
 }

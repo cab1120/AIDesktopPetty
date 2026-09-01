@@ -178,6 +178,18 @@ namespace Platform.Windows.Native
             ExactSpelling = true)]
         internal static extern int
             DP_BeginWindowDrag();
+        
+        // ======================================================
+        // Click Through
+        // ======================================================
+
+        [DllImport(
+            LibraryName,
+            CallingConvention = CallingConvention.Cdecl,
+            ExactSpelling = true)]
+        internal static extern int
+            DP_SetClickThrough(
+                int enabled);
 #endif
     }
 }
