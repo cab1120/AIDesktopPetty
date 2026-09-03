@@ -1,4 +1,4 @@
-namespace Platform.Windows
+namespace Platform.Windows.Models
 {
     public struct WindowPoint
     {

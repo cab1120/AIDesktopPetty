@@ -2,7 +2,7 @@ public enum DesktopPetLayoutMode
 {
     /// <summary>
     /// 登录状态。
-    /// UI 按 180x250 设计。
+    /// UI 按 180x180 设计。
     /// </summary>
     Login,
     

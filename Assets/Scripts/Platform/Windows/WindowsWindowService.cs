@@ -1,3 +1,4 @@
+using Platform.Windows.Models;
 using UnityEngine;
 
 using Platform.Windows.Native;
@@ -10,6 +11,10 @@ namespace Platform.Windows
     {
         private const float BaseDpi =
             96f;
+        
+        private const uint
+            ExpectedNativeMajorVersion =
+                1;
 
 
         /// <summary>
@@ -22,8 +27,132 @@ namespace Platform.Windows
 
 
         private bool _initialized;
+        
+        /// <summary>
+        /// 缓存日志
+        /// </summary>
+        private NativeApiVersion
+            _nativeVersion;
 
 
+        private NativeCapability
+            _nativeCapabilities;
+
+
+        private WindowMonitorInfo
+            _startupMonitorInfo;
+
+
+        private bool
+            _hasStartupMonitorInfo;
+
+        // ======================================================
+        // Native Self Check
+        // ======================================================
+        private bool ValidateNativeContract()
+        {
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+
+            int versionResult =
+                WindowsNativeMethods
+                    .DP_GetApiVersion(
+                        out NativeApiVersion version
+                    );
+
+
+            if (versionResult == 0)
+            {
+                LogNativeFailure(
+                    "DP_GetApiVersion"
+                );
+
+
+                return false;
+            }
+
+
+            _nativeVersion =
+                version;
+
+
+            if (version.Major !=
+                ExpectedNativeMajorVersion)
+            {
+                Debug.LogError(
+                    "[WindowsWindowService] " +
+                    "Native API major version mismatch. " +
+                    $"Expected=" +
+                    $"{ExpectedNativeMajorVersion}.x.x, " +
+                    $"Actual={version}"
+                );
+
+
+                return false;
+            }
+
+
+                _nativeCapabilities =
+                    (NativeCapability)
+                    WindowsNativeMethods
+                        .DP_GetCapabilities();
+
+
+            NativeCapability required =
+                GetRequiredCapabilities();
+
+
+            NativeCapability missing =
+                required &
+                ~_nativeCapabilities;
+
+
+            if (missing !=
+                NativeCapability.None)
+            {
+                Debug.LogError(
+                    "[WindowsWindowService] " +
+                    "Native DLL is missing " +
+                    $"required capabilities: {missing}"
+                );
+
+
+                return false;
+            }
+
+
+            return true;
+
+#else
+
+            return false;
+
+#endif
+        }
+
+        private NativeCapability GetRequiredCapabilities()
+        {
+            return                 
+                NativeCapability.Borderless
+                |
+                NativeCapability.TransparentBackground
+                |
+                NativeCapability.WindowBounds
+                |
+                NativeCapability.TopMost
+                |
+                NativeCapability.MonitorInfo
+                |
+                NativeCapability.Dpi
+                |
+                NativeCapability.CursorPosition
+                |
+                NativeCapability.WindowDrag
+                |
+                NativeCapability.ClickThrough
+                |
+                NativeCapability.MultiMonitor;
+        }
+        
         // ======================================================
         // Lifecycle
         // ======================================================
@@ -57,6 +186,15 @@ namespace Platform.Windows
         internal bool Initialize()
         {
 #if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+
+            if (!ValidateNativeContract())
+            {
+                _initialized =
+                    false;
+
+
+                return false;
+            }
 
             int result =
                 WindowsNativeMethods
@@ -100,6 +238,56 @@ namespace Platform.Windows
         }
 
 
+        internal void LogStartupDiagnostics(
+            bool initialized)
+        {
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+
+                if (!initialized)
+                {
+                    Debug.LogError(
+                        "[WindowsPlatform] " +
+                        "Initialization failed."
+                    );
+
+                    return;
+                }
+
+
+                Debug.Log(
+                    "[WindowsPlatform] " +
+                    $"Native API Version: " +
+                    $"{_nativeVersion}"
+                );
+
+
+                Debug.Log(
+                    "[WindowsPlatform] " +
+                    $"Native Capabilities: " +
+                    $"{_nativeCapabilities}"
+                );
+
+
+                if (_hasStartupMonitorInfo)
+                {
+                    Debug.Log(
+                        "[WindowsPlatform] " +
+                        "Startup Monitor: " +
+                        $"{_startupMonitorInfo}"
+                    );
+                }
+                else
+                {
+                    Debug.LogWarning(
+                        "[WindowsPlatform] " +
+                        "Startup monitor information " +
+                        "was unavailable."
+                    );
+                }
+
+#endif
+        }
+        
         // ======================================================
         // Borderless
         // ======================================================
@@ -592,20 +780,24 @@ namespace Platform.Windows
 
         private void LogMonitorDiagnostics()
         {
-            if (!TryGetCurrentMonitorInfo(
-                    out WindowMonitorInfo info))
+             if (TryGetCurrentMonitorInfo(
+                    out WindowMonitorInfo monitorInfo))
             {
+                _startupMonitorInfo =
+                    monitorInfo;
+
+                _hasStartupMonitorInfo =
+                    true;
+            }
+            else
+            {
+                _hasStartupMonitorInfo =
+                    false;
                 return;
             }
 
 
-            Debug.Log(
-                "[WindowsWindowService] " +
-                $"Current monitor: {info}"
-            );
-
-
-            if (info.Dpi == 96)
+            if (monitorInfo.Dpi == 96)
             {
                 Debug.LogWarning(
                     "[WindowsWindowService] " +

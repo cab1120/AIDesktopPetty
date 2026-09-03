@@ -1,7 +1,6 @@
 using System;
 
-
-namespace Platform.Windows
+namespace Platform.Windows.Models
 {
     [Serializable]
     public struct WindowLogicalSize

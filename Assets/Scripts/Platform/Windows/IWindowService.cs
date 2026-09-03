@@ -1,3 +1,5 @@
+using Platform.Windows.Models;
+
 namespace Platform.Windows
 {
     /// <summary>

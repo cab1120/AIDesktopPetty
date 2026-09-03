@@ -4,6 +4,13 @@ using System.Runtime.InteropServices;
 
 namespace Platform.Windows.Native
 {
+    /// <summary>
+    /// 唯一允许直接 P/Invoke
+    /// DesktopPet.Native.Windows 的 C# 类型。
+    ///
+    /// 除 Platform/Windows/Native 外，
+    /// 项目其他代码不得直接引用 Native ABI。
+    /// </summary>
     internal static class WindowsNativeMethods
     {
 #if UNITY_STANDALONE_WIN && !UNITY_EDITOR
@@ -31,17 +38,6 @@ namespace Platform.Windows.Native
         internal static extern int
             DP_IsInitialized();
 
-
-        // ======================================================
-        // Window Handle
-        // ======================================================
-
-        [DllImport(
-            LibraryName,
-            CallingConvention = CallingConvention.Cdecl,
-            ExactSpelling = true)]
-        internal static extern IntPtr
-            DP_GetMainWindow();
 
 
         // ======================================================
@@ -190,6 +186,26 @@ namespace Platform.Windows.Native
         internal static extern int
             DP_SetClickThrough(
                 int enabled);
+        
+        // ======================================================
+        // Version / Capabilities
+        // ======================================================
+
+        [DllImport(
+            LibraryName,
+            CallingConvention = CallingConvention.Cdecl,
+            ExactSpelling = true)]
+        internal static extern int
+            DP_GetApiVersion(
+                out NativeApiVersion version);
+
+
+        [DllImport(
+            LibraryName,
+            CallingConvention = CallingConvention.Cdecl,
+            ExactSpelling = true)]
+        internal static extern ulong
+            DP_GetCapabilities();
 #endif
     }
 }

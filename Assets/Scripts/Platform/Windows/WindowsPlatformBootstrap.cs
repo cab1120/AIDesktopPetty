@@ -8,8 +8,13 @@ namespace Platform.Windows
     {
         public static IWindowService
             WindowService { get; private set; }
+        
+        private WindowsWindowService
+            _windowsWindowService;
 
 
+        private bool _initializationResult;
+        
         private void Awake()
         {
             if (WindowService != null)
@@ -22,24 +27,32 @@ namespace Platform.Windows
             DontDestroyOnLoad(gameObject);
 
 
-            var windowService =
+            
+            _windowsWindowService =
                 new WindowsWindowService();
 
 
             WindowService =
-                windowService;
+                _windowsWindowService;
 
 
-            bool success =
-                windowService.Initialize();
+            _initializationResult =
+                _windowsWindowService
+                    .Initialize();
+        }
+        private void Start()
+        {
+            LogStartupResult();
+        }
 
 
-            if (!success)
+        private void LogStartupResult()
+        {
+            if (_initializationResult)
             {
-                Debug.LogError(
-                    "[WindowsPlatformBootstrap] " +
-                    "Native platform initialization failed."
-                );
+                _windowsWindowService
+                    ?.LogStartupDiagnostics(
+                        _initializationResult);
             }
         }
     }

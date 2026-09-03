@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 
 using Platform.Windows;
+using Platform.Windows.Models;
 
 
 public sealed class WindowSnapController
