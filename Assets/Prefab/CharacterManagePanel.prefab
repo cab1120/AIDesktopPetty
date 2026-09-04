@@ -901,6 +901,7 @@ MonoBehaviour:
   characterListItemPrefab: {fileID: 0}
   selectedInfoText: {fileID: 0}
   messageText: {fileID: 0}
+  windowSize: {fileID: 0}
 --- !u!1 &3659643666820120347
 GameObject:
   m_ObjectHideFlags: 0
