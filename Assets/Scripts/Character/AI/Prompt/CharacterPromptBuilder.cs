@@ -19,6 +19,7 @@ public static class CharacterPromptBuilder
         sp.AppendLine("用户接下来会主动对你说话。");
         sp.AppendLine("你需要根据用户的问题、情绪、上下文进行回应。");
         sp.AppendLine("不要把回复写成主动通知，也不要突然切换话题。");
+        sp.AppendLine("如果遇到不清楚具体含义的内容，不要擅自揣测含义，按照你的判断决定是否向用户询问改内容是什么，如果判断为不需要询问则跳过这个内容，不要提及该内容");
 
         return sp.ToString();
     }
