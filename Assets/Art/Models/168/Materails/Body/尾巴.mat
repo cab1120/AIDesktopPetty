@@ -21,15 +21,19 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: "\u5C3E\u5DF4"
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
-  m_ValidKeywords: []
+  m_Shader: {fileID: 4800000, guid: 8aa84ab26bbf22c4299bacef775ffea4, type: 3}
+  m_ValidKeywords:
+  - _USE_FUR_FUZZ
+  - _USE_FUR_SPECULAR
+  - _USE_GEOMETRY_DETAIL
+  - _USE_RAMP_SHADOW
+  - _USE_RIM_LIGHT
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap:
-    RenderType: Opaque
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -70,6 +74,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MetallicMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -79,6 +87,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RampTex:
+        m_Texture: {fileID: 2800000, guid: 7b8ad0da5ac876048a3a08efeb5c9596, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RoughnessMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -113,40 +125,68 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EnvironmentReflections: 1
+    - _FuzzIntensity: 0.18
+    - _FuzzLightWrap: 0.45
+    - _FuzzPower: 2.5
+    - _GeometryDetailScale: 5
+    - _GeometryDetailStrength: 0.18
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossinessSource: 0
     - _GlossyReflections: 1
+    - _IndirectLightStrength: 0.12
+    - _MainLightColorInfluence: 0.35
+    - _MetalSpecBoost: 1.2
     - _Metallic: 0
+    - _MetallicScale: 1
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _QueueOffset: 0
     - _RampID: 1
+    - _ReceiveShadowStrength: 0.7
     - _ReceiveShadows: 1
+    - _RimIntensity: 0.06
+    - _RimPower: 4
+    - _RoughnessScale: 1
     - _ShadowPosition: 0.55
-    - _ShadowRampWidth: 1
-    - _ShadowSoftness: 0.5
+    - _ShadowRampWidth: 0.5
+    - _ShadowSoftness: 0.15
     - _Shininess: 0
     - _Smoothness: 0
     - _SmoothnessSource: 0
     - _SmoothnessTextureChannel: 0
+    - _SpecExponentMax: 128
+    - _SpecExponentMin: 8
+    - _SpecIntensity: 0.07
+    - _SpecPower: 24
+    - _SpecSoftness: 0.08
     - _SpecSource: 0
+    - _SpecThreshold: 0.55
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
     - _UVSec: 0
+    - _UseFurFuzz: 1
+    - _UseFurSpecular: 1
+    - _UseGeometryDetail: 1
     - _UseRampShadow: 1
     - _UseRampShadow2: 1
     - _UseRampShadow3: 1
     - _UseRampShadow4: 1
     - _UseRampShadow5: 1
-    - _UselightMapAO: 1
+    - _UseRimLight: 1
+    - _UseUV1Backface: 0
+    - _UseVertexShadowBias: 0
+    - _UselightMapAO: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.80021214, g: 0.4927228, b: 0.15948847, a: 1}
     - _Color: {r: 0.80021214, g: 0.4927228, b: 0.15948847, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
+    - _FuzzColor: {r: 1, g: 0.68, b: 0.32, a: 1}
+    - _GeometryDetailColor: {r: 1, g: 0.72, b: 0.38, a: 1}
+    - _RimColor: {r: 0.7, g: 0.75, b: 0.9, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []

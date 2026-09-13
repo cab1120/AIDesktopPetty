@@ -8,9 +8,10 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: "\u5F69\u53F6\u548C\u670D"
-  m_Shader: {fileID: 4800000, guid: a85f2e86180f3904b81a8ced9e168d3a, type: 3}
+  m_Shader: {fileID: 4800000, guid: 19509cd3b45d9a8408f485b65ef57cb7, type: 3}
   m_ValidKeywords:
   - _USE_RAMP_SHADOW
+  - _USE_RIM_LIGHT
   m_InvalidKeywords:
   - _USERAMPSHADOW2_ON
   - _USERAMPSHADOW3_ON
@@ -61,6 +62,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MetallicMap:
+        m_Texture: {fileID: 2800000, guid: c106563d93e151149ad48f23b2ced8cf, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -75,6 +80,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _RemTex:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RoughnessMap:
+        m_Texture: {fileID: 2800000, guid: 80526e0a90e14fa408173eebbf6c0ac7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -110,18 +119,31 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _IndirectLightStrength: 0.12
+    - _MainLightColorInfluence: 0.35
+    - _MetalSpecBoost: 1.2
     - _Metallic: 0
+    - _MetallicScale: 1
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _QueueOffset: 0
-    - _RampID: 1
+    - _RampID: 3
+    - _ReceiveShadowStrength: 0.7
     - _ReceiveShadows: 1
+    - _RimIntensity: 0.06
+    - _RimPower: 4
+    - _RoughnessScale: 1
     - _ShadowPosition: 0.55
     - _ShadowRampWidth: 1.08
-    - _ShadowSoftness: 0.56
+    - _ShadowSoftness: 0.1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
+    - _SpecExponentMax: 128
+    - _SpecExponentMin: 8
+    - _SpecIntensity: 0.2
+    - _SpecSoftness: 0.08
+    - _SpecThreshold: 0.55
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
@@ -131,6 +153,9 @@ Material:
     - _UseRampShadow3: 1
     - _UseRampShadow4: 1
     - _UseRampShadow5: 1
+    - _UseRimLight: 1
+    - _UseUV1Backface: 0
+    - _UseVertexShadowBias: 0
     - _UselightMapAO: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
@@ -138,6 +163,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
+    - _RimColor: {r: 0.7, g: 0.75, b: 0.9, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &5423147158741138161

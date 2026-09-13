@@ -21,16 +21,16 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: "\u5F69\u53F6\u773C\u775B"
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_Shader: {fileID: 4800000, guid: 2f3f8093aeefebc46959cbeb929fcb98, type: 3}
   m_ValidKeywords:
+  - _USE_EYE_HIGHLIGHT
+  m_InvalidKeywords:
   - _SURFACE_TYPE_TRANSPARENT
-  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
-  stringTagMap:
-    RenderType: Transparent
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses:
   - DepthOnly
   - SHADOWCASTER
@@ -99,7 +99,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Alpha: 1
     - _AlphaClip: 0
+    - _AlphaCutoff: 0
+    - _AlphaPower: 1.12
     - _Blend: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
@@ -110,21 +113,31 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 10
     - _EnvironmentReflections: 1
+    - _EyeBrightness: 1.05
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
+    - _HighlightIntensity: 0.23
+    - _HighlightPower: 95
+    - _HighlightSoftness: 0.08
+    - _HighlightThreshold: 0.6
+    - _IndirectLightStrength: 0.08
+    - _MainLightInfluence: 0.2
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _QueueOffset: 0
+    - _ReceiveShadowStrength: 0.3
     - _ReceiveShadows: 1
+    - _ShadowFloor: 0.7
     - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 5
     - _Surface: 1
     - _UVSec: 0
+    - _UseEyeHighlight: 1
     - _UselightMapAO: 1
     - _WorkflowMode: 1
     - _ZWrite: 0
@@ -132,5 +145,6 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
+    - _HighlightColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []

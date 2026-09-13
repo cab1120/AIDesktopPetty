@@ -8,9 +8,10 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: "\u5F69\u53F6\u5934"
-  m_Shader: {fileID: 4800000, guid: 3d3362c076342e941979052117344014, type: 3}
+  m_Shader: {fileID: 4800000, guid: 19d0a1cf69c5d3343877e8b018397eb9, type: 3}
   m_ValidKeywords:
   - _USE_RAMP_SHADOW
+  - _USE_SKIN_SPECULAR
   m_InvalidKeywords:
   - _USERAMPSHADOW2_ON
   - _USERAMPSHADOW3_ON
@@ -62,6 +63,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MetallicMap:
+        m_Texture: {fileID: 2800000, guid: 92c0f09b9237d154f961f74dfd9e1e69, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -72,6 +77,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _RampTex:
         m_Texture: {fileID: 2800000, guid: 797d15a34d8744640a4e3a1fa525fc3e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RoughnessMap:
+        m_Texture: {fileID: 2800000, guid: 6443a95209212c349acae4279ead99ff, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SDF:
@@ -112,19 +121,35 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EnvironmentReflections: 1
+    - _FaceFlattenStart: 0.15
+    - _FaceLightBias: 0.08
+    - _FaceNormalFlatten: 0.5
+    - _FaceShadowFloor: 0.45
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _IndirectLightStrength: 0.12
+    - _MainLightColorInfluence: 0.25
     - _Metallic: 0
+    - _MetallicScale: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _QueueOffset: 0
     - _RampID: 1
+    - _ReceiveShadowStrength: 0.3
     - _ReceiveShadows: 1
-    - _ShadowPosition: 0.55
+    - _RimIntensity: 0.025
+    - _RimPower: 5
+    - _RoughnessScale: 1
+    - _ShadowPosition: 0.5
     - _ShadowRampWidth: 1.42
-    - _ShadowSoftness: 0.76
+    - _ShadowSoftness: 0.12
+    - _SkinSpecExponentMax: 64
+    - _SkinSpecExponentMin: 6
+    - _SkinSpecIntensity: 0.06
+    - _SkinSpecSoftness: 0.15
+    - _SkinSpecThreshold: 0.55
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -136,7 +161,9 @@ Material:
     - _UseRampShadow3: 1
     - _UseRampShadow4: 1
     - _UseRampShadow5: 1
+    - _UseRimLight: 0
     - _UseSDFShadow: 1
+    - _UseSkinSpecular: 1
     - _UselightMapAO: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
@@ -145,10 +172,13 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
+    - _FaceForwardOS: {r: 0, g: 0, b: 1, a: 0}
     - _HeadForward: {r: 0, g: 0, b: 1, a: 0}
     - _HeadRight: {r: 1, g: 0, b: 0, a: 0}
     - _HeadUp: {r: 0, g: 1, b: 0, a: 0}
+    - _RimColor: {r: 0.8, g: 0.72, b: 0.9, a: 1}
     - _ShadowColor: {r: 1, g: 0.87, b: 0.87, a: 1}
+    - _SkinSpecColor: {r: 1, g: 0.92, b: 0.9, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &7022332094989124756
