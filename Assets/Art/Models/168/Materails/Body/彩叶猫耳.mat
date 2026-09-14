@@ -119,7 +119,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _IndirectLightStrength: 0.12
+    - _IndirectLightStrength: 0.15
     - _MainLightColorInfluence: 0.35
     - _MetalSpecBoost: 1.2
     - _Metallic: 0

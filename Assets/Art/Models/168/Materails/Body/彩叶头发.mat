@@ -140,7 +140,7 @@ Material:
     - _HairHighlightRoughnessInfluence: 0.75
     - _HairHighlightSoftness: 0.15
     - _HairHighlightThreshold: 0.45
-    - _IndirectLightStrength: 0.12
+    - _IndirectLightStrength: 0.15
     - _MainLightColorInfluence: 0.7
     - _MetalSpecBoost: 1.2
     - _Metallic: 0

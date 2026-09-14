@@ -121,7 +121,7 @@ Material:
     - _HighlightPower: 95
     - _HighlightSoftness: 0.08
     - _HighlightThreshold: 0.6
-    - _IndirectLightStrength: 0.08
+    - _IndirectLightStrength: 0.18
     - _MainLightInfluence: 0.2
     - _Metallic: 0
     - _Mode: 0
