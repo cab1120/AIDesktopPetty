@@ -10,7 +10,8 @@ namespace AIDesktopPetty.Art.Scenes
     public sealed class SakuramachiSceneLoop : MonoBehaviour
     {
         public const double CycleSeconds = 180;
-        public const float RevealTime = 10, StopTime = 30, DepartureTime = 45, HiddenTime = 65;
+        public const float RevealTime = 10, StopTime = 20, DepartureTime = 35, HiddenTime = 45;
+        
 
         [Header("列车：坐标相对于 Railway Frame")]
         public Transform railwayFrame;
@@ -124,8 +125,15 @@ namespace AIDesktopPetty.Art.Scenes
             float t = (float)((seconds % CycleSeconds + CycleSeconds) % CycleSeconds);
             Vector3 position = entryPosition;
             NormalizedSpeed = 0;
-            float arrivalSpeed = Mathf.Abs(entryPosition.x - stationPosition.x) / 10f;
-            float departureSpeed = Mathf.Abs(stationPosition.x - exitPosition.x) / 10f;
+
+            float arrivalDuration = StopTime - RevealTime;
+            float departureDuration = HiddenTime - DepartureTime;
+            
+            float arrivalSpeed = 2f * Mathf.Abs(entryPosition.x - stationPosition.x)
+                / arrivalDuration;
+            float departureSpeed = 2f * Mathf.Abs(stationPosition.x - exitPosition.x)
+                / departureDuration;
+
             float maxSpeed = Mathf.Max(arrivalSpeed, departureSpeed);
             if (t >= RevealTime && t < StopTime)
             {

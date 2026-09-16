@@ -109,13 +109,13 @@ namespace AIDesktopPetty.Art.Scenes.Editor
             var clip = track.CreateClip<SakuramachiLoopClip>();
             clip.start = 0;
             clip.duration = SakuramachiSceneLoop.CycleSeconds;
-            clip.displayName = "0预警 / 10出洞 / 30停稳 / 45发车 / 65隐藏 / 180循环";
+            clip.displayName = "0预警 / 10出洞 / 20停稳 / 35发车 / 45隐藏 / 180循环";
             director.playableAsset = timeline;
             director.SetGenericBinding(track, loop);
             director.extrapolationMode = DirectorWrapMode.Loop;
             director.timeUpdateMode = DirectorUpdateMode.UnscaledGameTime;
             director.playOnAwake = true;
-            foreach (var name in new[] { "警示音（0–3 / 30–33秒）", "栏杆音（0–5 / 30–35秒）", "到站与发车音（30 / 45秒）" })
+            foreach (var name in new[] { "警示音（0–3 / 20–23秒）", "栏杆音（0–5 / 20–25秒）", "到站与发车音（20 / 35秒）" })
             {
                 var audioTrack = timeline.CreateTrack<AudioTrack>(null, name);
                 director.SetGenericBinding(audioTrack, AudioChild(host.transform, name));

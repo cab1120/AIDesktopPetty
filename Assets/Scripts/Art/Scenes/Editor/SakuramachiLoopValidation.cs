@@ -65,8 +65,8 @@ namespace AIDesktopPetty.Art.Scenes.Editor
                 if (lastPlaybackTime - time > 100) playbackWraps++;
                 lastPlaybackTime = time;
                 playbackSamples++;
-                if (time > 12 && time < 25 && playbackLoop.NormalizedSpeed > 0) sawMoving = true;
-                if (time > 32 && time < 43 && playbackLoop.NormalizedSpeed == 0) sawStopped = true;
+                if (time > 12 && time < 19 && playbackLoop.NormalizedSpeed > 0) sawMoving = true;
+                if (time > 22 && time < 33 && playbackLoop.NormalizedSpeed == 0) sawStopped = true;
                 if (playbackWraps < 2) return;
                 playbackDirector.Pause();
                 pausedPosition = playbackLoop.train.position;
@@ -139,7 +139,20 @@ namespace AIDesktopPetty.Art.Scenes.Editor
                     lens.GetPropertyBlock(block, 0);
                     return block.GetVector("_AuthoredColor");
                 }
-                foreach (double time in new[] { 0d, .25, 3, 5, 9.99, 10, 20, 29.99, 30, 30.25, 33, 35, 44.99, 45, 55, 64.99, 65, 179.99 })
+                foreach (double time in new[] {  
+                             0, .25, 3, 5,
+                             SakuramachiSceneLoop.RevealTime - .01,
+                             SakuramachiSceneLoop.RevealTime,
+                             SakuramachiSceneLoop.StopTime - .01,
+                             SakuramachiSceneLoop.StopTime,
+                             SakuramachiSceneLoop.StopTime + .25,
+                             SakuramachiSceneLoop.StopTime + 3,
+                             SakuramachiSceneLoop.DepartureTime - .01,
+                             SakuramachiSceneLoop.DepartureTime,
+                             SakuramachiSceneLoop.DepartureTime + 5,
+                             SakuramachiSceneLoop.HiddenTime - .01,
+                             SakuramachiSceneLoop.HiddenTime,
+                             179.99 })
                 {
                     Seek(time);
                     var position = loop.train.position;
@@ -151,9 +164,9 @@ namespace AIDesktopPetty.Art.Scenes.Editor
                     Require(Vector3.Distance(position, loop.train.position) < .0001f, "Second loop position differs");
                     Require(Vector4.Distance(color, LensColor(loop.lenses[0])) < .0001f, "Second loop lamp color differs");
                     Require(loop.gates.Select((g, i) => Quaternion.Angle(rotations[i], g.hinge.localRotation)).All(a => a < .05f), "Second loop gate differs");
-                    Require(visible == (time >= 10 && time < 65), "Visibility boundary incorrect");
+                    Require(visible == (time >= 10 && time < 45), "Visibility boundary incorrect");
                 }
-                for (double t = 30; t <= 45; t += .25)
+                for (double t = 20; t <= 35; t += .25)
                 {
                     Seek(t);
                     Require(Vector3.Distance(loop.railwayFrame.InverseTransformPoint(loop.train.position), loop.stationPosition) < .0001f, "Train drifted during 15 second dwell");
@@ -162,13 +175,13 @@ namespace AIDesktopPetty.Art.Scenes.Editor
                 Seek(5);
                 Require(loop.gates.All(g => Quaternion.Angle(g.hinge.localRotation, Quaternion.Euler(g.loweredEuler)) < .05f), "Gates not down at five seconds");
                 Require(Vector4.Distance(LensColor(loop.lenses[0]), loop.red) < .0001f, "Lamp not red");
-                Seek(35);
+                Seek(25);
                 Require(loop.gates.All(g => Quaternion.Angle(g.hinge.localRotation, Quaternion.Euler(g.raisedEuler)) < .05f), "Gates not raised at 35 seconds");
                 Require(Vector4.Distance(LensColor(loop.lenses[0]), loop.green) < .0001f, "Lamp not green");
                 Seek(10);
                 var bounds = SakuramachiLoopSetup.BoundsInFrame(loop.train, loop.railwayFrame);
                 Require(Mathf.Abs(bounds.max.x - loop.tunnelMinX) < .002f, "Front must meet right mask exactly at 10 seconds");
-                Seek(64.9999);
+                Seek(44.9999);
                 bounds = SakuramachiLoopSetup.BoundsInFrame(loop.train, loop.railwayFrame);
                 Require(bounds.min.x > loop.tunnelMaxX, "Entire train including outline must pass left mask before hiding");
                 Require(loop.lenses.Select((r, i) => Vector4.Distance(r.sharedMaterial.GetVector("_AuthoredColor"), materialsBefore[i])).All(d => d < .0001f), "Shared lens materials mutated");
@@ -185,7 +198,7 @@ namespace AIDesktopPetty.Art.Scenes.Editor
                 camera.backgroundColor = new Color(.17f, .2f, .25f);
                 string output = Path.GetFullPath("../scene-loop-preview");
                 Directory.CreateDirectory(output);
-                foreach (double t in new[] { 0d, 5, 10, 12, 20, 30, 35, 45, 55, 64.9, 65 })
+                foreach (double t in new[] { 0d, 5, 10, 12, 15, 20, 25, 30, 35, 40, 44.9, 45 })
                 {
                     Seek(t);
                     Capture(camera, Path.Combine(output, "overview-" + t.ToString("000.0", System.Globalization.CultureInfo.InvariantCulture) + ".png"));
