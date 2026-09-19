@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcc5ed49b5968fe4399866d2a76f38d8, type: 3}
+  m_Name: SakuraWeatherProfile
+  m_EditorClassIdentifier: 
+  windDirection: {x: 1, y: 0, z: 0.25}
+  background:
+    spawnRate: 100
+    lifetimeMin: 6
+    lifetimeMax: 10
+    spawnOffset: {x: 0, y: 0, z: 10}
+    spawnBoxSize: {x: 14, y: 4, z: 10}
+    boundsSize: {x: 20, y: 12, z: 16}
+    petalSizeMin: 0.025
+    petalSizeMax: 0.06
+    fallSpeedMin: 0.25
+    fallSpeedMax: 0.55
+    windStrength: 0.2
+    turbulenceStrength: 0.08
+    useRotationSpeed: 0
+    rotationSpeedMin: 0
+    rotationSpeedMax: 0
+  midground:
+    spawnRate: 50
+    lifetimeMin: 5
+    lifetimeMax: 8
+    spawnOffset: {x: 0, y: 2, z: 10}
+    spawnBoxSize: {x: 12, y: 4, z: 8}
+    boundsSize: {x: 18, y: 12, z: 14}
+    petalSizeMin: 140
+    petalSizeMax: 260
+    fallSpeedMin: 0.35
+    fallSpeedMax: 0.75
+    windStrength: 0.3
+    turbulenceStrength: 0.1
+    useRotationSpeed: 1
+    rotationSpeedMin: 0.5
+    rotationSpeedMax: 2
+  foreground:
+    spawnRate: 5
+    lifetimeMin: 2.5
+    lifetimeMax: 4.5
+    spawnOffset: {x: -4, y: -2, z: 1.5}
+    spawnBoxSize: {x: 14, y: 3, z: 2}
+    boundsSize: {x: 22, y: 10, z: 10}
+    petalSizeMin: 350
+    petalSizeMax: 650
+    fallSpeedMin: 0.2
+    fallSpeedMax: 0.5
+    windStrength: 0.7
+    turbulenceStrength: 0.15
+    useRotationSpeed: 1
+    rotationSpeedMin: 0.5
+    rotationSpeedMax: 2
