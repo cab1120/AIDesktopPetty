@@ -81,11 +81,24 @@ public sealed partial class SakuraWeatherController
         // Spawn Volume
         if (showSpawnVolumes)
         {
-            Gizmos.color = layerColor;
+            Matrix4x4 previousMatrix =
+                Gizmos.matrix;
+
+            Gizmos.color =
+                layerColor;
+
+            Gizmos.matrix =
+                Matrix4x4.TRS(
+                    worldCenter,
+                    cameraTf.rotation,
+                    Vector3.one);
 
             Gizmos.DrawWireCube(
-                worldCenter,
+                Vector3.zero,
                 settings.spawnBoxSize);
+
+            Gizmos.matrix =
+                previousMatrix;
         }
 
         // Manual VFX Bounds

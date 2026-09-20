@@ -70,6 +70,15 @@ public sealed partial class SakuraWeatherController : MonoBehaviour
 
     private static readonly int RotationSpeedMaxId =
         Shader.PropertyToID("RotationSpeedMax");
+    
+    private static readonly int CameraRightId =
+        Shader.PropertyToID("CameraRight");
+
+    private static readonly int CameraUpId =
+        Shader.PropertyToID("CameraUp");
+
+    private static readonly int CameraForwardId =
+        Shader.PropertyToID("CameraForward");
 
 
     private void Awake()
@@ -95,12 +104,12 @@ public sealed partial class SakuraWeatherController : MonoBehaviour
         }
 
         ApplyProfile();
-        UpdateSpawnCenters();
+        UpdateCameraRelativeData();
     }
 
     private void LateUpdate()
     {
-        UpdateSpawnCenters();
+        UpdateCameraRelativeData();
     }
 
 
@@ -152,7 +161,7 @@ public sealed partial class SakuraWeatherController : MonoBehaviour
         }
 
         ApplyProfile();
-        UpdateSpawnCenters();
+        UpdateCameraRelativeData();
     }
 
 
@@ -170,7 +179,7 @@ public sealed partial class SakuraWeatherController : MonoBehaviour
         targetCamera = newCamera;
         cameraTransform = targetCamera.transform;
 
-        UpdateSpawnCenters();
+        UpdateCameraRelativeData();
     }
 
 
@@ -282,7 +291,7 @@ public sealed partial class SakuraWeatherController : MonoBehaviour
     }
 
 
-    private void UpdateSpawnCenters()
+    private void UpdateCameraRelativeData()
     {
         if (cameraTransform == null ||
             profile == null)
@@ -290,23 +299,47 @@ public sealed partial class SakuraWeatherController : MonoBehaviour
             return;
         }
 
-        SetSpawnCenter(
+        Quaternion cameraRotation =
+            cameraTransform.rotation;
+
+        Vector3 cameraRight =
+            cameraRotation * Vector3.right;
+
+        Vector3 cameraUp =
+            cameraRotation * Vector3.up;
+
+        Vector3 cameraForward =
+            cameraRotation * Vector3.forward;
+
+        UpdateLayerCameraData(
             backgroundVfx,
-            profile.background.spawnOffset);
+            profile.background.spawnOffset,
+            cameraRight,
+            cameraUp,
+            cameraForward);
 
-        SetSpawnCenter(
+        UpdateLayerCameraData(
             midgroundVfx,
-            profile.midground.spawnOffset);
+            profile.midground.spawnOffset,
+            cameraRight,
+            cameraUp,
+            cameraForward);
 
-        SetSpawnCenter(
+        UpdateLayerCameraData(
             foregroundVfx,
-            profile.foreground.spawnOffset);
+            profile.foreground.spawnOffset,
+            cameraRight,
+            cameraUp,
+            cameraForward);
     }
 
 
-    private void SetSpawnCenter(
+    private void UpdateLayerCameraData(
         VisualEffect vfx,
-        Vector3 cameraLocalOffset)
+        Vector3 cameraLocalOffset,
+        Vector3 cameraRight,
+        Vector3 cameraUp,
+        Vector3 cameraForward)
     {
         Vector3 worldCenter =
             CalculateWorldCenter(
@@ -316,6 +349,18 @@ public sealed partial class SakuraWeatherController : MonoBehaviour
         vfx.SetVector3(
             SpawnBoxCenterId,
             worldCenter);
+
+        vfx.SetVector3(
+            CameraRightId,
+            cameraRight);
+
+        vfx.SetVector3(
+            CameraUpId,
+            cameraUp);
+
+        vfx.SetVector3(
+            CameraForwardId,
+            cameraForward);
     }
     
     private static Vector3 CalculateWorldCenter(
@@ -344,6 +389,8 @@ public sealed partial class SakuraWeatherController : MonoBehaviour
             foregroundVfx,
             "Foreground",
             true);
+        
+        
 
         return valid;
     }
@@ -431,6 +478,24 @@ public sealed partial class SakuraWeatherController : MonoBehaviour
             vfx,
             TurbulenceStrengthId,
             "TurbulenceStrength",
+            layerName);
+        
+        valid &= RequireVector3(
+            vfx,
+            CameraRightId,
+            "CameraRight",
+            layerName);
+
+        valid &= RequireVector3(
+            vfx,
+            CameraUpId,
+            "CameraUp",
+            layerName);
+
+        valid &= RequireVector3(
+            vfx,
+            CameraForwardId,
+            "CameraForward",
             layerName);
 
         if (requiresRotationSpeed)
