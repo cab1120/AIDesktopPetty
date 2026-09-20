@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dcc5ed49b5968fe4399866d2a76f38d8, type: 3}
-  m_Name: SakuraWeatherProfile
+  m_Name: SakuraWeather_Low
   m_EditorClassIdentifier: 
   windDirection: {x: 1, y: 0, z: 0.25}
   background:
-    spawnRate: 100
+    spawnRate: 40
     lifetimeMin: 6
     lifetimeMax: 10
     spawnOffset: {x: 0, y: 1, z: 10}
@@ -30,7 +30,7 @@ MonoBehaviour:
     rotationSpeedMin: 0
     rotationSpeedMax: 0
   midground:
-    spawnRate: 50
+    spawnRate: 20
     lifetimeMin: 5
     lifetimeMax: 8
     spawnOffset: {x: 0, y: 1, z: 10}
@@ -46,7 +46,7 @@ MonoBehaviour:
     rotationSpeedMin: 0.5
     rotationSpeedMax: 2
   foreground:
-    spawnRate: 5
+    spawnRate: 3
     lifetimeMin: 2.5
     lifetimeMax: 4.5
     spawnOffset: {x: -2, y: 1, z: 1.5}

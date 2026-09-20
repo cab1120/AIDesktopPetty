@@ -126,6 +126,34 @@ public sealed partial class SakuraWeatherController : MonoBehaviour
             profile.foreground,
             true);
     }
+    
+    public void SetProfile(
+        SakuraWeatherProfile newProfile)
+    {
+        if (newProfile == null)
+        {
+            Debug.LogWarning(
+                "[SakuraWeather] Cannot apply a null profile.",
+                this);
+
+            return;
+        }
+
+        SakuraWeatherProfile previousProfile =
+            profile;
+
+        profile = newProfile;
+
+        if (!ValidateProfile())
+        {
+            profile = previousProfile;
+
+            return;
+        }
+
+        ApplyProfile();
+        UpdateSpawnCenters();
+    }
 
 
     public void SetTargetCamera(Camera newCamera)
@@ -460,5 +488,43 @@ public sealed partial class SakuraWeatherController : MonoBehaviour
             vfx);
 
         return false;
+    }
+    
+    private bool ValidateProfile()
+    {
+        if (!profile.background.IsValid(
+                "Background",
+                out string backgroundError))
+        {
+            Debug.LogError(
+                $"[SakuraWeather] {backgroundError}",
+                profile);
+
+            return false;
+        }
+
+        if (!profile.midground.IsValid(
+                "Midground",
+                out string midgroundError))
+        {
+            Debug.LogError(
+                $"[SakuraWeather] {midgroundError}",
+                profile);
+
+            return false;
+        }
+
+        if (!profile.foreground.IsValid(
+                "Foreground",
+                out string foregroundError))
+        {
+            Debug.LogError(
+                $"[SakuraWeather] {foregroundError}",
+                profile);
+
+            return false;
+        }
+
+        return true;
     }
 }

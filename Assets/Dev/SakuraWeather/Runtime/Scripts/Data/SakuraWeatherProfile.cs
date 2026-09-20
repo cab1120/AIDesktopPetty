@@ -46,4 +46,59 @@ public class SakuraLayerSettings
     public bool useRotationSpeed;
     public float rotationSpeedMin;
     public float rotationSpeedMax;
+    
+    public bool IsValid(
+        string layerName,
+        out string error)
+    {
+        if (spawnRate < 0f)
+        {
+            error =
+                $"{layerName}: SpawnRate cannot be negative.";
+
+            return false;
+        }
+
+        if (lifetimeMin < 0f ||
+            lifetimeMax < lifetimeMin)
+        {
+            error =
+                $"{layerName}: Invalid lifetime range.";
+
+            return false;
+        }
+
+        if (petalSizeMin < 0f ||
+            petalSizeMax < petalSizeMin)
+        {
+            error =
+                $"{layerName}: Invalid petal size range.";
+
+            return false;
+        }
+
+        if (fallSpeedMin < 0f ||
+            fallSpeedMax < fallSpeedMin)
+        {
+            error =
+                $"{layerName}: Invalid fall speed range.";
+
+            return false;
+        }
+
+        if (boundsSize.x <= 0f ||
+            boundsSize.y <= 0f ||
+            boundsSize.z <= 0f)
+        {
+            error =
+                $"{layerName}: Bounds size must be positive.";
+
+            return false;
+        }
+
+        error = null;
+
+        return true;
+    }
 }
+

@@ -17,6 +17,15 @@ public sealed partial class SakuraWeatherController
 
     [SerializeField]
     private bool showCameraLinks = true;
+    
+    [SerializeField]
+    private SakuraWeatherProfile debugLowProfile;
+
+    [SerializeField]
+    private SakuraWeatherProfile debugMediumProfile;
+
+    [SerializeField]
+    private SakuraWeatherProfile debugHighProfile;
 
 
     private void OnDrawGizmosSelected()
@@ -158,6 +167,35 @@ public sealed partial class SakuraWeatherController
             $"Spawn Center: {spawnCenter}\n" +
             $"Bounds Size: {boundsSize}",
             vfx);
+    }
+    
+    [ContextMenu("Debug/Quality/Low")]
+    private void DebugSetLow()
+    {
+        if (debugLowProfile != null)
+        {
+            SetProfile(debugLowProfile);
+        }
+    }
+
+
+    [ContextMenu("Debug/Quality/Medium")]
+    private void DebugSetMedium()
+    {
+        if (debugMediumProfile != null)
+        {
+            SetProfile(debugMediumProfile);
+        }
+    }
+
+
+    [ContextMenu("Debug/Quality/High")]
+    private void DebugSetHigh()
+    {
+        if (debugHighProfile != null)
+        {
+            SetProfile(debugHighProfile);
+        }
     }
 }
 

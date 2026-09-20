@@ -487,9 +487,12 @@ VisualEffect:
       m_Array: []
     m_Vector3f:
       m_Array:
-      - m_Value: {x: 12, y: 4, z: 8}
+      - m_Value: {x: 18, y: 8, z: 8}
         m_Name: SpawnBoxSize
-        m_Overridden: 0
+        m_Overridden: 1
+      - m_Value: {x: 0, y: -2, z: 0}
+        m_Name: SpawnBoxCenter
+        m_Overridden: 1
     m_Vector4f:
       m_Array: []
     m_Uint:
@@ -911,12 +914,12 @@ VisualEffect:
       m_Array: []
     m_Vector3f:
       m_Array:
-      - m_Value: {x: 14, y: 4, z: 10}
+      - m_Value: {x: 18, y: 8, z: 10}
         m_Name: SpawnBoxSize
-        m_Overridden: 0
-      - m_Value: {x: 0, y: -2, z: 0}
+        m_Overridden: 1
+      - m_Value: {x: 0, y: -1, z: 0}
         m_Name: SpawnBoxCenter
-        m_Overridden: 0
+        m_Overridden: 1
     m_Vector4f:
       m_Array: []
     m_Uint:
@@ -1033,12 +1036,12 @@ VisualEffect:
       m_Array: []
     m_Vector3f:
       m_Array:
-      - m_Value: {x: -4, y: -1, z: -8.5}
+      - m_Value: {x: -2, y: -1, z: -8.5}
         m_Name: SpawnBoxCenter
-        m_Overridden: 0
-      - m_Value: {x: 14, y: 3, z: 2}
+        m_Overridden: 1
+      - m_Value: {x: 18, y: 3, z: 2}
         m_Name: SpawnBoxSize
-        m_Overridden: 0
+        m_Overridden: 1
     m_Vector4f:
       m_Array: []
     m_Uint:
@@ -1102,7 +1105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14f8e7830c9739f49ae7da9586faab31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  profile: {fileID: 11400000, guid: 5b80419bc24c5d54c9ed80a1cabdf431, type: 2}
+  profile: {fileID: 11400000, guid: 6bb5cce14a02f1549bec66b42560fe36, type: 2}
   targetCamera: {fileID: 314807777}
   backgroundVfx: {fileID: 1616205231}
   midgroundVfx: {fileID: 964516862}
@@ -1111,6 +1114,9 @@ MonoBehaviour:
   showSpawnVolumes: 1
   showBounds: 1
   showCameraLinks: 1
+  debugLowProfile: {fileID: 0}
+  debugMediumProfile: {fileID: 0}
+  debugHighProfile: {fileID: 0}
 --- !u!1 &1987170784
 GameObject:
   m_ObjectHideFlags: 0
