@@ -17,7 +17,7 @@ MonoBehaviour:
     spawnRate: 70
     lifetimeMin: 6
     lifetimeMax: 10
-    spawnOffset: {x: 0, y: 1, z: 11}
+    spawnOffset: {x: 0, y: 1, z: 10}
     spawnBoxSize: {x: 18, y: 8, z: 10}
     boundsSize: {x: 24, y: 16, z: 16}
     petalSizeMin: 0.025
@@ -33,7 +33,7 @@ MonoBehaviour:
     spawnRate: 35
     lifetimeMin: 5
     lifetimeMax: 8
-    spawnOffset: {x: 0, y: 1, z: 6}
+    spawnOffset: {x: 0, y: 1, z: 5}
     spawnBoxSize: {x: 18, y: 8, z: 8}
     boundsSize: {x: 24, y: 16, z: 14}
     petalSizeMin: 140
@@ -49,7 +49,7 @@ MonoBehaviour:
     spawnRate: 4
     lifetimeMin: 2.5
     lifetimeMax: 4.5
-    spawnOffset: {x: -2, y: 1, z: 1.5}
+    spawnOffset: {x: -2, y: 1, z: 0.5}
     spawnBoxSize: {x: 18, y: 3, z: 2}
     boundsSize: {x: 26, y: 10, z: 10}
     petalSizeMin: 350
