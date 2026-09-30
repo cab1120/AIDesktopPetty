@@ -1,47 +1,132 @@
 using System.Text;
+
 /// <summary>
 /// 提示词生成
 /// </summary>
 public static class CharacterPromptBuilder
 {
-    public static string BuildChatPrompt(PromptContext context)
+    public static string BuildChatPrompt(
+        PromptContext context)
+    {
+        return BuildChatPrompt(
+            context,
+            GlobalSession.CaptureSnapshot()
+        );
+    }
+
+    public static string BuildChatPrompt(
+        PromptContext context,
+        SessionSnapshot session)
     {
         CharacterPromptProfile profile =
-            CharacterPromptLoader.LoadCurrentProfile();
+            CharacterPromptLoader.LoadProfile(
+                session
+            );
 
-        StringBuilder sp = new StringBuilder();
+        StringBuilder sp =
+            new StringBuilder();
 
-        AppendCommonCharacterPrompt(sp, profile);
-        AppendCommonRuntimePrompt(sp, context);
+        AppendCommonCharacterPrompt(
+            sp,
+            profile
+        );
 
-        sp.AppendLine("### 本轮任务：对话回复 ###");
+        AppendCommonRuntimePrompt(
+            sp,
+            context,
+            session,
+            profile
+        );
+
+        sp.AppendLine(
+            "### 本轮任务：对话回复 ###"
+        );
+
         sp.AppendLine(profile.chatRule);
-        sp.AppendLine("用户接下来会主动对你说话。");
-        sp.AppendLine("你需要根据用户的问题、情绪、上下文进行回应。");
-        sp.AppendLine("不要把回复写成主动通知，也不要突然切换话题。");
-        sp.AppendLine("如果遇到不清楚具体含义的内容，不要擅自揣测含义，按照你的判断决定是否向用户询问改内容是什么，如果判断为不需要询问则跳过这个内容，不要提及该内容");
+
+        sp.AppendLine(
+            "用户接下来会主动对你说话。"
+        );
+
+        sp.AppendLine(
+            "你需要根据用户的问题、情绪、上下文进行回应。"
+        );
+
+        sp.AppendLine(
+            "不要把回复写成主动通知，也不要突然切换话题。"
+        );
+
+        sp.AppendLine(
+            "如果遇到不清楚具体含义的内容，不要擅自揣测含义，" +
+            "按照你的判断决定是否向用户询问改内容是什么，" +
+            "如果判断为不需要询问则跳过这个内容，不要提及该内容"
+        );
 
         return sp.ToString();
     }
 
-    public static string BuildBubblePrompt(PromptContext context)
+    public static string BuildBubblePrompt(
+        PromptContext context)
+    {
+        return BuildBubblePrompt(
+            context,
+            GlobalSession.CaptureSnapshot()
+        );
+    }
+
+    public static string BuildBubblePrompt(
+        PromptContext context,
+        SessionSnapshot session)
     {
         CharacterPromptProfile profile =
-            CharacterPromptLoader.LoadCurrentProfile();
+            CharacterPromptLoader.LoadProfile(
+                session
+            );
 
-        StringBuilder sp = new StringBuilder();
+        StringBuilder sp =
+            new StringBuilder();
 
-        AppendCommonCharacterPrompt(sp, profile);
-        AppendCommonRuntimePrompt(sp, context);
+        AppendCommonCharacterPrompt(
+            sp,
+            profile
+        );
 
-        sp.AppendLine("### 本轮任务：桌宠主动搭话 ###");
+        AppendCommonRuntimePrompt(
+            sp,
+            context,
+            session,
+            profile
+        );
+
+        sp.AppendLine(
+            "### 本轮任务：桌宠主动搭话 ###"
+        );
+
         sp.AppendLine(profile.bubbleRule);
-        sp.AppendLine("这不是用户发给你的聊天消息。");
-        sp.AppendLine("接下来的输入可能是电脑进程名、窗口标题、用户当前状态或环境信息。");
-        sp.AppendLine("你要像桌宠一样主动说一句自然的话。");
-        sp.AppendLine("不要说“系统检测到”“根据进程名”“我看到你打开了”。");
-        sp.AppendLine("如果实在无话可说，只回复：[IGNORE]");
-        sp.AppendLine("回复必须简短，适合作为桌宠气泡显示。");
+
+        sp.AppendLine(
+            "这不是用户发给你的聊天消息。"
+        );
+
+        sp.AppendLine(
+            "接下来的输入可能是电脑进程名、窗口标题、用户当前状态或环境信息。"
+        );
+
+        sp.AppendLine(
+            "你要像桌宠一样主动说一句自然的话。"
+        );
+
+        sp.AppendLine(
+            "不要说“系统检测到”“根据进程名”“我看到你打开了”。"
+        );
+
+        sp.AppendLine(
+            "如果实在无话可说，只回复：[IGNORE]"
+        );
+
+        sp.AppendLine(
+            "回复必须简短，适合作为桌宠气泡显示。"
+        );
 
         return sp.ToString();
     }
@@ -50,7 +135,10 @@ public static class CharacterPromptBuilder
         StringBuilder sp,
         CharacterPromptProfile profile)
     {
-        sp.AppendLine($"### 当前角色：{profile.characterName} ###");
+        sp.AppendLine(
+            $"### 当前角色：{profile.characterName} ###"
+        );
+
         sp.AppendLine(profile.corePersonality);
         sp.AppendLine(profile.worldView);
         sp.AppendLine(profile.speechStyle);
@@ -59,41 +147,90 @@ public static class CharacterPromptBuilder
 
     private static void AppendCommonRuntimePrompt(
         StringBuilder sp,
-        PromptContext context)
+        PromptContext context,
+        SessionSnapshot session,
+        CharacterPromptProfile profile)
     {
-        sp.AppendLine("### 当前运行环境 ###");
-        sp.AppendLine($"当前用户：{GlobalSession.CurrentUserName}");
-        sp.AppendLine($"当前角色：{GlobalSession.CurrentCharacterName}");
-        sp.AppendLine($"当前时间：{context.CurrentTime}");
+        sp.AppendLine(
+            "### 当前运行环境 ###"
+        );
 
-        sp.AppendLine("### 与用户相关的记忆 ###");
-        sp.AppendLine(string.IsNullOrWhiteSpace(context.UserMemory)
-            ? "你还在慢慢了解用户。"
-            : context.UserMemory);
-        
-        if (!string.IsNullOrWhiteSpace(context.RelationshipText))
+        sp.AppendLine(
+            $"当前用户：{session.UserName}"
+        );
+
+        sp.AppendLine(
+            $"当前角色：{session.CharacterName}"
+        );
+
+        sp.AppendLine(
+            $"当前时间：{context.CurrentTime}"
+        );
+
+        sp.AppendLine(
+            "### 与用户相关的记忆 ###"
+        );
+
+        sp.AppendLine(
+            string.IsNullOrWhiteSpace(
+                context.UserMemory)
+                ? "你还在慢慢了解用户。"
+                : context.UserMemory
+        );
+
+        if (!string.IsNullOrWhiteSpace(
+                context.RelationshipText))
         {
-            sp.AppendLine("### 用户与角色关系状态 ###");
-            sp.AppendLine(context.RelationshipText);
+            sp.AppendLine(
+                "### 用户与角色关系状态 ###"
+            );
+
+            sp.AppendLine(
+                context.RelationshipText
+            );
         }
 
-        sp.AppendLine("### 实时信息处理规则 ###");
-        CharacterPromptProfile profile =
-            CharacterPromptLoader.LoadCurrentProfile();
-        sp.AppendLine(profile.realtimeRule);
+        sp.AppendLine(
+            "### 实时信息处理规则 ###"
+        );
 
-        if (!string.IsNullOrWhiteSpace(context.SearchResults))
+        /*
+         * 不再第二次 LoadCurrentProfile。
+         *
+         * 整个 Prompt 使用同一个 profile，
+         * 防止一次构造里角色配置来源不一致。
+         */
+        sp.AppendLine(
+            profile.realtimeRule
+        );
+
+        if (!string.IsNullOrWhiteSpace(
+                context.SearchResults))
         {
-            sp.AppendLine("### 当前可用实时信息 ###");
-            sp.AppendLine(context.SearchResults);
+            sp.AppendLine(
+                "### 当前可用实时信息 ###"
+            );
+
+            sp.AppendLine(
+                context.SearchResults
+            );
         }
 
         if (context.Emotion != null)
         {
-            sp.AppendLine("### 当前情绪状态 ###");
-            sp.AppendLine(IrohaEmotionPromptBuilder.Build(context.Emotion));
+            sp.AppendLine(
+                "### 当前情绪状态 ###"
+            );
+
+            sp.AppendLine(
+                IrohaEmotionPromptBuilder
+                    .Build(context.Emotion)
+            );
         }
 
-        sp.AppendLine($"- 角色长期心境：{IrohaStatusContext.LongTermMood}\n");
+        sp.AppendLine(
+            $"- 角色长期心境：" +
+            $"{IrohaStatusContext.LongTermMood}\n"
+        );
     }
 }

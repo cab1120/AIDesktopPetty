@@ -4,58 +4,80 @@ public static class RelationshipService
 {
     public static UserCharacterStateData GetCurrentState()
     {
-        if (!GlobalSession.IsLoggedIn)
-            return null;
-        
-        return UserCharacterStateRepository.GetOrCreate(
-            GlobalSession.CurrentUserId,
-            GlobalSession.CurrentCharacterId
+        return GetState(
+            GlobalSession.CaptureSnapshot()
         );
+    }
+
+    public static UserCharacterStateData GetState(
+        SessionSnapshot session)
+    {
+        if (!session.IsLoggedIn)
+            return null;
+
+        return UserCharacterStateRepository
+            .GetOrCreate(
+                session.UserId,
+                session.CharacterId
+            );
     }
 
     public static void OnLogin()
     {
-        if (!GlobalSession.IsLoggedIn)
+        SessionSnapshot session = GlobalSession.CaptureSnapshot();
+        if (!GlobalSession.IsCurrent(session))
             return;
 
         UserCharacterStateRepository.ApplyTimeDecay(
-            GlobalSession.CurrentUserId,
-            GlobalSession.CurrentCharacterId
+            session.UserId,
+            session.CharacterId
         );
 
         UserCharacterStateRepository.UpdateInteractionDays(
-            GlobalSession.CurrentUserId,
-            GlobalSession.CurrentCharacterId
+            session.UserId,
+            session.CharacterId
         );
 
         UserCharacterStateRepository.ApplyFavorabilityChange(
-            GlobalSession.CurrentUserId,
-            GlobalSession.CurrentCharacterId,
+            session.UserId,
+            session.CharacterId,
             1,
             true
         );
 
         UserCharacterStateRepository.ApplyTrustChange(
-            GlobalSession.CurrentUserId,
-            GlobalSession.CurrentCharacterId,
+            session.UserId,
+            session.CharacterId,
             0.005f,
             true
         );
     }
 
-    public static void OnUserSendMessage(string message)
+    public static void OnUserSendMessage(
+        string message)
     {
-        if (!GlobalSession.IsLoggedIn)
-        return;
+        OnUserSendMessage(
+            GlobalSession.CaptureSnapshot(),
+            message
+        );
+    }
+
+    public static void OnUserSendMessage(
+        SessionSnapshot session,
+        string message)
+    {
+        if (!session.IsLoggedIn)
+            return;
 
         if (string.IsNullOrWhiteSpace(message))
         {
-            UserCharacterStateRepository.ApplyFavorabilityChange(
-                GlobalSession.CurrentUserId,
-                GlobalSession.CurrentCharacterId,
-                -1,
-                true
-            );
+            UserCharacterStateRepository
+                .ApplyFavorabilityChange(
+                    session.UserId,
+                    session.CharacterId,
+                    -1,
+                    true
+                );
 
             return;
         }
@@ -68,45 +90,58 @@ public static class RelationshipService
         if (IsMeaninglessMessage(message))
             delta -= 2;
 
-        UserCharacterStateRepository.ApplyFavorabilityChange(
-            GlobalSession.CurrentUserId,
-            GlobalSession.CurrentCharacterId,
-            delta,
-            true
-        );
-
-        if (message.Length >= 30 && !IsMeaninglessMessage(message))
-        {
-            UserCharacterStateRepository.ApplyTrustChange(
-                GlobalSession.CurrentUserId,
-                GlobalSession.CurrentCharacterId,
-                0.003f,
+        UserCharacterStateRepository
+            .ApplyFavorabilityChange(
+                session.UserId,
+                session.CharacterId,
+                delta,
                 true
             );
+
+        if (message.Length >= 30 &&
+            !IsMeaninglessMessage(message))
+        {
+            UserCharacterStateRepository
+                .ApplyTrustChange(
+                    session.UserId,
+                    session.CharacterId,
+                    0.003f,
+                    true
+                );
         }
     }
 
     public static void OnAssistantReplyFinished()
     {
-        if (!GlobalSession.IsLoggedIn)
+        OnAssistantReplyFinished(
+            GlobalSession.CaptureSnapshot()
+        );
+    }
+
+    public static void OnAssistantReplyFinished(
+        SessionSnapshot session)
+    {
+        if (!session.IsLoggedIn)
             return;
 
-        UserCharacterStateRepository.ApplyTrustChange(
-            GlobalSession.CurrentUserId,
-            GlobalSession.CurrentCharacterId,
-            0.001f,
-            true
-        );
+        UserCharacterStateRepository
+            .ApplyTrustChange(
+                session.UserId,
+                session.CharacterId,
+                0.001f,
+                true
+            );
     }
     
     public static void OnAssistantReplyFailed()
     {
-        if (!GlobalSession.IsLoggedIn)
+        SessionSnapshot session = GlobalSession.CaptureSnapshot();
+        if (!GlobalSession.IsCurrent(session))
             return;
 
         UserCharacterStateRepository.ApplyFavorabilityChange(
-            GlobalSession.CurrentUserId,
-            GlobalSession.CurrentCharacterId,
+            session.UserId,
+            session.CharacterId,
             -1,
             true
         );
@@ -114,12 +149,13 @@ public static class RelationshipService
 
     public static void OnOpenPetPanel()
     {
-        if (!GlobalSession.IsLoggedIn)
+        SessionSnapshot session = GlobalSession.CaptureSnapshot();
+        if (!GlobalSession.IsCurrent(session))
             return;
 
         UserCharacterStateRepository.ApplyFavorabilityChange(
-            GlobalSession.CurrentUserId,
-            GlobalSession.CurrentCharacterId,
+            session.UserId,
+            session.CharacterId,
             1,
             true
         );
@@ -128,10 +164,18 @@ public static class RelationshipService
 
     public static string BuildRelationshipPromptText()
     {
-        if (!GlobalSession.IsLoggedIn)
+        return BuildRelationshipPromptText(
+            GlobalSession.CaptureSnapshot()
+        );
+    }
+
+    public static string BuildRelationshipPromptText(
+        SessionSnapshot session)
+    {
+        if (!session.IsLoggedIn)
             return "";
 
-        var state = GetCurrentState();
+        var state = GetState(session);
 
         if (state == null)
             return "";

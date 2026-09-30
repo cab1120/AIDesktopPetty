@@ -2,13 +2,13 @@
 
 基于 Unity 2021.3 的 Windows 桌面 AI 陪伴项目，包含桌面聊天、前台窗口感知、本地关系/情绪数据，以及独立的樱町 3D 场景。用户已确认继续以 Unity 客户端求职作品为主线，近期目标是“桌宠 → 站台 → 交互 → 返回桌宠”。
 
-核对日期：2026-09-21。“已有”指源码或序列化资源可核实；本次未执行 Unity Player 构建、联网聊天或听感测试。
+核对日期：2026-09-30。“已有”指源码或序列化资源可核实；会话重构已通过 C# 静态编译，未执行 Unity Editor/Player、联网聊天或听感测试。
 
 ## 当前状态
 
 | 能力 | 核实结果 |
 | --- | --- |
-| 桌面聊天与管理 | SampleScene 挂载登录、聊天、历史、用户/角色管理、主动气泡 |
+| 桌面聊天与管理 | SampleScene 挂载登录、聊天、历史、用户/角色管理、主动气泡；普通聊天已有快照和串行队列，运行回归待做 |
 | AI 与搜索 | SiliconFlow 聊天 + Bocha 搜索；协程、非流式；模型名写在 AIChat |
 | 本地数据 | SQLite 六张业务表，运行库在 persistentDataPath；关系、情绪、互动事件已有实现 |
 | Windows 窗口 | IWindowService → WindowsWindowService → Native ABI → x64 DLL；透明、置顶、拖拽、吸附、穿透、DPI/多屏查询 |
@@ -41,7 +41,7 @@ Build Settings 仅启用 SampleScene。构建选 Windows x86_64，核验 Assets/
 
 业务表：User、CharacterProfile、UserCharacterState、EmotionState、ChatMessage、InteractionEvent。聊天当前每用户/角色最多保留 100 条，模型消息上下文取最近 8 条，不等于长期语义记忆。迁移/重置前备份实际运行数据库，实验使用脱敏副本。
 
-AIChat 订阅 Application.logMessageReceived 后同步写入 Application.dataPath/../run_log.txt。日志可能含聊天和窗口标题，目前订阅没有对应解绑；跨场景扩展前需要修正。
+AIChat 订阅 Application.logMessageReceived 后同步写入 Application.dataPath/../run_log.txt，销毁时解绑。日志仍可能含窗口标题等内容，尚无脱敏、轮转和应用级唯一日志服务。
 
 ## 代码与文档导航
 
@@ -58,7 +58,7 @@ AIChat 订阅 Application.logMessageReceived 后同步写入 Application.dataPat
 | Assets/Prefeb | 当前 UI 预制体目录，保留原拼写 |
 
 - [架构](docs/ARCHITECTURE.md) / [脚本](docs/SCRIPTS.md) / [接口事件](docs/API_EVENTS.md)
-- [近期计划](docs/PROJECT_PLAN.md) / [本次工作报告](docs/WORK_REPORT_2026-09-21.md)
+- [近期计划](docs/PROJECT_PLAN.md) / [会话重构阶段报告](docs/SESSION_REFACTOR_REPORT_2026-09-30.md)
 - [列车现行说明](Assets/Scripts/Art/Scenes/README.md) / [角色材质说明](Assets/Scripts/Shaders/Improved2.0/README.md)
 - [AI 协作入口](AGENTS.md)。.ai/ 被 Git 忽略，核心交接不能只存在其中。
 
@@ -66,7 +66,7 @@ AIChat 订阅 Application.logMessageReceived 后同步写入 Application.dataPat
 
 表现层通过 IWindowService 操作窗口，不得新增 HWND、Win32 常量或直接 P/Invoke。DesktopContextManager 仍直接 user32，是已知遗留违例。
 
-近期先处理请求取消/会话隔离、日志解绑、用户改名关联和世界生命周期，再加交互与远端资源。当前输入可能重复进入上下文，错误文本被正常落库，切角色后迟到回复可能串会话。触发条件和验收见架构与计划；本次未修复运行代码。
+请求快照、普通聊天串行队列、当前输入排重、旧请求中止和回复落库前会话检查已有代码实现，仍需 Unity Editor/Player、联网和数据库副本回归。用户改名关联被单列为后续数据库迁移阶段；日志脱敏/轮转与世界生命周期仍待处理。触发条件和验收见[阶段报告](docs/SESSION_REFACTOR_REPORT_2026-09-30.md)。
 
 现行列车时间为 10 秒出洞、20 秒停稳、35 秒发车、45 秒隐藏、180 秒循环。不要让新欢迎 Timeline 同时写列车、栏杆或灯属性。
 

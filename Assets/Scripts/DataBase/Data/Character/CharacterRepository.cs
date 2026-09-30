@@ -89,6 +89,20 @@ public static class CharacterRepository
             .OrderBy(c => c.CharacterName)
             .ToList();
     }
+    
+    public static CharacterProfileData GetById(
+        string characterId)
+    {
+        if (string.IsNullOrEmpty(characterId))
+            return null;
+
+        DatabaseManager.Initialize();
+
+        return DatabaseManager.Connection
+            .Find<CharacterProfileData>(
+                characterId
+            );
+    }
 
     public static bool AddCharacter(
         string userName,
@@ -157,7 +171,7 @@ public static class CharacterRepository
             return false;
         }
         
-        if (characterName == GlobalSession.CurrentCharacterName)
+        if (characterName == GlobalSession.CaptureSnapshot().CharacterName)
         {
             error = "默认角色不能删除";
             return false;

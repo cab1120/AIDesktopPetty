@@ -7,14 +7,13 @@ public static class ChatContextTextBuilder
     public static string BuildRecentContextText(
         string userId,
         string characterId,
-        int limit)
+        int limit,
+        string excludedMessageId = null)
     {
-        List<ChatMessageData> history =
-            ChatMessageRepository.GetRecentMessages(
-                userId,
-                characterId,
-                limit
-            );
+        List<ChatMessageData> history = string.IsNullOrEmpty(excludedMessageId)
+            ? ChatMessageRepository.GetRecentMessages(userId, characterId, limit)
+            : ChatMessageRepository.GetRecentMessagesExcluding(
+                userId, characterId, excludedMessageId, limit);
 
         history = history
             .OrderBy(m => m.CreatedAtTicks)

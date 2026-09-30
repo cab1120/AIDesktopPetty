@@ -10,7 +10,10 @@ public static class SearchCacheService
     private const int MaxCacheCount = 5;
     private const int CacheMinutes = 15;
 
+    public static void Clear() => cache.Clear();
+
     public static bool TryGetRecent(
+        SessionSnapshot session,
         string userMessage,
         out SearchCacheEntry entry)
     {
@@ -26,12 +29,16 @@ public static class SearchCacheService
         entry = cache
             .OrderByDescending(c => c.CreatedAtTicks)
             .FirstOrDefault(c =>
+                c.UserId == session.UserId &&
+                c.CharacterId == session.CharacterId &&
+                c.SessionVersion == session.SessionVersion &&
                 IsRelated(normalizedMessage, Normalize(c.Query)));
 
         return entry != null;
     }
 
     public static void Add(
+        SessionSnapshot session,
         string query,
         string results,
         string reason)
@@ -45,6 +52,9 @@ public static class SearchCacheService
         RemoveExpired();
 
         SearchCacheEntry old = cache.FirstOrDefault(c =>
+            c.UserId == session.UserId &&
+            c.CharacterId == session.CharacterId &&
+            c.SessionVersion == session.SessionVersion &&
             Normalize(c.Query) == Normalize(query));
 
         if (old != null)
@@ -54,6 +64,9 @@ public static class SearchCacheService
 
         cache.Add(new SearchCacheEntry
         {
+            UserId = session.UserId,
+            CharacterId = session.CharacterId,
+            SessionVersion = session.SessionVersion,
             Query = query,
             Results = results,
             Reason = reason,

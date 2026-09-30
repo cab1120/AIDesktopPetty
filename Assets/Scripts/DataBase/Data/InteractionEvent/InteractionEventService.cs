@@ -19,6 +19,7 @@ public static class InteractionEventService
     }
 
     public static bool CanTriggerBubble(
+        SessionSnapshot session,
         string title,
         string processName,
         out string contextKey,
@@ -27,7 +28,7 @@ public static class InteractionEventService
         contextKey = BuildContextKey(title, processName);
         reason = "";
 
-        if (!GlobalSession.IsLoggedIn)
+        if (!GlobalSession.IsCurrent(session))
         {
             reason = "用户未登录";
             return false;
@@ -41,8 +42,8 @@ public static class InteractionEventService
 
         bool recentlyShown =
             InteractionEventRepository.HasRecentEvent(
-                GlobalSession.CurrentUserId,
-                GlobalSession.CurrentCharacterId,
+                session.UserId,
+                session.CharacterId,
                 InteractionEventType.BubbleShown,
                 contextKey,
                 SameContextCooldown
@@ -57,9 +58,10 @@ public static class InteractionEventService
         return true;
     }
 
-    public static void RecordBubbleRequested(string title, string processName)
+    public static void RecordBubbleRequested(SessionSnapshot session, string title, string processName)
     {
         Add(
+            session,
             InteractionEventType.BubbleRequested,
             processName,
             BuildContextKey(title, processName),
@@ -70,11 +72,16 @@ public static class InteractionEventService
     }
 
     public static void RecordBubbleShown(
+        SessionSnapshot session,
         string title,
         string processName,
         string reply)
     {
+        if (!GlobalSession.IsCurrent(session))
+            return;
+
         Add(
+            session,
             InteractionEventType.BubbleShown,
             processName,
             BuildContextKey(title, processName),
@@ -84,16 +91,17 @@ public static class InteractionEventService
         );
 
         UserCharacterStateRepository.ApplyTrustChange(
-            GlobalSession.CurrentUserId,
-            GlobalSession.CurrentCharacterId,
+            session.UserId,
+            session.CharacterId,
             0.001f,
             false
         );
     }
 
-    public static void RecordBubbleIgnored(string title, string processName)
+    public static void RecordBubbleIgnored(SessionSnapshot session, string title, string processName)
     {
         Add(
+            session,
             InteractionEventType.BubbleIgnored,
             processName,
             BuildContextKey(title, processName),
@@ -104,11 +112,13 @@ public static class InteractionEventService
     }
 
     public static void RecordBubbleSuppressed(
+        SessionSnapshot session,
         string title,
         string processName,
         string reason)
     {
         Add(
+            session,
             InteractionEventType.BubbleSuppressed,
             processName,
             BuildContextKey(title, processName),
@@ -132,7 +142,11 @@ public static class InteractionEventService
 
     public static void RecordPetExpanded()
     {
+        SessionSnapshot session = GlobalSession.CaptureSnapshot();
+        if (!GlobalSession.IsCurrent(session))
+            return;
         Add(
+            session,
             InteractionEventType.PetExpanded,
             "PetToggleUI",
             "pet_expanded",
@@ -142,8 +156,8 @@ public static class InteractionEventService
         );
 
         UserCharacterStateRepository.ApplyFavorabilityChange(
-            GlobalSession.CurrentUserId,
-            GlobalSession.CurrentCharacterId,
+            session.UserId,
+            session.CharacterId,
             1,
             true
         );
@@ -169,12 +183,25 @@ public static class InteractionEventService
         float emotionImpact,
         int favorabilityImpact)
     {
-        if (!GlobalSession.IsLoggedIn)
+        Add(GlobalSession.CaptureSnapshot(), eventType, eventSource, contextKey,
+            description, emotionImpact, favorabilityImpact);
+    }
+
+    private static void Add(
+        SessionSnapshot session,
+        string eventType,
+        string eventSource,
+        string contextKey,
+        string description,
+        float emotionImpact,
+        int favorabilityImpact)
+    {
+        if (!GlobalSession.IsCurrent(session))
             return;
 
         InteractionEventRepository.AddEvent(
-            GlobalSession.CurrentUserId,
-            GlobalSession.CurrentCharacterId,
+            session.UserId,
+            session.CharacterId,
             eventType,
             eventSource,
             contextKey,

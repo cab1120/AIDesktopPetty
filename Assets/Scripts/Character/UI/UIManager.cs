@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,10 +12,104 @@ public class UIManager : MonoBehaviour
     public GameObject userBubblePrefab; // 用户气泡预制体
     public GameObject aiBubblePrefab;   // AI气泡预制体
     
-    public AIChat aiChat;
+    public ConversationService conversationService;
+    [SerializeField] private int visibleHistoryCount = 20;
 
     private Coroutine currentScrollCoroutine; // 用于管理滚到底部的协程，避免重复启动
+    private readonly Dictionary<string, GameObject> queuedBubbles = new Dictionary<string, GameObject>();
 
+    private void Awake()
+    {
+        GlobalSession.SessionVersionChanged += OnSessionVersionChanged;
+        if (conversationService != null)
+        {
+            conversationService.TurnCancelled += OnTurnCancelled;
+            conversationService.TurnStarted += OnTurnStarted;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        GlobalSession.SessionVersionChanged -= OnSessionVersionChanged;
+        if (conversationService != null)
+        {
+            conversationService.TurnCancelled -= OnTurnCancelled;
+            conversationService.TurnStarted -= OnTurnStarted;
+        }
+    }
+
+    private void Start()
+    {
+        ReloadSessionHistory();
+    }
+
+    private void OnSessionVersionChanged(long version)
+    {
+        ReloadSessionHistory();
+    }
+
+    private void ReloadSessionHistory()
+    {
+        queuedBubbles.Clear();
+        if (chatContent == null)
+            return;
+        foreach (Transform child in chatContent)
+        {
+            child.gameObject.SetActive(false);
+            Destroy(child.gameObject);
+        }
+
+        SessionSnapshot session = GlobalSession.CaptureSnapshot();
+        if (!GlobalSession.IsCurrent(session))
+            return;
+
+        List<ChatMessageData> history = ChatMessageService.GetRecent(
+            Mathf.Max(0, visibleHistoryCount));
+        history.Reverse();
+        foreach (ChatMessageData message in history)
+        {
+            GameObject prefab = message.Sender == "Assistant"
+                ? aiBubblePrefab : userBubblePrefab;
+            CreateBubble(prefab, message.Content);
+        }
+        if (isActiveAndEnabled)
+            StartOrRestartScrollToBottom();
+    }
+
+    private void OnTurnStarted(ChatTurn turn)
+    {
+        queuedBubbles.Remove(turn.TurnId);
+    }
+
+    private void OnTurnCancelled(ChatTurn turn)
+    {
+        if (queuedBubbles.TryGetValue(turn.TurnId, out GameObject bubble))
+        {
+            queuedBubbles.Remove(turn.TurnId);
+            if (bubble != null) Destroy(bubble);
+        }
+    }
+
+    private void OnEnable()
+    {
+        if (conversationService != null)
+        {
+            conversationService.AssistantReplyReady +=
+                OnAssistantReplyReady;
+            conversationService.TurnFailed += OnTurnFailed;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (conversationService != null)
+        {
+            conversationService.AssistantReplyReady -=
+                OnAssistantReplyReady;
+            conversationService.TurnFailed -= OnTurnFailed;
+        }
+    }
+    
     public void OnInputEndEdit(string str)
     {
         // 只有是因为按下回车才触发（排除点击别处导致的失去焦点）
@@ -26,30 +121,68 @@ public class UIManager : MonoBehaviour
     public void OnSendButtonClick()
     {
         string userInput = inputField.text;
-        if (string.IsNullOrEmpty(userInput)) return;
 
-        CreateBubble(userBubblePrefab, userInput);
-        
-        ChatMessageService.SaveUserMessage(userInput);
-        RelationshipService.OnUserSendMessage(userInput);
-        
+        if (string.IsNullOrWhiteSpace(userInput))
+            return;
+
+        if (conversationService == null)
+        {
+            Debug.LogError(
+                "UIManager 未绑定 ConversationService。"
+            );
+
+            return;
+        }
+
+        bool accepted =
+            conversationService.TrySend(
+                userInput,
+                out ChatTurn turn
+            );
+
+        if (!accepted)
+            return;
+
+        /*
+         * 用户气泡可以立即显示。
+         *
+         * 这是 UI 表现，不代表该 Turn 已经完成。
+         * 真正的数据库/关系/AI 生命周期由
+         * ConversationService 持有。
+         */
+        GameObject userBubble = CreateBubble(
+            userBubblePrefab,
+            userInput
+        );
+        if (conversationService.IsPending(turn))
+            queuedBubbles[turn.TurnId] = userBubble;
+
         inputField.text = "";
-
         // 在发送消息后立即尝试滚动，处理用户消息的布局问题
         StartOrRestartScrollToBottom();
+    }
+    
+    private void OnAssistantReplyReady(
+        ChatTurn turn,
+        string reply)
+    {
+        CreateBubble(
+            aiBubblePrefab,
+            reply
+        );
 
-        StartCoroutine(aiChat.GetAIReply(userInput, (reply) => {
-            CreateBubble(aiBubblePrefab, reply);
-            
-            ChatMessageService.SaveAssistantMessage(reply);
-            RelationshipService.OnAssistantReplyFinished();
-
-            // AI 回复后再次尝试滚动，处理 AI 消息的布局问题
-            StartOrRestartScrollToBottom();
-        }));
+        StartOrRestartScrollToBottom();
     }
 
-    private void CreateBubble(GameObject prefab, string message)
+    private void OnTurnFailed(ChatTurn turn, string error)
+    {
+        if (!GlobalSession.IsCurrent(turn.Session))
+            return;
+        CreateBubble(aiBubblePrefab, "回复失败，请重试。");
+        StartOrRestartScrollToBottom();
+    }
+
+    private GameObject CreateBubble(GameObject prefab, string message)
     {
         GameObject go = Instantiate(prefab, chatContent);
         MessageUI ui = go.GetComponent<MessageUI>();
@@ -60,6 +193,7 @@ public class UIManager : MonoBehaviour
         }
         // 在这里不立即调用 ScrollToBottom，而是通过 StartOrRestartScrollToBottom 统一管理
         // 并且不需要 ForceUpdateLayout(go) 了，因为 ScrollToBottom 会统一处理所有布局
+        return go;
     }
 
     // 统一管理滚动到底部的协程，避免多个协程同时运行导致冲突

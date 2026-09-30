@@ -48,7 +48,7 @@ public class CharacterManagePanelController : MonoBehaviour
         else
         {
             cachedCharacters = CharacterRepository.SearchByCharacterNameForUser(
-                GlobalSession.CurrentUserName,
+                GlobalSession.CaptureSnapshot().UserName,
                 keyword
             );
         }
@@ -127,7 +127,7 @@ public class CharacterManagePanelController : MonoBehaviour
     public void OnClickBack()
     {
         bool valid = CharacterRepository.ValidateActiveCharacterState(
-            GlobalSession.CurrentUserName,
+            GlobalSession.CaptureSnapshot().UserName,
             out string error
         );
 

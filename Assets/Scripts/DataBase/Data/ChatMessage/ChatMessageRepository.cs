@@ -56,6 +56,25 @@ public static class ChatMessageRepository
             .Take(limit)
             .ToList();
     }
+    
+    public static List<ChatMessageData> GetRecentMessagesExcluding(
+        string userId,
+        string characterId,
+        string excludedMessageId,
+        int limit)
+    {
+        DatabaseManager.Initialize();
+
+        return DatabaseManager.Connection
+            .Table<ChatMessageData>()
+            .Where(m =>
+                m.UserId == userId &&
+                m.CharacterId == characterId &&
+                m.MessageId != excludedMessageId)
+            .OrderByDescending(m => m.CreatedAtTicks)
+            .Take(limit)
+            .ToList();
+    }
 
     public static List<ChatMessageData> SearchMessages(ChatMessageSearchCondition condition)
     {

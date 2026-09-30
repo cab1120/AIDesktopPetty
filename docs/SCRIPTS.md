@@ -1,18 +1,19 @@
 # 脚本导航
 
-2026-09-21。路径默认相对 Assets/Scripts；签名以源码为准。
+2026-09-30。路径默认相对 Assets/Scripts；签名以源码为准。
 
 | 区域 | 入口 | 责任 |
 | --- | --- | --- |
 | DataBase | AppInitializer、DatabaseManager、DefaultDataInitializer | 启动、六表、默认数据 |
-| DataBase | AuthService、Data/GlobalSession | 登录与身份 |
+| DataBase | AuthService、Data/GlobalSession、Data/SessionSnapshot | 登录、会话版本和请求身份快照 |
+| Character/Conversation | ChatTurn、ConversationService | 一轮聊天的身份/消息 ID、串行队列、取消和结果提交 |
 | DataBase/Data | UserData、Character、ChatMessage、Emotion、InteractionEvent、UserCharacterState | Data/Repository/Service，数据与业务规则 |
-| Character/AI/AIChat | AIChat | 配置、日志、聊天、搜索/模型请求 |
+| Character/AI/AIChat | AIChat、ChatReplyResult | 配置、日志、活动请求取消、搜索/模型请求与普通回复结果 |
 | 同上 | ChatContextBuilder、ChatContextTextBuilder | 消息数组与搜索上下文 |
 | 同上 | SearchDecison/SearchDecisionService、SearchDecisonMode/SearchRuleFilter、SearchCacheService、SearchResultFormatter | 搜索决策与缓存；Decison 为现有拼写 |
 | Character/AI/Prompt | CharacterPromptLoader、CharacterPromptBuilder、PromptContext、Emotion、IrohaPrompt | 配置驱动 Prompt、情绪和文本 |
 | Character/AI/AutoTalk | AIContextReactionManager、ContextEvaluator | 主动气泡和筛选 |
-| Character/UI | UIManager、MessageUI、BubbleUIManager、PetToggleUI | 聊天、消息、气泡、展开 |
+| Character/UI | UIManager、MessageUI、BubbleUIManager、PetToggleUI | 聊天、排队气泡、会话历史重载、主动气泡、展开 |
 | Character/UI/Layout | DesktopPetLayoutController、DesktopPetLayoutProfile、DesktopPetLayoutMode | 布局和窗口尺寸 |
 | Character/UI/Login、ChatHistory、ControlPanel(UserCharactor) | PanelController / ListItem | 登录、历史、用户/角色管理 |
 | Presentation/Window | BorderlessWindow、TransparentBackground、ClickThroughController、WindowDragHandler、WindowSnapController、WindowSizeController | 窗口表现、拖拽、吸附、尺寸 |

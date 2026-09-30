@@ -450,6 +450,7 @@ GameObject:
   m_Component:
   - component: {fileID: 91917235}
   - component: {fileID: 91917234}
+  - component: {fileID: 91917247}
   - component: {fileID: 91917233}
   - component: {fileID: 91917236}
   - component: {fileID: 91917237}
@@ -485,7 +486,8 @@ MonoBehaviour:
   scrollRect: {fileID: 1563540553}
   userBubblePrefab: {fileID: 5220944489057745045, guid: 9bdb5937843931541be6d23225ff39e3, type: 3}
   aiBubblePrefab: {fileID: 4518842323971275892, guid: 3b9f2a39b869098419f8993f26f3fa15, type: 3}
-  aiChat: {fileID: 91917234}
+  conversationService: {fileID: 91917247}
+  visibleHistoryCount: 20
 --- !u!114 &91917234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -661,6 +663,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2aee498778c01eb4d90416e756450fcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &91917247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 91917232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afad7034d3bf0784e9fd83dff6c9b5da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aiChat: {fileID: 91917234}
 --- !u!1 &153021199
 GameObject:
   m_ObjectHideFlags: 0
@@ -1858,6 +1873,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1909,7 +1925,7 @@ Camera:
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 0
-  m_HDR: 1
+  m_HDR: 0
   m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
@@ -1931,6 +1947,39 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
 --- !u!1 &550879938
 GameObject:
   m_ObjectHideFlags: 0
@@ -4516,6 +4565,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1280554625}
   - component: {fileID: 1280554626}
+  - component: {fileID: 1280554627}
   m_Layer: 5
   m_Name: Bubble
   m_TagString: Untagged
@@ -4570,6 +4620,22 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1280554627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1280554624}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27d7fc99ef56e1b458f856c3d43ed0ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contextManager: {fileID: 91917243}
+  bubbleUI: {fileID: 91917244}
+  aiChat: {fileID: 91917234}
+  globalCooldown: 3
 --- !u!1 &1309492041
 GameObject:
   m_ObjectHideFlags: 0

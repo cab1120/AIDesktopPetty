@@ -83,7 +83,7 @@ public class CharacterModifyPanelController : MonoBehaviour
         if (!isEditMode)
         {
             bool success = CharacterRepository.AddCharacter(
-                GlobalSession.CurrentUserName,
+                GlobalSession.CaptureSnapshot().UserName,
                 characterNameInput.text,
                 loadedPromptJson,
                 isActiveToggle.isOn,

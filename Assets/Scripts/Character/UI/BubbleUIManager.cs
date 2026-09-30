@@ -16,6 +16,27 @@ public class BubbleUIManager : MonoBehaviour
 
     private Coroutine hideCoroutine;
 
+    private void OnEnable()
+    {
+        GlobalSession.SessionVersionChanged += OnSessionVersionChanged;
+        if (bubbleRoot != null) bubbleRoot.SetActive(false);
+    }
+
+    private void OnDisable()
+    {
+        GlobalSession.SessionVersionChanged -= OnSessionVersionChanged;
+    }
+
+    private void OnSessionVersionChanged(long version)
+    {
+        if (hideCoroutine != null)
+        {
+            StopCoroutine(hideCoroutine);
+            hideCoroutine = null;
+        }
+        if (bubbleRoot != null) bubbleRoot.SetActive(false);
+    }
+
     void Start()
     {
         bubbleRoot.SetActive(false);

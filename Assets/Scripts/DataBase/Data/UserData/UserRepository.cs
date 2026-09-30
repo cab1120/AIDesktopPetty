@@ -171,7 +171,7 @@ public static class UserRepository
             return false;
         }
 
-        if (user.UserName == GlobalSession.CurrentUserName)
+        if (user.UserId == GlobalSession.CaptureSnapshot().UserId)
         {
             error = "Current login user cannot delete itself";
             return false;
@@ -191,17 +191,17 @@ public static class UserRepository
             return false;
         }
 
-        if (userName == GlobalSession.CurrentUserName)
-        {
-            error = "Current login user cannot delete itself";
-            return false;
-        }
-
         var user = GetByUserName(userName);
 
         if (user == null)
         {
             error = "User does not exist";
+            return false;
+        }
+
+        if (user.UserId == GlobalSession.CaptureSnapshot().UserId)
+        {
+            error = "Current login user cannot delete itself";
             return false;
         }
 
