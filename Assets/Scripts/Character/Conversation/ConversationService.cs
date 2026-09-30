@@ -127,110 +127,134 @@ public class ConversationService : MonoBehaviour
     /// </summary>
     private IEnumerator ProcessQueue()
     {
+        // 让 UI 先登记待执行气泡；StartCoroutine 会同步执行到第一个 yield。
+        yield return null;
         try
         {
-        while (pendingTurns.Count > 0)
-        {
-            ChatTurn turn =
-                pendingTurns.Dequeue();
-
-            // Turn 还没开始就已经换了 Session，
-            // 直接丢弃，不允许旧身份继续进入业务流程。
-            if (!GlobalSession.IsCurrent(turn.Session))
+            while (pendingTurns.Count > 0)
             {
-                continue;
-            }
+                ChatTurn turn =
+                    pendingTurns.Dequeue();
 
-            currentTurn = turn;
+                // Turn 还没开始就已经换了 Session，
+                // 直接丢弃，不允许旧身份继续进入业务流程。
+                if (!GlobalSession.IsCurrent(turn.Session))
+                {
+                    TurnCancelled?.Invoke(turn);
+                    continue;
+                }
 
-            /*
-             * 重要：
-             * 用户消息不是在点击发送按钮时立即写库，
-             * 而是在真正轮到这个 Turn 执行时写入。
-             *
-             * 这样排在后面的 Turn 不会提前成为
-             * 前一个 Turn 的“未来历史”。
-             */
-            ChatMessageData userMessage =
-                ChatMessageService.SaveUserMessage(
-                    turn
+                currentTurn = turn;
+
+                /*
+                 * 重要：
+                 * 用户消息不是在点击发送按钮时立即写库，
+                 * 而是在真正轮到这个 Turn 执行时写入。
+                 *
+                 * 这样排在后面的 Turn 不会提前成为
+                 * 前一个 Turn 的“未来历史”。
+                 */
+                ChatMessageData userMessage =
+                    ChatMessageService.SaveUserMessage(turn);
+
+                if (userMessage == null)
+                {
+                    Debug.LogError(
+                        $"用户消息保存失败。TurnId={turn.TurnId}");
+
+                    CompleteFailure(
+                        turn,
+                        "用户消息保存失败");
+                    continue;
+                }
+
+                // 只有持久化成功，UI 才把待执行气泡转为正式气泡。
+                TurnStarted?.Invoke(turn);
+
+                try
+                {
+                    RelationshipService.OnUserSendMessage(turn.Session, turn.Input);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError("关系状态更新失败: " + ex.GetType().Name);
+                    CompleteFailure(turn, "关系状态更新失败");
+                    continue;
+                }
+
+                ChatReplyResult reply = null;
+
+                bool callbackInvoked = false;
+
+                yield return StartCoroutine(
+                    aiChat.GetAIReply(
+                        turn,
+                        result =>
+                        {
+                            reply = result;
+                            callbackInvoked = true;
+                        }
+                    )
                 );
 
-            if (userMessage == null)
-            {
-                Debug.LogError(
-                    $"用户消息保存失败。" +
-                    $"TurnId={turn.TurnId}"
+                /*
+                 * AI 请求期间可能已经发生角色切换。
+                 *
+                 * 这时旧请求即使正常返回，
+                 * 也绝对不能显示、落库或修改新角色关系。
+                 */
+                if (!GlobalSession.IsCurrent(turn.Session))
+                {
+                    CompleteCancelled(turn);
+                    continue;
+                }
+
+                // 只有成功且非空的回复可以写入聊天记录。
+                if (!callbackInvoked || reply == null)
+                {
+                    CompleteFailure(
+                        turn,
+                        "请求未正常结束");
+
+                    continue;
+                }
+
+                if (reply.IsCancelled)
+                {
+                    CompleteCancelled(turn);
+                    continue;
+                }
+
+                if (reply.IsFailure)
+                {
+                    CompleteFailure(
+                        turn,
+                        reply.Error ?? "请求失败");
+
+                    continue;
+                }
+
+
+                ChatMessageData savedReply = ChatMessageService.SaveAssistantMessage(
+                    turn.Session,
+                    reply.Text
+                );
+                if (savedReply == null)
+                {
+                    CompleteFailure(
+                        turn,
+                        "回复保存失败");
+                    continue;
+                }
+
+                RelationshipService.OnAssistantReplyFinished(
+                    turn.Session
                 );
 
-                currentTurn = null;
-                continue;
-            }
-
-            RelationshipService.OnUserSendMessage(
-                turn.Session,
-                turn.Input
-            );
-
-            ChatReplyResult reply = null;
-
-            bool callbackInvoked = false;
-
-            yield return StartCoroutine(
-                aiChat.GetAIReply(
+                CompleteSuccess(
                     turn,
-                    result =>
-                    {
-                        reply = result;
-                        callbackInvoked = true;
-                    }
-                )
-            );
-
-            /*
-             * AI 请求期间可能已经发生角色切换。
-             *
-             * 这时旧请求即使正常返回，
-             * 也绝对不能显示、落库或修改新角色关系。
-             */
-            if (!GlobalSession.IsCurrent(turn.Session))
-            {
-                currentTurn = null;
-                continue;
+                    reply.Text);
             }
-
-            // 只有成功且非空的回复可以写入聊天记录。
-            if (!callbackInvoked || reply == null || !reply.IsSuccess)
-            {
-                TurnFailed?.Invoke(turn, reply?.Error ?? "请求未完成");
-                currentTurn = null;
-                continue;
-            }
-
-            TurnStarted?.Invoke(turn);
-
-            ChatMessageData savedReply = ChatMessageService.SaveAssistantMessage(
-                turn.Session,
-                reply.Text
-            );
-            if (savedReply == null)
-            {
-                TurnFailed?.Invoke(turn, "回复保存失败");
-                currentTurn = null;
-                continue;
-            }
-
-            RelationshipService.OnAssistantReplyFinished(
-                turn.Session
-            );
-
-            AssistantReplyReady?.Invoke(
-                turn,
-                reply.Text
-            );
-
-            currentTurn = null;
-        }
 
         }
         finally
@@ -255,14 +279,70 @@ public class ConversationService : MonoBehaviour
     private void CancelPendingAndCurrent()
     {
         while (pendingTurns.Count > 0)
-            TurnCancelled?.Invoke(pendingTurns.Dequeue());
+        {
+            ChatTurn pending =
+                pendingTurns.Dequeue();
 
-        currentTurn = null;
+            TurnCancelled?.Invoke(pending);
+        }
+
+        if (currentTurn != null)
+        {
+            ChatTurn running =
+                currentTurn;
+
+            // 同样先清状态，再广播。
+            currentTurn = null;
+
+            TurnCancelled?.Invoke(running);
+        }
+
         aiChat?.CancelActiveRequests();
+
         if (queueCoroutine != null)
         {
             StopCoroutine(queueCoroutine);
             queueCoroutine = null;
         }
+    }
+
+    private void CompleteSuccess(
+        ChatTurn turn,
+        string reply)
+    {
+        if (!ReferenceEquals(currentTurn, turn))
+            return;
+
+        // 先改变内部状态，再通知外界。
+        currentTurn = null;
+
+        AssistantReplyReady?.Invoke(
+            turn,
+            reply);
+    }
+
+    private void CompleteFailure(
+        ChatTurn turn,
+        string error)
+    {
+        if (!ReferenceEquals(currentTurn, turn))
+            return;
+
+        currentTurn = null;
+
+        TurnFailed?.Invoke(
+            turn,
+            error);
+    }
+
+    private void CompleteCancelled(
+        ChatTurn turn)
+    {
+        if (!ReferenceEquals(currentTurn, turn))
+            return;
+
+        currentTurn = null;
+
+        TurnCancelled?.Invoke(turn);
     }
 }

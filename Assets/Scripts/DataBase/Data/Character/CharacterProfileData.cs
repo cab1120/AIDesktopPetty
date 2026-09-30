@@ -7,6 +7,10 @@ public class CharacterProfileData
     [PrimaryKey]
     public string CharacterId { get; set; } = Guid.NewGuid().ToString();
 
+    // 旧库通过迁移回填；真实关联必须使用不可变的 UserId。
+    [Indexed]
+    public string UserId { get; set; }
+
     [Indexed, NotNull]
     public string UserName { get; set; }
 

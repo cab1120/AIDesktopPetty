@@ -48,12 +48,7 @@ namespace Platform.Windows
 
         private void LogStartupResult()
         {
-            if (_initializationResult)
-            {
-                _windowsWindowService
-                    ?.LogStartupDiagnostics(
-                        _initializationResult);
-            }
+            _windowsWindowService?.LogStartupDiagnostics(_initializationResult);
         }
     }
 }

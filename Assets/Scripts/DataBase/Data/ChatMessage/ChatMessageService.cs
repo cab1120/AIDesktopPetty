@@ -73,13 +73,23 @@ public static class ChatMessageService
                 CreatedAtTicks = DateTime.Now.Ticks
             };
 
-        ChatMessageRepository.AddMessage(message);
-
-        ChatMessageRepository.TrimOldMessages(
-            session.UserId,
-            session.CharacterId,
-            MaxMessageCount
-        );
+        try
+        {
+            DatabaseManager.Connection.RunInTransaction(() =>
+            {
+                // 同一主线程内再次验证：旧会话不允许写入新角色。
+                if (!GlobalSession.IsCurrent(session))
+                    throw new InvalidOperationException("会话已过期");
+                ChatMessageRepository.AddMessage(message);
+                ChatMessageRepository.TrimOldMessages(
+                    session.UserId, session.CharacterId, MaxMessageCount);
+            });
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("聊天记录保存失败: " + ex.GetType().Name);
+            return null;
+        }
 
         Debug.Log($"聊天记录已保存：{sender} / {message.MessageId}");
 

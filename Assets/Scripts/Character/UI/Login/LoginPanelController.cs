@@ -27,7 +27,7 @@ public class LoginPanelController : MonoBehaviour
                 DesktopPetLayoutMode.Login
             );
         
-        messageText.text = "";
+        messageText.text = AppInitializer.StartupError ?? "";
         userNameInput.text = "DefaultUser";
         passwordInput.text = "123456";
         characterNameInput.text = "DefaultCharacter";
@@ -35,6 +35,11 @@ public class LoginPanelController : MonoBehaviour
 
     public void OnClickLogin()
     {
+        if (AppInitializer.StartupError != null)
+        {
+            messageText.text = AppInitializer.StartupError;
+            return;
+        }
         bool success = AuthService.Login(
             userNameInput.text,
             passwordInput.text,

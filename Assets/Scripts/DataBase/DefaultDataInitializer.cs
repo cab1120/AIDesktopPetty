@@ -9,8 +9,18 @@ public static class DefaultDataInitializer
 
     public static void Initialize()
     {
-        CreateDefaultUser();
-        CreateDefaultCharacter();
+        string promptPath = Path.Combine(Application.streamingAssetsPath,
+            "DefaultCharacterPrompt.json");
+        if (!File.Exists(promptPath))
+            throw new FileNotFoundException("默认角色 Prompt 文件不存在", promptPath);
+        string prompt = File.ReadAllText(promptPath);
+        if (string.IsNullOrWhiteSpace(prompt))
+            throw new InvalidDataException("默认角色 Prompt 文件为空: " + promptPath);
+        DatabaseManager.Connection.RunInTransaction(() =>
+        {
+            CreateDefaultUser();
+            CreateDefaultCharacter(prompt);
+        });
     }
 
     private static void CreateDefaultUser()
@@ -33,7 +43,7 @@ public static class DefaultDataInitializer
         DatabaseManager.Connection.Insert(user);
     }
 
-    private static void CreateDefaultCharacter()
+    private static void CreateDefaultCharacter(string prompt)
     {
         var character = CharacterRepository.GetByUserAndName(
             DefaultUserName,
@@ -43,23 +53,14 @@ public static class DefaultDataInitializer
         if (character != null)
             return;
 
-        string promptPath = Path.Combine(
-            Application.streamingAssetsPath,
-            "DefaultCharacterPrompt.json"
-        );
-
-        if (!File.Exists(promptPath))
-        {
-            Debug.LogError(
-                $"默认角色 Prompt 文件不存在: {promptPath}");
-        }
-
+        var owner = UserRepository.GetByUserName(DefaultUserName);
         character = new CharacterProfileData
         {
             CharacterId = Guid.NewGuid().ToString(),
+            UserId = owner.UserId,
             UserName = DefaultUserName,
             CharacterName =  DefaultCharacterName,
-            PromptJson = File.ReadAllText(promptPath),
+            PromptJson = prompt,
             IsActive = true,
             CreatedAtTicks = DateTime.Now.Ticks
         };

@@ -1,6 +1,6 @@
 # 项目协作说明
 
-核对日期：2026-09-21。先读 README.md，再按任务读 docs/ARCHITECTURE.md、docs/PROJECT_PLAN.md、docs/SCRIPTS.md、docs/API_EVENTS.md。AGENT.md 仅作兼容入口。
+核对日期：2026-09-30。先读 README.md，再按任务读 docs/ARCHITECTURE.md、docs/PROJECT_PLAN.md、docs/SCRIPTS.md、docs/API_EVENTS.md。修改聊天、数据或窗口前还要读 docs/M0_ARCHITECTURE_AND_HANDOFF_2026-09-30.md。AGENT.md 仅作兼容入口。
 
 ## 事实和方向
 
@@ -13,7 +13,7 @@
 ## 架构规则
 
 - Presentation/业务不得直接 P/Invoke Win32、暴露 HWND、使用 GWL/WS/WM 或按 Screen.currentResolution 计算工作区。窗口操作经 IWindowService，Native ABI 仅在 Platform/Windows/Native。SQLite 兼容层不属于窗口 API。
-- DesktopContextManager 是已知违例，不应仿照它增加直接调用；前台感知隔离是待办，不是已有接口。
+- 前台感知通过 Platform/Windows/WindowsForegroundContextService；Win32 P/Invoke 仅在 Platform/Windows/Native，Presentation 不得重新引入句柄或进程 API。
 - 区分应用、会话、世界、视图寿命，不把所有 Manager 都设为 DontDestroyOnLoad；旧请求不得写入新角色。
 - Unity 对象/UI 操作保持主线程；未来 Action 经白名单和可取消执行器，不执行 LLM 输出的脚本或对象路径。
 - 保留现有目录。拆 asmdef 前分析引用图，逐模块迁移并保留 .meta GUID，做场景/Prefab 回归。
@@ -34,3 +34,14 @@
 - 文档修改检查链接、路径、时序、状态一致性；未运行 Unity 就不宣称编译/Player 通过。
 - .ai/ 保持忽略；稳定共享事实进入 docs，本地术语/规格可进入 .ai，个人 Developer Model 不进入仓库。
 - 修改功能后同步相关说明。文档中的拟议接口不能当成已存在的 API。
+
+## M0 会话与数据不变量
+
+- 普通聊天入口只经 `ConversationService.TrySend`；每次输入创建不可变 `ChatTurn`（`TurnId`、用户消息 ID、输入、`SessionSnapshot`），同一会话逐轮串行。不得在异步中重读 `GlobalSession.Current*` 决定目标用户或角色。
+- 请求、搜索、主动气泡和关系更新使用请求时快照；登录、退出、切角色、当前角色改名及当前用户身份资料变化使旧版本失效。旧请求 Abort；落库和显示前验证 `GlobalSession.IsCurrent`。待执行气泡取消时删除，切会话清空并加载新角色历史。
+- 用户消息仅在轮到该 Turn 执行时落库；构建模型消息时按 `UserMessageId` 排除已保存的本轮输入，再追加一次。失败和取消不能写 Assistant 消息或增加回复成功的关系值。
+- 网络回复必须区分成功、失败、取消；超时、HTTP、网络、解析和空内容均走失败。每个 Turn 只产生一次终态，完成或取消都要释放请求与队列占用。
+- `UserId`、`CharacterId` 是数据归属键，`UserName`、`CharacterName` 只作展示/历史快照。修改 schema 先备份旧库，在脱敏副本上做可重复迁移和回滚测试；用户/角色删除要事务清理关联表，当前角色先切换再删除。
+- 旧库无法证明归属的角色由 `LegacyUnclaimedCharacter` 标记并原样保留；可用角色按现存 `UserId` 查询，隔离角色不可登录、展示、编辑或删除。不存在的用户名必须立即返回空，不能用空 `UserId` 查询。认领隔离数据要有可信归属证据、单独事务和副本回归。
+- 应用日志订阅只在应用寿命建立一次并释放，不写密钥、原始聊天或窗口标题；配置文件只用本地 `config.json`，仓库只保留 `config.example.json`。缺默认 Prompt 时阻断初始化并显示位置。
+- Windows x64 Player 与多显示器/DPI/透明/点击穿透的实际表现需要单独验证。静态 C# 编译或 Editor 测试不等于 Player 验收；验证状态见 M0 移交文档。

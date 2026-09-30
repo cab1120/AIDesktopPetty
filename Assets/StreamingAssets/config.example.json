@@ -1,4 +1,8 @@
 {
   "siliconFlowKey": "",
-  "bochaApiKey": ""
+  "bochaApiKey": "",
+  "siliconFlowUrl": "https://api.siliconflow.cn/v1/chat/completions",
+  "bochaUrl": "https://api.bochaai.com/v1/web-search",
+  "model": "Pro/deepseek-ai/DeepSeek-V3",
+  "timeoutSeconds": 30
 }

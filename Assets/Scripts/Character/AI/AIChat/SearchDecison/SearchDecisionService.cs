@@ -89,40 +89,68 @@ public static class SearchDecisionService
 
     private static SearchDecision ParseDecision(string raw)
     {
-        SearchDecision fallback = new SearchDecision
-        {
-            NeedSearch = false,
-            Query = "",
-            Reason = "决策解析失败，默认不搜索。"
-        };
-
         if (string.IsNullOrWhiteSpace(raw))
-            return fallback;
+            return null;
 
         try
         {
             int start = raw.IndexOf('{');
             int end = raw.LastIndexOf('}');
 
-            if (start < 0 || end < 0 || end <= start)
-                return fallback;
+            if (start < 0 ||
+                end < 0 ||
+                end <= start)
+            {
+                return null;
+            }
 
-            string json = raw.Substring(start, end - start + 1);
+            string json =
+                raw.Substring(
+                    start,
+                    end - start + 1);
 
-            JObject obj = JObject.Parse(json);
+            JObject obj =
+                JObject.Parse(json);
+
+            JToken needSearchToken =
+                obj["needSearch"];
+
+            if (needSearchToken == null ||
+                needSearchToken.Type != JTokenType.Boolean)
+            {
+                return null;
+            }
+
+            bool needSearch =
+                needSearchToken.Value<bool>();
+
+            string query =
+                obj["query"]?.ToString() ?? "";
+
+            string reason =
+                obj["reason"]?.ToString() ?? "";
+
+            // 模型声称需要搜索，却没有给搜索词，
+            // 属于无效协议结果，而不是“不搜索”。
+            if (needSearch &&
+                string.IsNullOrWhiteSpace(query))
+            {
+                return null;
+            }
 
             return new SearchDecision
             {
-                NeedSearch = obj["needSearch"]?.Value<bool>() ?? false,
-                Query = obj["query"]?.ToString() ?? "",
-                Reason = obj["reason"]?.ToString() ?? ""
+                NeedSearch = needSearch,
+                Query = query,
+                Reason = reason
             };
         }
         catch (Exception e)
         {
-            Debug.LogWarning("搜索决策解析失败：" + e.Message);
-            Debug.LogWarning("原始返回：" + raw);
-            return fallback;
+            Debug.LogWarning(
+                "搜索决策解析失败：" + e.Message);
+
+            return null;
         }
     }
 }

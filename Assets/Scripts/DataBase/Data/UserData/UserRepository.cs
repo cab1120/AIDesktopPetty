@@ -81,11 +81,19 @@ public static class UserRepository
             LastLoginAtTicks = DateTime.Now.Ticks
         };
 
-        DatabaseManager.Connection.Insert(user);
-
-        if (!CreateDefaultCharacterForUser(user.UserName, out error))
+        string creationError = null;
+        try
         {
-            DatabaseManager.Connection.Delete(user);
+            DatabaseManager.Connection.RunInTransaction(() =>
+            {
+                DatabaseManager.Connection.Insert(user);
+                if (!CreateDefaultCharacterForUser(user.UserName, out creationError))
+                    throw new InvalidOperationException(creationError);
+            });
+        }
+        catch (Exception ex)
+        {
+            error = creationError ?? ex.Message;
             return false;
         }
 
@@ -141,6 +149,13 @@ public static class UserRepository
             return false;
         }
 
+        if (string.IsNullOrWhiteSpace(newUserName) ||
+            (newRole != "Admin" && newRole != "User" && newRole != "Guest"))
+        {
+            error = "Invalid user name or role";
+            return false;
+        }
+
         user.UserName = newUserName;
         user.Role = newRole;
 
@@ -149,7 +164,14 @@ public static class UserRepository
             user.PasswordHash = PasswordHasher.Hash(newPassword);
         }
 
-        DatabaseManager.Connection.Update(user);
+        DatabaseManager.Connection.RunInTransaction(() =>
+        {
+            DatabaseManager.Connection.Update(user);
+            DatabaseManager.Connection.Execute(
+                "UPDATE CharacterProfile SET UserName = ? WHERE UserId = ?",
+                user.UserName, user.UserId);
+        });
+        GlobalSession.RefreshCurrentUser(user);
         return true;
     }
 
@@ -177,8 +199,16 @@ public static class UserRepository
             return false;
         }
 
-        DatabaseManager.Connection.Delete(user);
-        return true;
+        try
+        {
+            DeleteAllUserData(user);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            error = "删除用户失败: " + ex.Message;
+            return false;
+        }
     }
     
     public static bool DeleteUserByName(string userName, out string error)
@@ -205,7 +235,20 @@ public static class UserRepository
             return false;
         }
 
-        DatabaseManager.Connection.Delete(user);
-        return true;
+        return DeleteUser(user.UserId, out error);
+    }
+
+    private static void DeleteAllUserData(UserData user)
+    {
+        DatabaseManager.Connection.RunInTransaction(() =>
+        {
+            const string byUser = " WHERE UserId = ?";
+            DatabaseManager.Connection.Execute("DELETE FROM ChatMessage" + byUser, user.UserId);
+            DatabaseManager.Connection.Execute("DELETE FROM UserCharacterState" + byUser, user.UserId);
+            DatabaseManager.Connection.Execute("DELETE FROM EmotionState" + byUser, user.UserId);
+            DatabaseManager.Connection.Execute("DELETE FROM InteractionEvent" + byUser, user.UserId);
+            DatabaseManager.Connection.Execute("DELETE FROM CharacterProfile" + byUser, user.UserId);
+            DatabaseManager.Connection.Delete(user);
+        });
     }
 }

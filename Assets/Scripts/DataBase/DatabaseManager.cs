@@ -16,9 +16,22 @@ public static class DatabaseManager
         if (Connection != null)
             return;
 
-        Connection = new SQLiteConnection(DbPath);
+        bool existingDatabase = File.Exists(DbPath);
+        if (existingDatabase)
+            DatabaseSchemaMigrator.BackupBeforeMigration(DbPath);
 
-        CreateTables();
+        try
+        {
+            Connection = new SQLiteConnection(DbPath);
+            DatabaseSchemaMigrator.Migrate(Connection);
+            CreateTables();
+        }
+        catch
+        {
+            Connection?.Close();
+            Connection = null;
+            throw;
+        }
 
         Debug.Log($"Database initialized: {DbPath}");
     }

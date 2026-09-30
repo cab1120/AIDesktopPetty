@@ -1,25 +1,9 @@
 using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Text;
-using TMPro;
+using Platform.Windows;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 public class DesktopContextManager : MonoBehaviour
 {
-#if UNITY_STANDALONE_WIN
-
-    [DllImport("user32.dll")]
-    static extern IntPtr GetForegroundWindow();
-
-    [DllImport("user32.dll", CharSet = CharSet.Auto)]
-    static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);  //获取窗口名
-    
-    [DllImport("user32.dll")]
-    static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);   //获取进程名
-
-#endif
     
     private string lastConfirmedTitle = ""; // 真正触发了事件的窗口
     private string currentTrackingTitle = ""; // 正在“考察”中的窗口
@@ -39,23 +23,12 @@ public class DesktopContextManager : MonoBehaviour
         InvokeRepeating(nameof(CheckWindow), 1f, checkInterval); 
     }
 
-    const int nChars = 256;
-
-    StringBuilder buffer = new StringBuilder(nChars);
     void CheckWindow()
     {
-#if UNITY_STANDALONE_WIN
-
-        buffer.Clear();
-
-        IntPtr handle = GetForegroundWindow();
-        if (handle == IntPtr.Zero) return;
-        
-        string procName = GetProcessName(handle);
-        
-        if (GetWindowText(handle, buffer, nChars) > 0)
+        if (WindowsForegroundContextService.TryGetCurrent(out ForegroundContext context))
         {
-            string activeTitle = buffer.ToString();
+            string activeTitle = context.Title;
+            string procName = context.ProcessName;
 
             // 如果当前窗口和正在考察的窗口不一样，重置计时器
             if (activeTitle != currentTrackingTitle)
@@ -74,7 +47,6 @@ public class DesktopContextManager : MonoBehaviour
                     if (ContextEvaluator.IsInteresting(activeTitle, procName))
                     {
                         lastConfirmedTitle = activeTitle;
-                        Debug.Log($"[确认切换] 用户已进入窗口: {activeTitle}");
                         OnWindowChanged?.Invoke(activeTitle,procName);
                     }
                     
@@ -82,18 +54,6 @@ public class DesktopContextManager : MonoBehaviour
             }
         }
 
-#endif
-    }
-    
-    string GetProcessName(IntPtr handle)
-    {
-        try {
-            GetWindowThreadProcessId(handle, out uint pid);
-            using (Process p = Process.GetProcessById((int)pid))
-            {
-                return p.ProcessName;
-            }
-        } catch { return "unknown"; }
     }
     //测试用
     

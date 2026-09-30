@@ -4,7 +4,7 @@
 
 | 区域 | 入口 | 责任 |
 | --- | --- | --- |
-| DataBase | AppInitializer、DatabaseManager、DefaultDataInitializer | 启动、六表、默认数据 |
+| DataBase | AppInitializer、AppLogService、DatabaseManager、DatabaseSchemaMigrator、DefaultDataInitializer | 启动、日志、六表版本迁移/备份、默认数据 |
 | DataBase | AuthService、Data/GlobalSession、Data/SessionSnapshot | 登录、会话版本和请求身份快照 |
 | Character/Conversation | ChatTurn、ConversationService | 一轮聊天的身份/消息 ID、串行队列、取消和结果提交 |
 | DataBase/Data | UserData、Character、ChatMessage、Emotion、InteractionEvent、UserCharacterState | Data/Repository/Service，数据与业务规则 |
@@ -17,8 +17,8 @@
 | Character/UI/Layout | DesktopPetLayoutController、DesktopPetLayoutProfile、DesktopPetLayoutMode | 布局和窗口尺寸 |
 | Character/UI/Login、ChatHistory、ControlPanel(UserCharactor) | PanelController / ListItem | 登录、历史、用户/角色管理 |
 | Presentation/Window | BorderlessWindow、TransparentBackground、ClickThroughController、WindowDragHandler、WindowSnapController、WindowSizeController | 窗口表现、拖拽、吸附、尺寸 |
-| Presentation | DesktopContextManager | 前台轮询；遗留直接 user32 |
-| Platform/Windows | WindowsPlatformBootstrap、IWindowService、WindowsWindowService、Native、Models | 平台服务/ABI/值类型 |
+| Presentation | DesktopContextManager | 前台停留检测；从 Platform 获取上下文，不直接调用 user32 |
+| Platform/Windows | WindowsPlatformBootstrap、IWindowService、WindowsWindowService、WindowsForegroundContextService、Native、Models | 窗口与前台平台服务/ABI/值类型 |
 | Art/Scenes | SakuramachiSceneLoop、SakuramachiLoopTrack、SakuramachiLoopClip | 时间求值、Timeline |
 | Art/Scenes/Editor | SakuramachiLoopSetup、SakuramachiLoopValidation | 配置和历史隔离工程验证；运行前检查路径和保存行为 |
 | Shaders/Improved2.0/Editor | CharacterStyleAMaterials | A 材质切换/恢复 |

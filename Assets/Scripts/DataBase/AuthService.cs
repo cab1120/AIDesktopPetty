@@ -10,6 +10,12 @@ public static class AuthService
     {
         error = "";
 
+        if (AppInitializer.StartupError != null)
+        {
+            error = AppInitializer.StartupError;
+            return false;
+        }
+
         DatabaseManager.Initialize();
 
         var user = UserRepository.GetByUserName(userName);

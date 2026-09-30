@@ -178,6 +178,12 @@ public class UIManager : MonoBehaviour
     {
         if (!GlobalSession.IsCurrent(turn.Session))
             return;
+        // 写库前失败时，待执行气泡还不是正式聊天记录。
+        if (queuedBubbles.TryGetValue(turn.TurnId, out GameObject bubble))
+        {
+            queuedBubbles.Remove(turn.TurnId);
+            if (bubble != null) Destroy(bubble);
+        }
         CreateBubble(aiBubblePrefab, "回复失败，请重试。");
         StartOrRestartScrollToBottom();
     }

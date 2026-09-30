@@ -2,12 +2,12 @@ using System;
 
 public static class GlobalSession
 {
-    public static string CurrentUserId { get; private set; }
-    public static string CurrentUserName { get; private set; }
-    public static string CurrentRole { get; private set; }
+    private static string CurrentUserId { get; set; }
+    private static string CurrentUserName { get; set; }
+    private static string CurrentRole { get; set; }
 
-    public static string CurrentCharacterId { get; private set; }
-    public static string CurrentCharacterName { get; private set; }
+    private static string CurrentCharacterId { get; set; }
+    private static string CurrentCharacterName { get; set; }
     
     /// <summary>
     /// 当前会话代数。
@@ -15,7 +15,7 @@ public static class GlobalSession
     /// 它不是“登录次数”，而是用于判断异步任务是否仍属于当前会话的 Generation Token。
     /// 每次建立新登录会话、切换角色或清除会话时都会发生变化。
     /// </summary>
-    public static long SessionVersion { get; private set; }
+    private static long SessionVersion { get; set; }
 
     /// <summary>
     /// 会话代数发生变化时触发。
@@ -25,7 +25,7 @@ public static class GlobalSession
     /// </summary>
     public static event Action<long> SessionVersionChanged;
 
-    public static bool IsLoggedIn =>
+    private static bool IsLoggedIn =>
         !string.IsNullOrEmpty(CurrentUserId) &&
         !string.IsNullOrEmpty(CurrentCharacterId);
 
@@ -38,7 +38,7 @@ public static class GlobalSession
 
         if (character == null)
             throw new ArgumentNullException(nameof(character));
-        if (!string.Equals(user.UserName, character.UserName, StringComparison.Ordinal))
+        if (!string.Equals(user.UserId, character.UserId, StringComparison.Ordinal))
             throw new ArgumentException("角色不属于当前登录用户", nameof(character));
         
         CurrentUserId = user.UserId;
@@ -96,7 +96,7 @@ public static class GlobalSession
 
         // 管理界面可以启用其他用户的角色；该操作不能改变当前登录身份。
         if (!IsLoggedIn || !string.Equals(
-                CurrentUserName, character.UserName, StringComparison.Ordinal))
+                CurrentUserId, character.UserId, StringComparison.Ordinal))
             return;
 
         // Session 的身份判断必须使用稳定 ID，
@@ -104,6 +104,10 @@ public static class GlobalSession
             !string.Equals(
                 CurrentCharacterId,
                 character.CharacterId,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                CurrentCharacterName,
+                character.CharacterName,
                 StringComparison.Ordinal);
 
         CurrentCharacterId = character.CharacterId;
@@ -113,6 +117,17 @@ public static class GlobalSession
         {
             AdvanceSessionVersion();
         }
+    }
+
+    public static void RefreshCurrentUser(UserData user)
+    {
+        if (user == null || !IsLoggedIn || user.UserId != CurrentUserId)
+            return;
+        bool changed = CurrentUserName != user.UserName || CurrentRole != user.Role;
+        CurrentUserName = user.UserName;
+        CurrentRole = user.Role;
+        if (changed)
+            AdvanceSessionVersion();
     }
 
     public static void RefreshCurrentCharacterFromDatabase()

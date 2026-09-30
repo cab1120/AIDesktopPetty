@@ -64,7 +64,7 @@ AIChat 订阅 Application.logMessageReceived 后同步写入 Application.dataPat
 
 ## 已知缺口
 
-表现层通过 IWindowService 操作窗口，不得新增 HWND、Win32 常量或直接 P/Invoke。DesktopContextManager 仍直接 user32，是已知遗留违例。
+表现层通过 IWindowService 操作窗口；前台感知通过 Platform/Windows/WindowsForegroundContextService，不得新增 HWND、Win32 常量或直接 P/Invoke。M0 代码边界及验收状态见 [M0 架构移交](docs/M0_ARCHITECTURE_AND_HANDOFF_2026-09-30.md)。
 
 请求快照、普通聊天串行队列、当前输入排重、旧请求中止和回复落库前会话检查已有代码实现，仍需 Unity Editor/Player、联网和数据库副本回归。用户改名关联被单列为后续数据库迁移阶段；日志脱敏/轮转与世界生命周期仍待处理。触发条件和验收见[阶段报告](docs/SESSION_REFACTOR_REPORT_2026-09-30.md)。
 
