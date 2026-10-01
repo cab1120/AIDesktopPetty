@@ -1,6 +1,6 @@
 # 项目协作说明
 
-核对日期：2026-09-30。先读 README.md，再按任务读 docs/ARCHITECTURE.md、docs/PROJECT_PLAN.md、docs/SCRIPTS.md、docs/API_EVENTS.md。修改聊天、数据或窗口前还要读 docs/M0_ARCHITECTURE_AND_HANDOFF_2026-09-30.md。AGENT.md 仅作兼容入口。
+核对日期：2026-10-01。先读 README.md，再按任务读 docs/ARCHITECTURE.md、docs/PROJECT_PLAN.md、docs/SCRIPTS.md、docs/API_EVENTS.md。修改聊天、数据或窗口前还要读 docs/M0_ARCHITECTURE_AND_HANDOFF_2026-09-30.md；把原计划拆为实施任务时读 docs/IMPLEMENTATION_GUIDE.md。AGENT.md 仅作兼容入口。
 
 ## 事实和方向
 
@@ -36,6 +36,8 @@
 - 修改功能后同步相关说明。文档中的拟议接口不能当成已存在的 API。
 
 ## M0 会话与数据不变量
+
+以下为必须保持的目标规则，不能据此推断当前全链已满足。现有情绪调用仍把名称传入 ID 参数，主动气泡仍有原文 Unity 日志/事件，回复成功保存后的关系异常也有缺口；证据和定位见 docs/ARCHITECTURE.md 的 E01–E04。本轮仅更新文档，原计划不更新，新增修复/功能建议不等于实施授权。
 
 - 普通聊天入口只经 `ConversationService.TrySend`；每次输入创建不可变 `ChatTurn`（`TurnId`、用户消息 ID、输入、`SessionSnapshot`），同一会话逐轮串行。不得在异步中重读 `GlobalSession.Current*` 决定目标用户或角色。
 - 请求、搜索、主动气泡和关系更新使用请求时快照；登录、退出、切角色、当前角色改名及当前用户身份资料变化使旧版本失效。旧请求 Abort；落库和显示前验证 `GlobalSession.IsCurrent`。待执行气泡取消时删除，切会话清空并加载新角色历史。

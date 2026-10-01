@@ -193,7 +193,7 @@ namespace AIDesktopPetty.Art.Scenes
                 slot.working.SetFloat(EmissionStrength, emission);
                 slot.renderer.SetPropertyBlock(slot.working, slot.index);
             }
-            UpdateAudio(playAudio && Application.isPlaying);
+            UpdateAudio(playAudio && UnityEngine.Application.isPlaying);
         }
 
         static float Smooth(float value) => value * value * (3 - 2 * value);
