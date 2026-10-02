@@ -6,48 +6,49 @@ namespace AIDesktopPetty.Application.World
 {
     public sealed class WorldCoordinator : MonoBehaviour
     {
-        [Header("M1-1 临时模拟参数")]
-        [SerializeField, Min(0f)]
-        private float simulateEnterSeconds = 2f;
-
-        [SerializeField, Min(0f)]
-        private float simulateExitSeconds = 1f;
+        [Header("World Configuration")]
 
         [SerializeField]
         private WorldCatalog worldCatalog;
 
-        private WorldState state = WorldState.Desktop;
+        [SerializeField]
+        private WorldResourceServiceBehaviour resourceService;
+
+        private WorldState state =
+            WorldState.Desktop;
 
         private WorldScope currentScope;
 
         private long nextWorldInstanceId;
 
-        private Coroutine transitionRoutine;
+        /// <summary>
+        /// Exiting 时是否已经有一个真实清理协程在工作。
+        ///
+        /// 正常情况下重复 Exit 不会启动第二份清理。
+        /// 如果一次 Release 明确失败，下一次 RequestExit
+        /// 可以重新尝试。
+        /// </summary>
+        private bool exitRoutineRunning;
 
         public WorldState State => state;
 
-        public WorldScope CurrentScope => currentScope;
+        public WorldScope CurrentScope =>
+            currentScope;
 
-        public bool HasActiveWorld => currentScope != null;
+        public bool HasActiveWorld =>
+            currentScope != null;
 
-        public event Action<WorldState, WorldState> StateChanged;
+        public event Action<
+            WorldState,
+            WorldState> StateChanged;
 
         private void Awake()
         {
             state = WorldState.Desktop;
             currentScope = null;
-            transitionRoutine = null;
+            exitRoutineRunning = false;
         }
 
-        /// <summary>
-        /// 尝试开始进入一个世界。
-        ///
-        /// true:
-        /// 本次进入请求已被接受。
-        ///
-        /// false:
-        /// 请求被拒绝，例如当前已经在进入/世界/退出流程中。
-        /// </summary>
         public bool TryEnterWorld(
             string worldId,
             out string error)
@@ -63,7 +64,8 @@ namespace AIDesktopPetty.Application.World
             if (state != WorldState.Desktop)
             {
                 error =
-                    $"当前状态为 {state}，不能再次进入世界。";
+                    $"当前状态为 {state}，" +
+                    $"不能再次进入世界。";
 
                 return false;
             }
@@ -80,7 +82,17 @@ namespace AIDesktopPetty.Application.World
 
             if (worldCatalog == null)
             {
-                error = "WorldCatalog 尚未配置。";
+                error =
+                    "WorldCatalog 尚未绑定。";
+
+                return false;
+            }
+
+            if (resourceService == null)
+            {
+                error =
+                    "ResourceService 尚未绑定。";
+
                 return false;
             }
 
@@ -88,7 +100,8 @@ namespace AIDesktopPetty.Application.World
                     out string catalogError))
             {
                 error =
-                    $"WorldCatalog 无效：{catalogError}";
+                    $"WorldCatalog 无效：" +
+                    $"{catalogError}";
 
                 return false;
             }
@@ -104,6 +117,22 @@ namespace AIDesktopPetty.Application.World
                 return false;
             }
 
+            // ----------------------------
+            // Validate Before Mutate
+            // ----------------------------
+            // 能在创建 WorldScope 之前发现的问题，
+            // 尽量都先发现。
+            if (!resourceService.CanLoadWorldScene(
+                    definition,
+                    out string resourceError))
+            {
+                error =
+                    $"World 资源当前不可加载：" +
+                    $"{resourceError}";
+
+                return false;
+            }
+
             long instanceId =
                 ++nextWorldInstanceId;
 
@@ -114,7 +143,8 @@ namespace AIDesktopPetty.Application.World
 
             currentScope = scope;
 
-            if (!TryChangeState(WorldState.Entering))
+            if (!TryChangeState(
+                    WorldState.Entering))
             {
                 currentScope = null;
 
@@ -127,44 +157,42 @@ namespace AIDesktopPetty.Application.World
             Debug.Log(
                 $"[World] Enter accepted: {scope}");
 
-            transitionRoutine =
-                StartCoroutine(
-                    EnterRoutine(scope));
+            StartCoroutine(
+                EnterRoutine(scope));
 
             return true;
         }
 
-        /// <summary>
-        /// 请求退出当前世界。
-        ///
-        /// 这是一个幂等操作：
-        /// 多次调用不会造成多次释放。
-        /// </summary>
         public bool RequestExit()
         {
             switch (state)
             {
                 case WorldState.Desktop:
-                    // 已经在桌面。
-                    // Exit 的目标已经满足，因此直接视为成功。
+                    // 目标已经满足。
                     return true;
 
                 case WorldState.Entering:
                     if (currentScope == null)
                     {
                         Debug.LogError(
-                            "[World] Entering 状态没有有效 WorldScope。");
+                            "[World] Entering 状态没有 " +
+                            "WorldScope。");
 
                         return false;
                     }
 
-                    // 注意：
-                    // 不在这里假装“加载已经取消”。
-                    // 这里只记录用户已经不再需要这个世界。
+                    // ----------------------------
+                    // Logical cancellation
+                    // ----------------------------
+                    // 不假装 LoadSceneAsync 已经停止。
+                    // 这里只声明：
+                    // “即使它成功，我也不再要这个世界。”
                     currentScope.RequestExit();
 
                     Debug.Log(
-                        $"[World] Exit requested while entering: {currentScope}");
+                        $"[World] Exit requested " +
+                        $"while entering: " +
+                        $"{currentScope}");
 
                     return true;
 
@@ -172,149 +200,478 @@ namespace AIDesktopPetty.Application.World
                     if (currentScope == null)
                     {
                         Debug.LogError(
-                            "[World] Explore 状态没有有效 WorldScope。");
+                            "[World] Explore 状态没有 " +
+                            "WorldScope。");
 
                         return false;
                     }
 
-                    if (!TryChangeState(WorldState.Exiting))
+                    if (!TryChangeState(
+                            WorldState.Exiting))
+                    {
                         return false;
+                    }
 
                     Debug.Log(
-                        $"[World] Exit started: {currentScope}");
+                        $"[World] Exit started: " +
+                        $"{currentScope}");
 
-                    transitionRoutine =
-                        StartCoroutine(ExitRoutine(currentScope));
+                    StartExitRoutine(
+                        currentScope);
 
                     return true;
 
                 case WorldState.Exiting:
-                    // 退出已经开始。
-                    // 再次退出不重复执行清理。
+                    // 正在清理：
+                    // 重复 Exit 不启动第二个协程。
+                    //
+                    // 如果之前清理明确失败，
+                    // exitRoutineRunning 已经恢复 false，
+                    // 此时允许重新尝试。
+                    if (!exitRoutineRunning
+                        && currentScope != null)
+                    {
+                        Debug.Log(
+                            $"[World] Retry exit: " +
+                            $"{currentScope}");
+
+                        StartExitRoutine(
+                            currentScope);
+                    }
+
                     return true;
 
                 default:
                     Debug.LogError(
-                        $"[World] Unknown state: {state}");
+                        $"[World] Unknown state: " +
+                        $"{state}");
 
                     return false;
             }
         }
 
-        private IEnumerator EnterRoutine(WorldScope scope)
+        private IEnumerator EnterRoutine(
+            WorldScope scope)
         {
-            // ===========================
-            // M1-1 ONLY
-            // ===========================
-            // 这里只是模拟真实场景加载耗时。
-            //
-            // M1-2 / M1-3 会把这里替换成
-            // IResourceService + Scene Load。
-            yield return new WaitForSecondsRealtime(
-                simulateEnterSeconds);
+            WorldSceneLoadResult loadResult =
+                null;
 
+            bool callbackReceived = false;
+
+            yield return resourceService
+                .LoadWorldScene(
+                    scope.Definition,
+                    result =>
+                    {
+                        // ResourceService 的契约是：
+                        // 一个操作只产生一个完成结果。
+                        if (callbackReceived)
+                        {
+                            Debug.LogError(
+                                "[World] ResourceService " +
+                                "对同一次 Load 调用了多次 " +
+                                "completed。");
+
+                            return;
+                        }
+
+                        callbackReceived = true;
+                        loadResult = result;
+                    });
+
+            // ----------------------------
+            // 第一道 Commit Gate
+            // ----------------------------
+            //
+            // “异步操作结束”
+            // 不代表
+            // “结果仍然有资格提交”。
             if (!IsCurrentScope(scope))
             {
-                transitionRoutine = null;
+                // 理论上当前 Coordinator 的状态机
+                // 不应该轻易进入这里。
+                //
+                // 但如果后续架构变化导致旧请求回来，
+                // 成功加载的孤儿资源仍必须清理。
+                if (loadResult != null
+                    && loadResult.IsSuccess
+                    && loadResult.Handle != null)
+                {
+                    yield return ReleaseOrphanHandle(
+                        loadResult.Handle);
+                }
+
                 yield break;
             }
 
-            // 用户可能在“加载”过程中已经点击退出。
+            if (!callbackReceived
+                || loadResult == null)
+            {
+                FailEnterWithoutLoadedScene(
+                    scope,
+                    "ResourceService 的 Load 协程结束，" +
+                    "但没有返回完成结果。");
+
+                yield break;
+            }
+
+            if (!loadResult.IsSuccess)
+            {
+                FailEnterWithoutLoadedScene(
+                    scope,
+                    loadResult.Error
+                    ?? "未知场景加载错误。");
+
+                yield break;
+            }
+
+            if (loadResult.Handle == null)
+            {
+                FailEnterWithoutLoadedScene(
+                    scope,
+                    "ResourceService 返回 Success，" +
+                    "但 Handle 为 null。");
+
+                yield break;
+            }
+
+            // ----------------------------
+            // Ownership Transfer
+            // ----------------------------
+            //
+            // Scene 加载成功以后，
+            // Handle 从临时 LoadResult 的语义
+            // 转移给这一次 WorldScope。
+            scope.AttachSceneHandle(
+                loadResult.Handle);
+
+            Debug.Log(
+                $"[World] Scene handle attached: " +
+                $"{scope}");
+
+            // ----------------------------
+            // 第二道 Commit Gate
+            // ----------------------------
+            //
+            // 用户可能在加载过程中已经点了 Exit。
+            //
+            // 场景物理上加载成功，
+            // 业务上却已经不应该进入 Explore。
             if (scope.ExitRequested)
             {
-                if (!TryChangeState(WorldState.Exiting))
+                Debug.Log(
+                    $"[World] Scene loaded, but " +
+                    $"exit was already requested: " +
+                    $"{scope}");
+
+                if (!TryChangeState(
+                        WorldState.Exiting))
                 {
-                    transitionRoutine = null;
+                    Debug.LogError(
+                        "[World] 无法从 Entering " +
+                        "切换到 Exiting。");
+
                     yield break;
                 }
 
-                Debug.Log(
-                    $"[World] Enter completed but exit was already requested: {scope}");
+                StartExitRoutine(scope);
 
-                yield return new WaitForSecondsRealtime(
-                    simulateExitSeconds);
-
-                CompleteExit(scope);
-
-                transitionRoutine = null;
                 yield break;
             }
 
-            if (!TryChangeState(WorldState.Explore))
+            if (!TryChangeState(
+                    WorldState.Explore))
             {
-                transitionRoutine = null;
+                Debug.LogError(
+                    $"[World] Scene 已加载，" +
+                    $"但无法进入 Explore：" +
+                    $"{scope}");
+
+                // 已经拿到资源，
+                // 所以失败不能简单 yield break。
+                // 必须走退出补偿。
+                if (state == WorldState.Entering
+                    && TryChangeState(
+                        WorldState.Exiting))
+                {
+                    StartExitRoutine(scope);
+                }
+
                 yield break;
             }
 
             Debug.Log(
-                $"[World] Enter completed: {scope}");
-
-            transitionRoutine = null;
+                $"[World] Enter completed: " +
+                $"{scope}");
         }
 
-        private IEnumerator ExitRoutine(WorldScope scope)
+        private void StartExitRoutine(
+            WorldScope scope)
         {
-            // M1-1 ONLY:
-            // 模拟以后真正的世界清理 / 场景卸载。
-            yield return new WaitForSecondsRealtime(
-                simulateExitSeconds);
+            if (exitRoutineRunning)
+                return;
 
-            if (!IsCurrentScope(scope))
+            exitRoutineRunning = true;
+
+            StartCoroutine(
+                ExitRoutineWrapper(scope));
+        }
+
+        private IEnumerator ExitRoutineWrapper(
+            WorldScope scope)
+        {
+            try
             {
-                transitionRoutine = null;
+                yield return ExitRoutine(scope);
+            }
+            finally
+            {
+                exitRoutineRunning = false;
+            }
+        }
+
+        private IEnumerator ExitRoutine(
+            WorldScope scope)
+        {
+            if (!IsCurrentScope(scope))
                 yield break;
+
+            WorldSceneHandle handle =
+                scope.SceneHandle;
+
+            if (handle != null)
+            {
+                WorldSceneReleaseResult
+                    releaseResult = null;
+
+                bool callbackReceived = false;
+
+                yield return resourceService
+                    .ReleaseWorldScene(
+                        handle,
+                        result =>
+                        {
+                            if (callbackReceived)
+                            {
+                                Debug.LogError(
+                                    "[World] ResourceService " +
+                                    "对同一次 Release " +
+                                    "调用了多次 completed。");
+
+                                return;
+                            }
+
+                            callbackReceived = true;
+                            releaseResult = result;
+                        });
+
+                if (!IsCurrentScope(scope))
+                    yield break;
+
+                if (!callbackReceived
+                    || releaseResult == null)
+                {
+                    Debug.LogError(
+                        $"[World] Release 协程结束，" +
+                        $"但没有完成结果：" +
+                        $"{scope}");
+
+                    // 不假装已经 Desktop。
+                    // Handle 仍留在 Scope 中。
+                    yield break;
+                }
+
+                if (!releaseResult.IsSuccess)
+                {
+                    Debug.LogError(
+                        $"[World] Scene release failed: " +
+                        $"{scope}; " +
+                        $"{releaseResult.Error}");
+
+                    // 非常重要：
+                    // 不把 Scope 清掉。
+                    //
+                    // 如果资源没有释放成功，
+                    // 我们没有资格宣称已经 Desktop。
+                    yield break;
+                }
+
+                scope.DetachSceneHandle();
+
+                Debug.Log(
+                    $"[World] Scene handle released: " +
+                    $"{scope}");
             }
 
             CompleteExit(scope);
-
-            transitionRoutine = null;
         }
 
-        private void CompleteExit(WorldScope scope)
+        private IEnumerator ReleaseOrphanHandle(
+            WorldSceneHandle handle)
+        {
+            WorldSceneReleaseResult result =
+                null;
+
+            yield return resourceService
+                .ReleaseWorldScene(
+                    handle,
+                    releaseResult =>
+                    {
+                        result = releaseResult;
+                    });
+
+            if (result == null
+                || !result.IsSuccess)
+            {
+                Debug.LogError(
+                    "[World] Failed to release " +
+                    "orphaned scene handle: " +
+                    $"{result?.Error}");
+            }
+        }
+
+        /// <summary>
+        /// 处理“还没有取得场景 Handle”的进入失败。
+        ///
+        /// 因为没有资源需要释放，
+        /// 可以通过 Exiting 统一回到 Desktop。
+        /// </summary>
+        private void FailEnterWithoutLoadedScene(
+            WorldScope scope,
+            string error)
         {
             if (!IsCurrentScope(scope))
                 return;
 
-            Debug.Log(
-                $"[World] Exit completed: {scope}");
+            Debug.LogError(
+                $"[World] Enter failed: " +
+                $"{scope}; {error}");
 
-            // 非常重要：
-            // 先让世界实例失效。
-            currentScope = null;
-
-            TryChangeState(WorldState.Desktop);
-        }
-
-        private bool IsCurrentScope(WorldScope scope)
-        {
-            if (scope == null || currentScope == null)
-                return false;
-
-            return ReferenceEquals(scope, currentScope)
-                   &&
-                   scope.InstanceId == currentScope.InstanceId;
-        }
-
-        private bool TryChangeState(WorldState next)
-        {
-            WorldState previous = state;
-
-            if (!CanTransition(previous, next))
+            if (state != WorldState.Entering)
             {
                 Debug.LogError(
-                    $"[World] Illegal transition: {previous} -> {next}");
+                    $"[World] Enter failure " +
+                    $"occurred in unexpected state: " +
+                    $"{state}");
+
+                return;
+            }
+
+            if (!TryChangeState(
+                    WorldState.Exiting))
+            {
+                return;
+            }
+
+            CompleteExit(scope);
+        }
+
+        private bool CompleteExit(
+            WorldScope scope)
+        {
+            if (!IsCurrentScope(scope))
+                return false;
+
+            if (scope.SceneHandle != null)
+            {
+                Debug.LogError(
+                    $"[World] 拒绝完成 Exit：" +
+                    $"{scope} 仍然持有 SceneHandle。");
 
                 return false;
             }
 
+            if (!CanTransition(
+                    state,
+                    WorldState.Desktop))
+            {
+                Debug.LogError(
+                    $"[World] Illegal transition: " +
+                    $"{state} -> Desktop");
+
+                return false;
+            }
+
+            Debug.Log(
+                $"[World] Exit completed: {scope}");
+
+            // ----------------------------
+            // Commit lifecycle teardown
+            // ----------------------------
+            //
+            // 在广播 Desktop 之前，
+            // CurrentScope 必须已经为空。
+            //
+            // 这样 StateChanged 的订阅者
+            // 观察到 Desktop 时，
+            // 不会同时看到一个活动 Scope。
+            WorldState previous =
+                state;
+
+            currentScope = null;
+
+            ApplyStateChange(
+                previous,
+                WorldState.Desktop);
+
+            return true;
+        }
+
+        private bool IsCurrentScope(
+            WorldScope scope)
+        {
+            if (scope == null
+                || currentScope == null)
+            {
+                return false;
+            }
+
+            return ReferenceEquals(
+                       scope,
+                       currentScope)
+                   &&
+                   scope.InstanceId
+                   ==
+                   currentScope.InstanceId;
+        }
+
+        private bool TryChangeState(
+            WorldState next)
+        {
+            WorldState previous =
+                state;
+
+            if (!CanTransition(
+                    previous,
+                    next))
+            {
+                Debug.LogError(
+                    $"[World] Illegal transition: " +
+                    $"{previous} -> {next}");
+
+                return false;
+            }
+
+            ApplyStateChange(
+                previous,
+                next);
+
+            return true;
+        }
+
+        private void ApplyStateChange(
+            WorldState previous,
+            WorldState next)
+        {
             state = next;
 
             Debug.Log(
-                $"[World] State: {previous} -> {next}");
+                $"[World] State: " +
+                $"{previous} -> {next}");
 
-            NotifyStateChanged(previous, next);
-
-            return true;
+            NotifyStateChanged(
+                previous,
+                next);
         }
 
         private static bool CanTransition(
@@ -324,18 +681,23 @@ namespace AIDesktopPetty.Application.World
             switch (from)
             {
                 case WorldState.Desktop:
-                    return to == WorldState.Entering;
+                    return to
+                           == WorldState.Entering;
 
                 case WorldState.Entering:
-                    return to == WorldState.Explore
+                    return to
+                           == WorldState.Explore
                            ||
-                           to == WorldState.Exiting;
+                           to
+                           == WorldState.Exiting;
 
                 case WorldState.Explore:
-                    return to == WorldState.Exiting;
+                    return to
+                           == WorldState.Exiting;
 
                 case WorldState.Exiting:
-                    return to == WorldState.Desktop;
+                    return to
+                           == WorldState.Desktop;
 
                 default:
                     return false;
@@ -346,23 +708,30 @@ namespace AIDesktopPetty.Application.World
             WorldState previous,
             WorldState current)
         {
-            Action<WorldState, WorldState> handlers =
+            Action<
+                WorldState,
+                WorldState> handlers =
                 StateChanged;
 
             if (handlers == null)
                 return;
 
-            foreach (Action<WorldState, WorldState> handler
-                     in handlers.GetInvocationList())
+            foreach (
+                Action<
+                    WorldState,
+                    WorldState> handler
+                in handlers.GetInvocationList())
             {
                 try
                 {
-                    handler(previous, current);
+                    handler(
+                        previous,
+                        current);
                 }
                 catch (Exception exception)
                 {
-                    // Observer 的异常不应该破坏
-                    // WorldCoordinator 自己的状态机。
+                    // Observer 失败不能破坏
+                    // World 生命周期。
                     Debug.LogException(exception);
                 }
             }
@@ -370,13 +739,10 @@ namespace AIDesktopPetty.Application.World
 
         private void OnDestroy()
         {
-            if (transitionRoutine != null)
-            {
-                StopCoroutine(transitionRoutine);
-                transitionRoutine = null;
-            }
+            StopAllCoroutines();
 
             currentScope = null;
+            exitRoutineRunning = false;
         }
     }
 }

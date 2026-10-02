@@ -1,5 +1,6 @@
 using UnityEngine;
 using AIDesktopPetty.Application.World;
+using UnityEngine.SceneManagement;
 
 namespace AIDesktopPetty.Test.World {
     public sealed class WorldCoordinatorDebugHarness
@@ -107,6 +108,70 @@ namespace AIDesktopPetty.Test.World {
 
             Debug.Log(
                 $"[World Test] State={coordinator.State}, Scope={scope}");
+        }
+        [ContextMenu("M1-3 / Print Loaded Scenes")]
+        private void PrintLoadedScenes()
+        {
+            Debug.Log(
+                $"[M1-3] Loaded scene count = " +
+                $"{SceneManager.sceneCount}");
+
+            for (int i = 0;
+                 i < SceneManager.sceneCount;
+                 i++)
+            {
+                Scene scene =
+                    SceneManager.GetSceneAt(i);
+
+                Debug.Log(
+                    $"[M1-3] Scene[{i}] " +
+                    $"name={scene.name}, " +
+                    $"path={scene.path}, " +
+                    $"loaded={scene.isLoaded}");
+            }
+
+            Scene active =
+                SceneManager.GetActiveScene();
+
+            Debug.Log(
+                $"[M1-3] Active Scene = " +
+                $"{active.name}");
+        }
+        [ContextMenu(
+            "M1-3 / Enter Then Immediately Exit")]
+        private void EnterThenImmediatelyExit()
+        {
+            if (!UnityEngine.Application.isPlaying)
+            {
+                Debug.LogWarning(
+                    "请在 Play Mode 中测试。");
+
+                return;
+            }
+
+            if (coordinator == null)
+            {
+                Debug.LogError(
+                    "WorldCoordinator 未绑定。");
+
+                return;
+            }
+
+            if (!coordinator.TryEnterWorld(
+                    testWorldId,
+                    out string error))
+            {
+                Debug.LogError(
+                    $"Enter rejected: {error}");
+
+                return;
+            }
+
+            Debug.Log(
+                "[M1-3] Enter accepted; " +
+                "requesting Exit immediately.");
+
+            coordinator.RequestExit();
         }
     }
 }

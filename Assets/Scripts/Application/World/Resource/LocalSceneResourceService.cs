@@ -15,9 +15,9 @@ namespace AIDesktopPetty.Application.World
     /// SceneManager 被限制在这个 Adapter 内。
     /// </summary>
     public sealed class LocalSceneResourceService
-        : IResourceService
+        : WorldResourceServiceBehaviour
     {
-        public bool CanLoadWorldScene(
+        public override bool CanLoadWorldScene(
             WorldDefinition definition,
             out string error)
         {
@@ -67,7 +67,7 @@ namespace AIDesktopPetty.Application.World
             return true;
         }
 
-        public IEnumerator LoadWorldScene(
+        public override IEnumerator LoadWorldScene(
             WorldDefinition definition,
             Action<WorldSceneLoadResult> completed)
         {
@@ -145,7 +145,7 @@ namespace AIDesktopPetty.Application.World
                 WorldSceneLoadResult.Success(handle));
         }
 
-        public IEnumerator ReleaseWorldScene(
+        public override IEnumerator ReleaseWorldScene(
             WorldSceneHandle handle,
             Action<WorldSceneReleaseResult> completed)
         {

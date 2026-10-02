@@ -11,6 +11,9 @@ namespace AIDesktopPetty.Test.World
 
         [SerializeField]
         private WorldDefinition worldDefinition;
+        
+        [SerializeField]
+        private WorldResourceServiceBehaviour resourceService;
 
         [ContextMenu("M1-2 / Validate World Catalog")]
         private void ValidateCatalog()
@@ -47,10 +50,15 @@ namespace AIDesktopPetty.Test.World
                 return;
             }
 
-            IResourceService service =
-                new LocalSceneResourceService();
+            if (resourceService == null)
+            {
+                Debug.LogError(
+                    "[M1-2] ResourceService 未绑定。");
 
-            if (!service.CanLoadWorldScene(
+                return;
+            }
+
+            if (!resourceService.CanLoadWorldScene(
                     worldDefinition,
                     out string error))
             {
