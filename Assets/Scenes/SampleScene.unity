@@ -4871,6 +4871,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   simulateEnterSeconds: 2
   simulateExitSeconds: 1
+  worldCatalog: {fileID: 11400000, guid: 13efebc536e4c1e4387dcf8c17f15d2f, type: 2}
 --- !u!114 &1379137607
 MonoBehaviour:
   m_ObjectHideFlags: 0

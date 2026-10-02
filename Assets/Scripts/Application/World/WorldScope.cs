@@ -4,36 +4,70 @@ namespace AIDesktopPetty.Application.World
 {
     /// <summary>
     /// 一次具体世界实例的生命周期上下文。
-    ///
-    /// 例如：
-    /// 第一次进入樱町站台和第二次进入樱町站台，
-    /// 即使 WorldId 相同，也属于两个不同的 WorldScope。
     /// </summary>
     public sealed class WorldScope
     {
         public long InstanceId { get; }
 
-        public string WorldId { get; }
+        public WorldDefinition Definition { get; }
 
-        public bool ExitRequested { get; private set; }
+        public string WorldId => Definition.WorldId;
 
-        internal WorldScope(long instanceId, string worldId)
+        public WorldSceneHandle SceneHandle
+        {
+            get;
+            private set;
+        }
+
+        public bool ExitRequested
+        {
+            get;
+            private set;
+        }
+
+        internal WorldScope(
+            long instanceId,
+            WorldDefinition definition)
         {
             if (instanceId <= 0)
-                throw new ArgumentOutOfRangeException(nameof(instanceId));
+                throw new ArgumentOutOfRangeException(
+                    nameof(instanceId));
 
-            if (string.IsNullOrWhiteSpace(worldId))
-                throw new ArgumentException(
-                    "WorldId cannot be empty.",
-                    nameof(worldId));
+            if (definition == null)
+                throw new ArgumentNullException(
+                    nameof(definition));
 
             InstanceId = instanceId;
-            WorldId = worldId;
+            Definition = definition;
         }
 
         internal void RequestExit()
         {
             ExitRequested = true;
+        }
+
+        internal void AttachSceneHandle(
+            WorldSceneHandle handle)
+        {
+            if (handle == null)
+                throw new ArgumentNullException(
+                    nameof(handle));
+
+            if (SceneHandle != null)
+            {
+                throw new InvalidOperationException(
+                    $"World {this} 已经拥有 SceneHandle。");
+            }
+
+            SceneHandle = handle;
+        }
+
+        internal WorldSceneHandle DetachSceneHandle()
+        {
+            WorldSceneHandle handle = SceneHandle;
+            SceneHandle = null;
+
+            return handle;
         }
 
         public override string ToString()

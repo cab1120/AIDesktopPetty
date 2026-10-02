@@ -13,6 +13,9 @@ namespace AIDesktopPetty.Application.World
         [SerializeField, Min(0f)]
         private float simulateExitSeconds = 1f;
 
+        [SerializeField]
+        private WorldCatalog worldCatalog;
+
         private WorldState state = WorldState.Desktop;
 
         private WorldScope currentScope;
@@ -45,7 +48,9 @@ namespace AIDesktopPetty.Application.World
         /// false:
         /// 请求被拒绝，例如当前已经在进入/世界/退出流程中。
         /// </summary>
-        public bool TryEnterWorld(string worldId, out string error)
+        public bool TryEnterWorld(
+            string worldId,
+            out string error)
         {
             error = null;
 
@@ -57,29 +62,65 @@ namespace AIDesktopPetty.Application.World
 
             if (state != WorldState.Desktop)
             {
-                error = $"当前状态为 {state}，不能再次进入世界。";
+                error =
+                    $"当前状态为 {state}，不能再次进入世界。";
+
                 return false;
             }
 
             if (currentScope != null)
             {
-                error = "当前仍存在 WorldScope，状态与生命周期不一致。";
+                error =
+                    "当前仍存在 WorldScope，" +
+                    "状态与生命周期不一致。";
+
                 Debug.LogError(error);
                 return false;
             }
 
-            long instanceId = ++nextWorldInstanceId;
+            if (worldCatalog == null)
+            {
+                error = "WorldCatalog 尚未配置。";
+                return false;
+            }
 
-            WorldScope scope = new WorldScope(
-                instanceId,
-                worldId);
+            if (!worldCatalog.TryValidate(
+                    out string catalogError))
+            {
+                error =
+                    $"WorldCatalog 无效：{catalogError}";
+
+                return false;
+            }
+
+            if (!worldCatalog.TryGet(
+                    worldId,
+                    out WorldDefinition definition))
+            {
+                error =
+                    $"WorldCatalog 中不存在 WorldId：" +
+                    $"{worldId}";
+
+                return false;
+            }
+
+            long instanceId =
+                ++nextWorldInstanceId;
+
+            WorldScope scope =
+                new WorldScope(
+                    instanceId,
+                    definition);
 
             currentScope = scope;
 
             if (!TryChangeState(WorldState.Entering))
             {
                 currentScope = null;
-                error = "无法切换到 Entering 状态。";
+
+                error =
+                    "无法切换到 Entering 状态。";
+
                 return false;
             }
 
@@ -87,7 +128,8 @@ namespace AIDesktopPetty.Application.World
                 $"[World] Enter accepted: {scope}");
 
             transitionRoutine =
-                StartCoroutine(EnterRoutine(scope));
+                StartCoroutine(
+                    EnterRoutine(scope));
 
             return true;
         }
