@@ -24,6 +24,18 @@ namespace AIDesktopPetty.Application.World
             get;
             private set;
         }
+        
+        public WorldRuntimeBindings RuntimeBindings
+        {
+            get;
+            private set;
+        }
+
+        public DesktopPresentationSnapshot DesktopSnapshot
+        {
+            get;
+            private set;
+        }
 
         internal WorldScope(
             long instanceId,
@@ -73,6 +85,49 @@ namespace AIDesktopPetty.Application.World
         public override string ToString()
         {
             return $"{WorldId}#{InstanceId}";
+        }
+        
+        internal void AttachDesktopSnapshot(
+            DesktopPresentationSnapshot snapshot)
+        {
+            if (snapshot == null)
+            {
+                throw new ArgumentNullException(
+                    nameof(snapshot));
+            }
+
+            if (DesktopSnapshot != null)
+            {
+                throw new InvalidOperationException(
+                    $"World {this} 已经存在 DesktopSnapshot。");
+            }
+
+            DesktopSnapshot = snapshot;
+        }
+
+        internal void AttachRuntimeBindings(
+            WorldRuntimeBindings bindings)
+        {
+            if (bindings == null)
+            {
+                throw new ArgumentNullException(
+                    nameof(bindings));
+            }
+
+            if (RuntimeBindings != null)
+            {
+                throw new InvalidOperationException(
+                    $"World {this} 已经存在 RuntimeBindings。");
+            }
+
+            RuntimeBindings = bindings;
+        }
+        
+        
+
+        internal void DetachRuntimeBindings()
+        {
+            RuntimeBindings = null;
         }
     }
 }

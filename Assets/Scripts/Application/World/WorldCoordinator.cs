@@ -13,6 +13,9 @@ namespace AIDesktopPetty.Application.World
 
         [SerializeField]
         private WorldResourceServiceBehaviour resourceService;
+        
+        [SerializeField]
+        private WorldPresentationController presentationController;
 
         private WorldState state =
             WorldState.Desktop;
@@ -132,6 +135,28 @@ namespace AIDesktopPetty.Application.World
 
                 return false;
             }
+            
+            if (presentationController == null)
+            {
+                error =
+                    "WorldPresentationController 尚未绑定。";
+
+                return false;
+            }
+
+
+            if (!presentationController
+                    .TryCaptureDesktop(
+                        out DesktopPresentationSnapshot
+                            desktopSnapshot,
+                        out string presentationError))
+            {
+                error =
+                    $"无法捕获 Desktop Presentation：" +
+                    $"{presentationError}";
+
+                return false;
+            }
 
             long instanceId =
                 ++nextWorldInstanceId;
@@ -140,7 +165,10 @@ namespace AIDesktopPetty.Application.World
                 new WorldScope(
                     instanceId,
                     definition);
-
+            
+            scope.AttachDesktopSnapshot(
+                desktopSnapshot);
+            
             currentScope = scope;
 
             if (!TryChangeState(
@@ -256,53 +284,85 @@ namespace AIDesktopPetty.Application.World
             WorldSceneLoadResult loadResult =
                 null;
 
-            bool callbackReceived = false;
+            bool callbackReceived =
+                false;
+
+
+            // =====================================================
+            // Phase 1:
+            // Suspend Desktop
+            // =====================================================
+
+            if (!presentationController
+                    .TrySuspendDesktopForEntering(
+                        scope,
+                        out string suspendError))
+            {
+                FailEnterWithoutLoadedScene(
+                    scope,
+                    $"暂停 Desktop Presentation 失败：" +
+                    $"{suspendError}");
+
+                yield break;
+            }
+
+
+            // =====================================================
+            // Phase 2:
+            // Load World Scene
+            // =====================================================
 
             yield return resourceService
                 .LoadWorldScene(
                     scope.Definition,
                     result =>
                     {
-                        // ResourceService 的契约是：
-                        // 一个操作只产生一个完成结果。
                         if (callbackReceived)
                         {
                             Debug.LogError(
                                 "[World] ResourceService " +
-                                "对同一次 Load 调用了多次 " +
-                                "completed。");
+                                "对同一次 Load 调用了多次 completed。");
 
                             return;
                         }
 
-                        callbackReceived = true;
-                        loadResult = result;
+                        callbackReceived =
+                            true;
+
+                        loadResult =
+                            result;
                     });
 
-            // ----------------------------
-            // 第一道 Commit Gate
-            // ----------------------------
-            //
-            // “异步操作结束”
-            // 不代表
-            // “结果仍然有资格提交”。
+
+            // =====================================================
+            // Commit Gate 1:
+            // 这还是不是当前 World？
+            // =====================================================
+
             if (!IsCurrentScope(scope))
             {
-                // 理论上当前 Coordinator 的状态机
-                // 不应该轻易进入这里。
-                //
-                // 但如果后续架构变化导致旧请求回来，
-                // 成功加载的孤儿资源仍必须清理。
+                /*
+                 * 当前 Scope 已经失效，
+                 * 但 Scene 可能真的加载成功了。
+                 *
+                 * 不能因为业务结果过期就泄漏资源。
+                 */
                 if (loadResult != null
                     && loadResult.IsSuccess
                     && loadResult.Handle != null)
                 {
-                    yield return ReleaseOrphanHandle(
-                        loadResult.Handle);
+                    yield return
+                        ReleaseOrphanHandle(
+                            loadResult.Handle);
                 }
 
                 yield break;
             }
+
+
+            // =====================================================
+            // Validate Resource Result
+            // =====================================================
 
             if (!callbackReceived
                 || loadResult == null)
@@ -315,6 +375,7 @@ namespace AIDesktopPetty.Application.World
                 yield break;
             }
 
+
             if (!loadResult.IsSuccess)
             {
                 FailEnterWithoutLoadedScene(
@@ -324,6 +385,7 @@ namespace AIDesktopPetty.Application.World
 
                 yield break;
             }
+
 
             if (loadResult.Handle == null)
             {
@@ -335,13 +397,11 @@ namespace AIDesktopPetty.Application.World
                 yield break;
             }
 
-            // ----------------------------
+
+            // =====================================================
             // Ownership Transfer
-            // ----------------------------
-            //
-            // Scene 加载成功以后，
-            // Handle 从临时 LoadResult 的语义
-            // 转移给这一次 WorldScope。
+            // =====================================================
+
             scope.AttachSceneHandle(
                 loadResult.Handle);
 
@@ -349,21 +409,29 @@ namespace AIDesktopPetty.Application.World
                 $"[World] Scene handle attached: " +
                 $"{scope}");
 
-            // ----------------------------
-            // 第二道 Commit Gate
-            // ----------------------------
-            //
-            // 用户可能在加载过程中已经点了 Exit。
-            //
-            // 场景物理上加载成功，
-            // 业务上却已经不应该进入 Explore。
+
+            // =====================================================
+            // Commit Gate 2:
+            // 用户是不是已经要求退出？
+            // =====================================================
+
             if (scope.ExitRequested)
             {
                 Debug.Log(
                     $"[World] Scene loaded, but " +
-                    $"exit was already requested: " +
+                    $"Exit was already requested: " +
                     $"{scope}");
 
+                /*
+                 * 非常重要：
+                 *
+                 * 这里不要 Bind。
+                 * 不要 Activate。
+                 * 不要进入 Explore。
+                 *
+                 * Scene 只是物理加载完成，
+                 * 业务已经取消。
+                 */
                 if (!TryChangeState(
                         WorldState.Exiting))
                 {
@@ -379,17 +447,73 @@ namespace AIDesktopPetty.Application.World
                 yield break;
             }
 
+
+            // =====================================================
+            // Phase 3:
+            // Resolve + Validate World Bindings
+            // =====================================================
+
+            if (!presentationController
+                    .TryBindLoadedWorld(
+                        scope,
+                        out string bindingError))
+            {
+                Debug.LogError(
+                    $"[World] Binding failed: " +
+                    $"{bindingError}");
+
+                if (TryChangeState(
+                        WorldState.Exiting))
+                {
+                    StartExitRoutine(scope);
+                }
+
+                yield break;
+            }
+
+
+            // =====================================================
+            // Phase 4:
+            // Transfer Presentation Ownership
+            // =====================================================
+
+            if (!presentationController
+                    .TryActivateWorld(
+                        scope,
+                        out string activationError))
+            {
+                Debug.LogError(
+                    $"[World] World presentation " +
+                    $"activation failed: " +
+                    $"{activationError}");
+
+                if (TryChangeState(
+                        WorldState.Exiting))
+                {
+                    StartExitRoutine(scope);
+                }
+
+                yield break;
+            }
+
+
+            // =====================================================
+            // Final Commit:
+            // Publish Explore only after everything is ready
+            // =====================================================
+
             if (!TryChangeState(
                     WorldState.Explore))
             {
                 Debug.LogError(
-                    $"[World] Scene 已加载，" +
+                    $"[World] World 已经加载并激活，" +
                     $"但无法进入 Explore：" +
                     $"{scope}");
 
-                // 已经拿到资源，
-                // 所以失败不能简单 yield break。
-                // 必须走退出补偿。
+                /*
+                 * Presentation 已经取得控制权，
+                 * 因此失败时必须走完整补偿。
+                 */
                 if (state == WorldState.Entering
                     && TryChangeState(
                         WorldState.Exiting))
@@ -399,6 +523,7 @@ namespace AIDesktopPetty.Application.World
 
                 yield break;
             }
+
 
             Debug.Log(
                 $"[World] Enter completed: " +
@@ -436,15 +561,44 @@ namespace AIDesktopPetty.Application.World
             if (!IsCurrentScope(scope))
                 yield break;
 
+
+            // =====================================================
+            // Phase 1:
+            // World immediately gives up presentation ownership
+            // =====================================================
+
+            presentationController
+                .PrepareWorldForExit(scope);
+
+
+            /*
+             * 从这一刻开始，
+             * Coordinator 不再认为 RuntimeBindings
+             * 属于活动 World Presentation。
+             *
+             * Scene 对象本身仍然存在，
+             * 直到 Release 完成。
+             */
+            scope.DetachRuntimeBindings();
+
+
+            // =====================================================
+            // Phase 2:
+            // Release Scene Resource, if still owned
+            // =====================================================
+
             WorldSceneHandle handle =
                 scope.SceneHandle;
+
 
             if (handle != null)
             {
                 WorldSceneReleaseResult
                     releaseResult = null;
 
-                bool callbackReceived = false;
+                bool callbackReceived =
+                    false;
+
 
                 yield return resourceService
                     .ReleaseWorldScene(
@@ -461,12 +615,17 @@ namespace AIDesktopPetty.Application.World
                                 return;
                             }
 
-                            callbackReceived = true;
-                            releaseResult = result;
+                            callbackReceived =
+                                true;
+
+                            releaseResult =
+                                result;
                         });
+
 
                 if (!IsCurrentScope(scope))
                     yield break;
+
 
                 if (!callbackReceived
                     || releaseResult == null)
@@ -476,10 +635,13 @@ namespace AIDesktopPetty.Application.World
                         $"但没有完成结果：" +
                         $"{scope}");
 
-                    // 不假装已经 Desktop。
-                    // Handle 仍留在 Scope 中。
+                    /*
+                     * Handle 仍属于 Scope。
+                     * 不宣称退出成功。
+                     */
                     yield break;
                 }
+
 
                 if (!releaseResult.IsSuccess)
                 {
@@ -488,13 +650,13 @@ namespace AIDesktopPetty.Application.World
                         $"{scope}; " +
                         $"{releaseResult.Error}");
 
-                    // 非常重要：
-                    // 不把 Scope 清掉。
-                    //
-                    // 如果资源没有释放成功，
-                    // 我们没有资格宣称已经 Desktop。
+                    /*
+                     * Handle 仍留在 Scope。
+                     * RequestExit 可以之后重试。
+                     */
                     yield break;
                 }
+
 
                 scope.DetachSceneHandle();
 
@@ -502,6 +664,52 @@ namespace AIDesktopPetty.Application.World
                     $"[World] Scene handle released: " +
                     $"{scope}");
             }
+
+
+            // =====================================================
+            // Phase 3:
+            // Restore Desktop
+            //
+            // 注意：
+            // 这一段必须放在 if(handle != null) 外面。
+            //
+            // 因为：
+            // Scene 可能已经成功 Release，
+            // 但上一次 Restore 失败。
+            // Retry 时 Handle 已经是 null，
+            // 仍然必须再次尝试 Restore。
+            // =====================================================
+
+            if (!IsCurrentScope(scope))
+                yield break;
+
+
+            if (!presentationController
+                    .TryRestoreDesktop(
+                        scope,
+                        out string restoreError))
+            {
+                Debug.LogError(
+                    $"[World] Desktop restore failed: " +
+                    $"{restoreError}");
+
+                /*
+                 * 不 CompleteExit。
+                 *
+                 * State 继续保持 Exiting。
+                 * 当前 Scope 继续存在。
+                 *
+                 * 再次 RequestExit 时：
+                 * handle 即使已经 null，
+                 * 也会重新走到这里尝试 Restore。
+                 */
+                yield break;
+            }
+
+
+            // =====================================================
+            // Final Commit
+            // =====================================================
 
             CompleteExit(scope);
         }
@@ -543,9 +751,11 @@ namespace AIDesktopPetty.Application.World
             if (!IsCurrentScope(scope))
                 return;
 
+
             Debug.LogError(
                 $"[World] Enter failed: " +
                 $"{scope}; {error}");
+
 
             if (state != WorldState.Entering)
             {
@@ -557,13 +767,26 @@ namespace AIDesktopPetty.Application.World
                 return;
             }
 
+
             if (!TryChangeState(
                     WorldState.Exiting))
             {
                 return;
             }
 
-            CompleteExit(scope);
+
+            /*
+             * 即使没有 SceneHandle，
+             * Entering 阶段也可能已经修改了：
+             *
+             * AIContextReactionManager
+             * Bubble
+             * WindowSnapController
+             * ClickThrough
+             *
+             * 所以统一交给 ExitRoutine 做补偿。
+             */
+            StartExitRoutine(scope);
         }
 
         private bool CompleteExit(
@@ -577,6 +800,15 @@ namespace AIDesktopPetty.Application.World
                 Debug.LogError(
                     $"[World] 拒绝完成 Exit：" +
                     $"{scope} 仍然持有 SceneHandle。");
+
+                return false;
+            }
+            
+            if (scope.RuntimeBindings != null)
+            {
+                Debug.LogError(
+                    $"[World] 拒绝完成 Exit：" +
+                    $"{scope} 仍然持有 RuntimeBindings。");
 
                 return false;
             }

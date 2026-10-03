@@ -92,4 +92,23 @@ public class BubbleUIManager : MonoBehaviour
         //极端保险：再延迟一帧做最后的微调
         yield return null; 
     }
+    public void HideImmediately()
+    {
+        if (hideCoroutine != null)
+        {
+            StopCoroutine(hideCoroutine);
+            hideCoroutine = null;
+        }
+
+        if (refreshCoroutine != null)
+        {
+            StopCoroutine(refreshCoroutine);
+            refreshCoroutine = null;
+        }
+
+        if (bubbleRoot != null)
+        {
+            bubbleRoot.SetActive(false);
+        }
+    }
 }
