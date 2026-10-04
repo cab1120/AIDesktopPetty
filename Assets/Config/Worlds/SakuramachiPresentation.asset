@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff9f8cbd7873b85489243954ad3e167f, type: 3}
   m_Name: SakuramachiPresentation
   m_EditorClassIdentifier: 
-  windowWidth: 720
-  windowHeight: 1280
+  windowWidth: 1280
+  windowHeight: 720
   centerOnCurrentMonitor: 1
