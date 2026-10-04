@@ -15,7 +15,7 @@ SampleScene 序列化挂载了 AppInitializer、WindowsPlatformBootstrap、AICha
 | 文件 | 含义、调用关系与限制 |
 | --- | --- |
 | [DataBase/AppInitializer.cs](<../Assets/Scripts/DataBase/AppInitializer.cs>) | 应用启动协调：启动日志、数据库迁移、默认数据和情绪；StartupError 汇总初始化异常，退出关闭连接与日志。 |
-| [DataBase/AppLogService.cs](<../Assets/Scripts/DataBase/AppLogService.cs>) | 应用级日志订阅/解绑；写 UTC 时间、类型与 SHA256 指纹，约 2 MB 轮转；不是全部 Unity 日志的脱敏器。 |
+| [DataBase/AppLogService.cs](<../Assets/Scripts/DataBase/AppLogService.cs>) | 应用级唯一订阅/解绑；恢复旧 AIChat.RunLog 的本地时间、类型、Debug 原文与 Error/Exception 堆栈；追加到项目根目录/Player exe 旁的 run_log.txt，无指纹/轮转。 |
 | [DataBase/AuthService.cs](<../Assets/Scripts/DataBase/AuthService.cs>) | 检查启动错误、账号密码和角色归属，设置激活角色及 GlobalSession，初始化关系；不负责网络聊天。 |
 | [DataBase/Data/Character/CharacterProfileData.cs](<../Assets/Scripts/DataBase/Data/Character/CharacterProfileData.cs>) | CharacterProfile 模型：CharacterId/UserId、展示名、PromptJson、启用和时间。 |
 | [DataBase/Data/Character/CharacterRepository.cs](<../Assets/Scripts/DataBase/Data/Character/CharacterRepository.cs>) | 稳定 UserId 角色查询；有效归属过滤、隔离隐藏；新增/编辑/激活/事务级联与保留角色保护。 |

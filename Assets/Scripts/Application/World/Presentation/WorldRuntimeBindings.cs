@@ -4,12 +4,8 @@ using UnityEngine.SceneManagement;
 namespace AIDesktopPetty.Application.World
 {
     /// <summary>
-    /// 一个 World Scene 对应用层暴露的最小运行时控制入口。
-    ///
-    /// M1-4 只负责：
-    /// Camera / AudioListener / Input ownership。
-    ///
-    /// 列车、Timeline、VFX 等属于 M1-5。
+    /// 一个已加载 World Scene
+    /// 对 Application 暴露的最小运行时入口。
     /// </summary>
     public sealed class WorldRuntimeBindings
         : MonoBehaviour
@@ -22,12 +18,23 @@ namespace AIDesktopPetty.Application.World
         [SerializeField]
         private AudioListener worldAudioListener;
 
+
         [Header("World Input")]
 
         [Tooltip(
-            "只有真正负责世界输入的 Behaviour 才放这里。")]
+            "只有真正负责 World 输入的 Behaviour 才放这里。" +
+            "当前没有玩家输入时 Size=0 即可。")]
         [SerializeField]
-        private Behaviour[] worldInputBehaviours;
+        private Behaviour[] worldInputBehaviours =
+            new Behaviour[0];
+
+
+        [Header("World Content")]
+
+        [SerializeField]
+        private WorldContentBindingsBehaviour
+            contentBindings;
+
 
         public Camera WorldCamera =>
             worldCamera;
@@ -35,25 +42,33 @@ namespace AIDesktopPetty.Application.World
         public AudioListener WorldAudioListener =>
             worldAudioListener;
 
+
         private void Awake()
         {
             /*
-             * 当 3DScene 作为 Additive World 加载时，
-             * 它不应该自行抢走控制权。
+             * Additive 加载时：
              *
-             * SampleScene 仍然是 Active Scene，
-             * 所以这里先保持 World control disabled。
+             * 3DScene 刚出现不能自动抢走
+             * Camera / Audio / Input 控制权。
+             *
+             * 只有 WorldCoordinator Commit
+             * 以后才能正式启用。
              */
-            Scene activeScene =
-                SceneManager.GetActiveScene();
-
             if (gameObject.scene
-                != activeScene)
+                != SceneManager.GetActiveScene())
             {
                 SetControlEnabled(false);
             }
         }
 
+
+        /// <summary>
+        /// 只校验。
+        ///
+        /// 这里不应该切 Active Scene，
+        /// 不应该启动 Skybox，
+        /// 不应该产生新的运行时副作用。
+        /// </summary>
         public bool TryValidate(
             out string error)
         {
@@ -65,6 +80,7 @@ namespace AIDesktopPetty.Application.World
                 return false;
             }
 
+
             if (worldAudioListener == null)
             {
                 error =
@@ -73,20 +89,21 @@ namespace AIDesktopPetty.Application.World
                 return false;
             }
 
+
             if (worldInputBehaviours == null)
             {
                 error =
-                    "World Input Behaviours 数组为空引用。";
+                    "World Input Behaviours 数组无效。";
 
                 return false;
             }
+
 
             for (int i = 0;
                  i < worldInputBehaviours.Length;
                  i++)
             {
-                if (worldInputBehaviours[i]
-                    == null)
+                if (worldInputBehaviours[i] == null)
                 {
                     error =
                         $"World Input Behaviours " +
@@ -96,9 +113,65 @@ namespace AIDesktopPetty.Application.World
                 }
             }
 
+
+            if (contentBindings == null)
+            {
+                error =
+                    "World Content Bindings 未绑定。";
+
+                return false;
+            }
+
+
+            if (!contentBindings.TryValidate(
+                    this,
+                    out string contentError))
+            {
+                error =
+                    $"World Content 无效：" +
+                    $"{contentError}";
+
+                return false;
+            }
+
+
             error = null;
+
             return true;
         }
+
+
+        /// <summary>
+        /// World Scene 已经成为 Active Scene 后调用。
+        /// </summary>
+        public bool TryActivateContent(
+            out string error)
+        {
+            if (contentBindings == null)
+            {
+                error =
+                    "World Content Bindings 未绑定。";
+
+                return false;
+            }
+
+
+            return contentBindings.TryActivate(
+                this,
+                out error);
+        }
+
+
+        public void DeactivateContent()
+        {
+            if (contentBindings == null)
+            {
+                return;
+            }
+
+            contentBindings.Deactivate();
+        }
+
 
         public void SetControlEnabled(
             bool enabled)
@@ -109,14 +182,19 @@ namespace AIDesktopPetty.Application.World
                     enabled;
             }
 
+
             if (worldAudioListener != null)
             {
                 worldAudioListener.enabled =
                     enabled;
             }
 
-            /*if (worldInputBehaviours == null)
-                return;*/
+
+            if (worldInputBehaviours == null)
+            {
+                return;
+            }
+
 
             for (int i = 0;
                  i < worldInputBehaviours.Length;

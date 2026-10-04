@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 using Platform.Windows;
 using Platform.Windows.Models;
@@ -343,6 +344,7 @@ namespace AIDesktopPetty.Application.World
                 return false;
             }
 
+
             if (scope.RuntimeBindings == null)
             {
                 error =
@@ -352,12 +354,24 @@ namespace AIDesktopPetty.Application.World
             }
 
 
+            if (scope.SceneHandle == null)
+            {
+                error =
+                    "World 没有有效 SceneHandle。";
+
+                return false;
+            }
+
+
+            // =====================================================
+            // 1. Apply World Window
+            // =====================================================
+
             /*
-             * 窗口先处理。
+             * 窗口先调整。
              *
-             * 如果窗口切换失败，
-             * 此时 Desktop Camera 等尚未交权，
-             * Rollback 更简单。
+             * 此时仍然没有把 Camera / Active Scene
+             * 控制权交给 World。
              */
             if (!TryApplyWorldWindow(
                     scope.DesktopSnapshot,
@@ -367,34 +381,121 @@ namespace AIDesktopPetty.Application.World
             }
 
 
+            // =====================================================
+            // 2. Capture Previous Active Scene
+            // =====================================================
+
+            Scene previousActiveScene =
+                SceneManager.GetActiveScene();
+
+
+            if (!scope.HasPreviousActiveScene)
+            {
+                scope.CapturePreviousActiveScene(
+                    previousActiveScene);
+            }
+
+
+            // =====================================================
+            // 3. Make World Scene Active
+            // =====================================================
+
+            Scene worldScene =
+                scope.SceneHandle.Scene;
+
+
+            if (!worldScene.IsValid() ||
+                !worldScene.isLoaded)
+            {
+                error =
+                    "World Scene 无效或尚未加载。";
+
+                return false;
+            }
+
+
+            if (!SceneManager.SetActiveScene(
+                    worldScene))
+            {
+                error =
+                    $"无法把 World Scene 设为 Active：" +
+                    $"{worldScene.name}";
+
+                return false;
+            }
+
+
+            Debug.Log(
+                $"[WorldPresentation] " +
+                $"ActiveScene: " +
+                $"{previousActiveScene.name} -> " +
+                $"{worldScene.name}");
+
+
+            // =====================================================
+            // 4. Activate World-specific Content
+            // =====================================================
+
             /*
-             * Explore 期间关闭桌面专用表现。
+             * 到这一刻：
              *
-             * 例如：
-             * Canvas
-             * GraphicRaycaster
-             * WindowDragHandler
+             * RenderSettings / Lighting Settings
+             * 才应该来自 3DScene。
              *
-             * 不包括 ConversationService。
+             * 所以 Skybox 必须在这里初始化，
+             * 而不是 Additive Scene 的 Start() 中抢先初始化。
              */
+            if (!scope.RuntimeBindings
+                    .TryActivateContent(
+                        out string contentError))
+            {
+                /*
+                 * Content 可能已经做了一部分修改，
+                 * 先让它自行补偿。
+                 */
+                scope.RuntimeBindings
+                    .DeactivateContent();
+
+
+                /*
+                 * Active Scene 也恢复。
+                 */
+                RestorePreviousActiveScene(
+                    scope);
+
+
+                error =
+                    $"World Content 激活失败：" +
+                    $"{contentError}";
+
+                return false;
+            }
+
+
+            // =====================================================
+            // 5. Desktop releases presentation ownership
+            // =====================================================
+
             SetDesktopExclusiveBehaviours(
                 false);
 
 
             /*
-             * Audio 先交权，
-             * 防止同时存在两个 Listener。
+             * AudioListener 先关闭 Desktop，
+             * 避免出现两个有效 Listener。
              */
             desktopAudioListener.enabled =
                 false;
+
 
             desktopCamera.enabled =
                 false;
 
 
-            /*
-             * 最后 World 正式取得控制权。
-             */
+            // =====================================================
+            // 6. World receives control
+            // =====================================================
+
             scope.RuntimeBindings
                 .SetControlEnabled(true);
 
@@ -413,13 +514,109 @@ namespace AIDesktopPetty.Application.World
             WorldScope scope)
         {
             if (scope == null)
+            {
                 return;
+            }
+
+
+            // =====================================================
+            // 1. World loses Camera / Audio / Input ownership
+            // =====================================================
 
             if (scope.RuntimeBindings != null)
             {
                 scope.RuntimeBindings
                     .SetControlEnabled(false);
+
+
+                // =================================================
+                // 2. World-specific content releases ownership
+                // =================================================
+
+                /*
+                 * SkyboxRotator 会在这里销毁自己的
+                 * Runtime Material。
+                 */
+                scope.RuntimeBindings
+                    .DeactivateContent();
             }
+
+
+            // =====================================================
+            // 3. Restore previous Active Scene
+            // =====================================================
+
+            /*
+             * 一定要发生在 Unload 3DScene 之前。
+             */
+            if (!RestorePreviousActiveScene(
+                    scope))
+            {
+                Debug.LogError(
+                    $"[WorldPresentation] " +
+                    $"无法恢复 Previous Active Scene：" +
+                    $"{scope}");
+            }
+        }
+        
+        private bool RestorePreviousActiveScene(
+            WorldScope scope)
+        {
+            if (scope == null ||
+                !scope.HasPreviousActiveScene)
+            {
+                return true;
+            }
+
+
+            Scene previous =
+                scope.PreviousActiveScene;
+
+
+            if (!previous.IsValid() ||
+                !previous.isLoaded)
+            {
+                Debug.LogError(
+                    "[WorldPresentation] " +
+                    "Previous Active Scene 已经失效。");
+
+                return false;
+            }
+
+
+            Scene current =
+                SceneManager.GetActiveScene();
+
+
+            /*
+             * 已经恢复过时保持幂等。
+             */
+            if (current == previous)
+            {
+                return true;
+            }
+
+
+            if (!SceneManager.SetActiveScene(
+                    previous))
+            {
+                Debug.LogError(
+                    "[WorldPresentation] " +
+                    $"无法 SetActiveScene：" +
+                    $"{previous.name}");
+
+                return false;
+            }
+
+
+            Debug.Log(
+                $"[WorldPresentation] " +
+                $"ActiveScene: " +
+                $"{current.name} -> " +
+                $"{previous.name}");
+
+
+            return true;
         }
 
 

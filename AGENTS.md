@@ -45,5 +45,5 @@
 - 网络回复必须区分成功、失败、取消；超时、HTTP、网络、解析和空内容均走失败。每个 Turn 只产生一次终态，完成或取消都要释放请求与队列占用。
 - `UserId`、`CharacterId` 是数据归属键，`UserName`、`CharacterName` 只作展示/历史快照。修改 schema 先备份旧库，在脱敏副本上做可重复迁移和回滚测试；用户/角色删除要事务清理关联表，当前角色先切换再删除。
 - 旧库无法证明归属的角色由 `LegacyUnclaimedCharacter` 标记并原样保留；可用角色按现存 `UserId` 查询，隔离角色不可登录、展示、编辑或删除。不存在的用户名必须立即返回空，不能用空 `UserId` 查询。认领隔离数据要有可信归属证据、单独事务和副本回归。
-- 应用日志订阅只在应用寿命建立一次并释放，不写密钥、原始聊天或窗口标题；配置文件只用本地 `config.json`，仓库只保留 `config.example.json`。缺默认 Prompt 时阻断初始化并显示位置。
+- 应用日志订阅只在应用寿命建立一次并释放；2026-10-04 用户要求恢复旧可读格式：Debug 原文及 Error/Exception 堆栈追加到项目根目录/Player exe 旁的 run_log.txt，不再指纹/轮转。不要输出真实密钥；配置文件只用本地 config.json，仓库只保留 config.example.json。缺默认 Prompt 时阻断初始化并显示位置。
 - Windows x64 Player 与多显示器/DPI/透明/点击穿透的实际表现需要单独验证。静态 C# 编译或 Editor 测试不等于 Player 验收；验证状态见 M0 移交文档。

@@ -1,18 +1,17 @@
 using System;
 using System.IO;
-using System.Security.Cryptography;
-using System.Text;
 using UnityEngine;
 
-/// <summary>应用级单一日志订阅。仅记录类型与指纹，避免写入对话、窗口标题或密钥。</summary>
+/// <summary>应用级单一日志订阅，沿用原 AIChat.RunLog 的可读格式和输出位置。</summary>
 public static class AppLogService
 {
     private static bool subscribed;
-    private const long MaxBytes = 2 * 1024 * 1024;
+    private static string logPath;
 
     public static void Start()
     {
         if (subscribed) return;
+        logPath = Path.GetFullPath(Path.Combine(Application.dataPath, "../run_log.txt"));
         Application.logMessageReceived += OnLog;
         subscribed = true;
     }
@@ -28,19 +27,10 @@ public static class AppLogService
     {
         try
         {
-            string path = Path.Combine(Application.persistentDataPath, "m0_diagnostics.log");
-            if (File.Exists(path) && new FileInfo(path).Length >= MaxBytes)
-            {
-                string oldPath = path + ".old";
-                if (File.Exists(oldPath)) File.Delete(oldPath);
-                File.Move(path, oldPath);
-            }
-            byte[] digest;
-            using (var sha = SHA256.Create())
-                digest = sha.ComputeHash(Encoding.UTF8.GetBytes(condition ?? ""));
-            string fingerprint = BitConverter.ToString(digest, 0, 6).Replace("-", "");
-            File.AppendAllText(path, DateTime.UtcNow.ToString("o") + " " + type +
-                " " + fingerprint + Environment.NewLine);
+            string entry = $"[{DateTime.Now}] [{type}] {condition}\n";
+            if (type == LogType.Exception || type == LogType.Error)
+                entry += stackTrace + "\n";
+            File.AppendAllText(logPath, entry);
         }
         catch (Exception)
         {

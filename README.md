@@ -93,7 +93,7 @@ SessionSnapshot 固定请求时的用户/角色 ID、名称、权限和会话版
 
 版本 0 旧库升级前在同目录生成 `.before-m0-v1-<UTC时间>.bak`，再事务回填 CharacterProfile.UserId、校验并提交 PRAGMA user_version=1。检测到 WAL 则拒绝简单主文件备份。无法证明归属的角色和关联记录留在原表，以 LegacyUnclaimedCharacter 辅助表标记；正常查询/登录/编辑/删除不开放它们，未来认领需专门证据与事务。该表是旧角色迁移标记，不是所有新库必有的第七张业务表。
 
-AppLogService 在应用寿命只订阅一次，向 persistentDataPath 的 m0_diagnostics.log 写 UTC 时间、类型和内容指纹，达到约 2 MB 时轮转到 .old。这份自定义日志不含原文，**不代表 Unity Console/Player.log 或数据库事件已脱敏**；主动气泡仍有窗口标题日志。
+日志格式恢复于 2026-10-04：AppLogService 在应用寿命只订阅一次，追加写入 `Application.dataPath/../run_log.txt`。Editor 位于项目根目录；Windows Player 位于 exe 所在目录。格式沿用旧 AIChat.RunLog：`[本地时间] [类型] Debug 原文`，Error/Exception 另附堆栈，不再使用指纹或 2 MB 轮转。已有文件保留并继续追加；旧 m0_diagnostics.log 不再更新。该服务只记录 Unity 日志回调，不包含 Player.log 的全部引擎启动信息。
 
 ## 验证状态与当前缺口
 

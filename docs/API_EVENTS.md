@@ -83,6 +83,6 @@ ChatTurn 是不可变契约：TurnId、UserMessageId、Input、Session、Created
 | SakuramachiLoopTrack/Clip | Timeline 绑定循环并传递时间 | 新 Intro 不再同时控制列车/杆/灯 |
 | PlayableDirector.stopped | 播放停止/恢复接缝 | 不代表欢迎剧情成功或世界可以退出 |
 | SakuraWeatherController.ApplyProfile / SetProfile / SetTargetCamera | 应用分层 VFX 配置与相机 | 局部 Demo 指标不能证明整机性能 |
-| Application.logMessageReceived | AppLogService 应用级唯一订阅/退出解绑 | 仅其自定义输出为指纹；Unity 原日志与事件库仍须独立处理 |
+| Application.logMessageReceived | AppLogService 应用级唯一订阅/退出解绑 | 2026-10-04 按用户要求恢复旧可读格式和根目录 run_log.txt；原文日志，Error/Exception 附堆栈，不再指纹或轮转 |
 
 新增世界阶段通知和 Action 结果时，先定义 World 寿命、取消、请求 ID 与失败补偿，不能在文档中把待设计接口写成现有 API。

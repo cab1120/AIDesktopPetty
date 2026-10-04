@@ -83,7 +83,7 @@ schema v1 迁移增加/回填 CharacterProfile.UserId，并事务校验/提交�
 
 原生 ABI 要求主版本 1 与所需能力位；已有自检成功/失败诊断。Importer 明确 Win64/Windows Editor x64 启用、Linux/Mac/Win32 禁用，但发布仍要在 Unity Importer 与实际输出核对，不从 DLL 文件存在推断跨平台兼容。仓库未发现原生 C/C++ 源码和可复现构建说明。
 
-AppLogService 仅保证自定义 m0_diagnostics.log 的指纹和约 2 MB 轮转；Unity 常规日志、网络 payload、事件数据库是不同边界。真实 config.json 只留本地。UI/Unity 对象操作保持主线程。
+AppLogService 从 2026-10-04 恢复旧 AIChat.RunLog 格式：本地时间、类型、Debug 原文，Error/Exception 加堆栈；追加到 Application.dataPath/../run_log.txt，Editor 为项目根目录、Player 为 exe 旁。保留应用单次订阅和退出解绑，不再输出哈希或做 2 MB 轮转。写盘失败被捕获且不递归写 Unity 日志，输出目录需要可写。Unity 常规日志、网络 payload 和事件数据库仍是不同边界。真实 config.json 留本地，不向 Debug 打印密钥；UI/Unity 对象操作保持主线程。
 
 ## 已发现缺口与下一步证据
 
