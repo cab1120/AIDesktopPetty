@@ -64,3 +64,851 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 [2026/10/5 14:22:15] [Log] [World] State: Entering -> Explore
 [2026/10/5 14:22:15] [Log] [World Test] Entering -> Explore
 [2026/10/5 14:22:15] [Log] [World] Enter completed: sakuramachi#1
+[2026/10/5 15:11:10] [Log] Database initialized: C:/Users/30290/AppData/LocalLow/Cab/AIDesktopPetty\iroha_ai.db
+[2026/10/5 15:11:10] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:11:15] [Log] [M1-7 Environment]
+Unity=2021.3.21f1c1
+DebugBuild=True
+OS=Windows 11  (10.0.22631) 64bit
+CPU=Intel(R) Core(TM) i5-14500HX
+RAM=32472 MB
+GPU=NVIDIA GeForce RTX 4060 Laptop GPU
+GraphicsAPI=Direct3D11
+VRAM=7957 MB
+Resolution=455x939
+Quality=Ultra
+VSync=1
+TargetFPS=-1
+[2026/10/5 15:11:15] [Log] [M1-7 Sample] Cycle=0, Phase=DesktopBaseline, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=549.6MB, UnityAllocated=516.8MB, UnityReserved=1031.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:15] [Log] [M1-7] ===== Cycle 1/20 =====
+[2026/10/5 15:11:15] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:11:15] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:11:15] [Log] [World] Enter accepted: sakuramachi#1
+[2026/10/5 15:11:16] [Log] [World] Scene handle attached: sakuramachi#1
+[2026/10/5 15:11:16] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:11:16] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:11:16] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:11:16] [Log] [World] Enter completed: sakuramachi#1
+[2026/10/5 15:11:16] [Log] [M1-7 Sample] Cycle=1, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=550.1MB, UnityAllocated=723.4MB, UnityReserved=1164.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:18] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:11:18] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:11:18] [Log] [World] Exit started: sakuramachi#1
+[2026/10/5 15:11:18] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:11:18] [Log] [World] Scene handle released: sakuramachi#1
+[2026/10/5 15:11:18] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:11:18] [Log] [World] Exit completed: sakuramachi#1
+[2026/10/5 15:11:18] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:11:18] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:11:18] [Log] [M1-7 Sample] Cycle=1, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=558.3MB, UnityAllocated=887.3MB, UnityReserved=1362.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:18] [Log] [M1-7] ===== Cycle 2/20 =====
+[2026/10/5 15:11:18] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:11:18] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:11:18] [Log] [World] Enter accepted: sakuramachi#2
+[2026/10/5 15:11:18] [Log] [World] Scene handle attached: sakuramachi#2
+[2026/10/5 15:11:18] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:11:18] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:11:18] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:11:18] [Log] [World] Enter completed: sakuramachi#2
+[2026/10/5 15:11:18] [Log] [M1-7 Sample] Cycle=2, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=558.9MB, UnityAllocated=910.3MB, UnityReserved=1379.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:20] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:11:20] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:11:20] [Log] [World] Exit started: sakuramachi#2
+[2026/10/5 15:11:20] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:11:20] [Log] [World] Scene handle released: sakuramachi#2
+[2026/10/5 15:11:20] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:11:20] [Log] [World] Exit completed: sakuramachi#2
+[2026/10/5 15:11:20] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:11:20] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:11:21] [Log] [M1-7 Sample] Cycle=2, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=569.3MB, UnityAllocated=906.5MB, UnityReserved=1380.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:21] [Log] [M1-7] ===== Cycle 3/20 =====
+[2026/10/5 15:11:21] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:11:21] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:11:21] [Log] [World] Enter accepted: sakuramachi#3
+[2026/10/5 15:11:21] [Log] [World] Scene handle attached: sakuramachi#3
+[2026/10/5 15:11:21] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:11:21] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:11:21] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:11:21] [Log] [World] Enter completed: sakuramachi#3
+[2026/10/5 15:11:21] [Log] [M1-7 Sample] Cycle=3, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=569.9MB, UnityAllocated=928.7MB, UnityReserved=1396.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:23] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:11:23] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:11:23] [Log] [World] Exit started: sakuramachi#3
+[2026/10/5 15:11:23] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:11:23] [Log] [World] Scene handle released: sakuramachi#3
+[2026/10/5 15:11:23] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:11:23] [Log] [World] Exit completed: sakuramachi#3
+[2026/10/5 15:11:23] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:11:23] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:11:23] [Log] [M1-7 Sample] Cycle=3, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=580.5MB, UnityAllocated=928.3MB, UnityReserved=1395.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:23] [Log] [M1-7] ===== Cycle 4/20 =====
+[2026/10/5 15:11:23] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:11:23] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:11:23] [Log] [World] Enter accepted: sakuramachi#4
+[2026/10/5 15:11:23] [Log] [World] Scene handle attached: sakuramachi#4
+[2026/10/5 15:11:23] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:11:23] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:11:23] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:11:23] [Log] [World] Enter completed: sakuramachi#4
+[2026/10/5 15:11:23] [Log] [M1-7 Sample] Cycle=4, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=581.1MB, UnityAllocated=949.4MB, UnityReserved=1411.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:25] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:11:25] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:11:25] [Log] [World] Exit started: sakuramachi#4
+[2026/10/5 15:11:25] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:11:26] [Log] [World] Scene handle released: sakuramachi#4
+[2026/10/5 15:11:26] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:11:26] [Log] [World] Exit completed: sakuramachi#4
+[2026/10/5 15:11:26] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:11:26] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:11:26] [Log] [M1-7 Sample] Cycle=4, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=590.4MB, UnityAllocated=945.5MB, UnityReserved=1411.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:26] [Log] [M1-7] ===== Cycle 5/20 =====
+[2026/10/5 15:11:26] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:11:26] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:11:26] [Log] [World] Enter accepted: sakuramachi#5
+[2026/10/5 15:11:26] [Log] [World] Scene handle attached: sakuramachi#5
+[2026/10/5 15:11:26] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:11:26] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:11:26] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:11:26] [Log] [World] Enter completed: sakuramachi#5
+[2026/10/5 15:11:26] [Log] [M1-7 Sample] Cycle=5, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=591.1MB, UnityAllocated=968.1MB, UnityReserved=1427.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:28] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:11:28] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:11:28] [Log] [World] Exit started: sakuramachi#5
+[2026/10/5 15:11:28] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:11:28] [Log] [World] Scene handle released: sakuramachi#5
+[2026/10/5 15:11:28] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:11:28] [Log] [World] Exit completed: sakuramachi#5
+[2026/10/5 15:11:28] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:11:28] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:11:29] [Log] [M1-7 Sample] Cycle=5, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=600.8MB, UnityAllocated=965.8MB, UnityReserved=1428.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:29] [Log] [M1-7] ===== Cycle 6/20 =====
+[2026/10/5 15:11:29] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:11:29] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:11:29] [Log] [World] Enter accepted: sakuramachi#6
+[2026/10/5 15:11:29] [Log] [World] Scene handle attached: sakuramachi#6
+[2026/10/5 15:11:29] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:11:29] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:11:29] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:11:29] [Log] [World] Enter completed: sakuramachi#6
+[2026/10/5 15:11:29] [Log] [M1-7 Sample] Cycle=6, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=601.5MB, UnityAllocated=987.0MB, UnityReserved=1444.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:31] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:11:31] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:11:31] [Log] [World] Exit started: sakuramachi#6
+[2026/10/5 15:11:31] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:11:31] [Log] [World] Scene handle released: sakuramachi#6
+[2026/10/5 15:11:31] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:11:31] [Log] [World] Exit completed: sakuramachi#6
+[2026/10/5 15:11:31] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:11:31] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:11:31] [Log] [M1-7 Sample] Cycle=6, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=613.3MB, UnityAllocated=985.4MB, UnityReserved=1444.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:31] [Log] [M1-7] ===== Cycle 7/20 =====
+[2026/10/5 15:11:31] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:11:31] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:11:31] [Log] [World] Enter accepted: sakuramachi#7
+[2026/10/5 15:11:31] [Log] [World] Scene handle attached: sakuramachi#7
+[2026/10/5 15:11:31] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:11:31] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:11:31] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:11:31] [Log] [World] Enter completed: sakuramachi#7
+[2026/10/5 15:11:31] [Log] [M1-7 Sample] Cycle=7, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=614.1MB, UnityAllocated=1006.1MB, UnityReserved=1460.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:33] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:11:33] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:11:33] [Log] [World] Exit started: sakuramachi#7
+[2026/10/5 15:11:33] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:11:33] [Log] [World] Scene handle released: sakuramachi#7
+[2026/10/5 15:11:33] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:11:33] [Log] [World] Exit completed: sakuramachi#7
+[2026/10/5 15:11:33] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:11:33] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:11:34] [Log] [M1-7 Sample] Cycle=7, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=555.8MB, UnityAllocated=1003.2MB, UnityReserved=1460.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:34] [Log] [M1-7] ===== Cycle 8/20 =====
+[2026/10/5 15:11:34] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:11:34] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:11:34] [Log] [World] Enter accepted: sakuramachi#8
+[2026/10/5 15:11:34] [Log] [World] Scene handle attached: sakuramachi#8
+[2026/10/5 15:11:34] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:11:34] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:11:34] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:11:34] [Log] [World] Enter completed: sakuramachi#8
+[2026/10/5 15:11:34] [Log] [M1-7 Sample] Cycle=8, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=556.3MB, UnityAllocated=1025.0MB, UnityReserved=1492.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:36] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:11:36] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:11:36] [Log] [World] Exit started: sakuramachi#8
+[2026/10/5 15:11:36] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:11:36] [Log] [World] Scene handle released: sakuramachi#8
+[2026/10/5 15:11:36] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:11:36] [Log] [World] Exit completed: sakuramachi#8
+[2026/10/5 15:11:36] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:11:36] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:11:37] [Log] [M1-7 Sample] Cycle=8, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=564.7MB, UnityAllocated=1025.8MB, UnityReserved=1508.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:37] [Log] [M1-7] ===== Cycle 9/20 =====
+[2026/10/5 15:11:37] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:11:37] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:11:37] [Log] [World] Enter accepted: sakuramachi#9
+[2026/10/5 15:11:37] [Log] [World] Scene handle attached: sakuramachi#9
+[2026/10/5 15:11:37] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:11:37] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:11:37] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:11:37] [Log] [World] Enter completed: sakuramachi#9
+[2026/10/5 15:11:37] [Log] [M1-7 Sample] Cycle=9, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=565.3MB, UnityAllocated=1048.5MB, UnityReserved=1524.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:39] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:11:39] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:11:39] [Log] [World] Exit started: sakuramachi#9
+[2026/10/5 15:11:39] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:11:39] [Log] [World] Scene handle released: sakuramachi#9
+[2026/10/5 15:11:39] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:11:39] [Log] [World] Exit completed: sakuramachi#9
+[2026/10/5 15:11:39] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:11:39] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:11:39] [Log] [M1-7 Sample] Cycle=9, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=572.9MB, UnityAllocated=1043.9MB, UnityReserved=1524.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:39] [Log] [M1-7] ===== Cycle 10/20 =====
+[2026/10/5 15:11:39] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:11:39] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:11:39] [Log] [World] Enter accepted: sakuramachi#10
+[2026/10/5 15:11:39] [Log] [World] Scene handle attached: sakuramachi#10
+[2026/10/5 15:11:39] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:11:39] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:11:39] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:11:39] [Log] [World] Enter completed: sakuramachi#10
+[2026/10/5 15:11:39] [Log] [M1-7 Sample] Cycle=10, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=573.5MB, UnityAllocated=1065.1MB, UnityReserved=1540.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:41] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:11:41] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:11:41] [Log] [World] Exit started: sakuramachi#10
+[2026/10/5 15:11:41] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:11:41] [Log] [World] Scene handle released: sakuramachi#10
+[2026/10/5 15:11:41] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:11:41] [Log] [World] Exit completed: sakuramachi#10
+[2026/10/5 15:11:41] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:11:41] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:11:42] [Log] [M1-7 Sample] Cycle=10, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=581.0MB, UnityAllocated=1064.9MB, UnityReserved=1540.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:42] [Log] [M1-7] ===== Cycle 11/20 =====
+[2026/10/5 15:11:42] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:11:42] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:11:42] [Log] [World] Enter accepted: sakuramachi#11
+[2026/10/5 15:11:42] [Log] [World] Scene handle attached: sakuramachi#11
+[2026/10/5 15:11:42] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:11:42] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:11:42] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:11:42] [Log] [World] Enter completed: sakuramachi#11
+[2026/10/5 15:11:42] [Log] [M1-7 Sample] Cycle=11, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=581.6MB, UnityAllocated=1086.0MB, UnityReserved=1556.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:44] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:11:44] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:11:44] [Log] [World] Exit started: sakuramachi#11
+[2026/10/5 15:11:44] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:11:44] [Log] [World] Scene handle released: sakuramachi#11
+[2026/10/5 15:11:44] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:11:44] [Log] [World] Exit completed: sakuramachi#11
+[2026/10/5 15:11:44] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:11:44] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:11:45] [Log] [M1-7 Sample] Cycle=11, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=591.6MB, UnityAllocated=1085.6MB, UnityReserved=1556.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:45] [Log] [M1-7] ===== Cycle 12/20 =====
+[2026/10/5 15:11:45] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:11:45] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:11:45] [Log] [World] Enter accepted: sakuramachi#12
+[2026/10/5 15:11:45] [Log] [World] Scene handle attached: sakuramachi#12
+[2026/10/5 15:11:45] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:11:45] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:11:45] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:11:45] [Log] [World] Enter completed: sakuramachi#12
+[2026/10/5 15:11:45] [Log] [M1-7 Sample] Cycle=12, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=592.1MB, UnityAllocated=1107.3MB, UnityReserved=1572.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:47] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:11:47] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:11:47] [Log] [World] Exit started: sakuramachi#12
+[2026/10/5 15:11:47] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:11:47] [Log] [World] Scene handle released: sakuramachi#12
+[2026/10/5 15:11:47] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:11:47] [Log] [World] Exit completed: sakuramachi#12
+[2026/10/5 15:11:47] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:11:47] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:11:47] [Log] [M1-7 Sample] Cycle=12, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=602.3MB, UnityAllocated=1105.8MB, UnityReserved=1572.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:47] [Log] [M1-7] ===== Cycle 13/20 =====
+[2026/10/5 15:11:47] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:11:47] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:11:47] [Log] [World] Enter accepted: sakuramachi#13
+[2026/10/5 15:11:47] [Log] [World] Scene handle attached: sakuramachi#13
+[2026/10/5 15:11:47] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:11:47] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:11:47] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:11:47] [Log] [World] Enter completed: sakuramachi#13
+[2026/10/5 15:11:47] [Log] [M1-7 Sample] Cycle=13, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=602.9MB, UnityAllocated=1127.2MB, UnityReserved=1604.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:49] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:11:49] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:11:49] [Log] [World] Exit started: sakuramachi#13
+[2026/10/5 15:11:49] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:11:49] [Log] [World] Scene handle released: sakuramachi#13
+[2026/10/5 15:11:49] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:11:49] [Log] [World] Exit completed: sakuramachi#13
+[2026/10/5 15:11:49] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:11:49] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:11:50] [Log] [M1-7 Sample] Cycle=13, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=612.9MB, UnityAllocated=1124.8MB, UnityReserved=1604.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:50] [Log] [M1-7] ===== Cycle 14/20 =====
+[2026/10/5 15:11:50] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:11:50] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:11:50] [Log] [World] Enter accepted: sakuramachi#14
+[2026/10/5 15:11:50] [Log] [World] Scene handle attached: sakuramachi#14
+[2026/10/5 15:11:50] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:11:50] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:11:50] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:11:50] [Log] [World] Enter completed: sakuramachi#14
+[2026/10/5 15:11:50] [Log] [M1-7 Sample] Cycle=14, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=613.5MB, UnityAllocated=1146.3MB, UnityReserved=1620.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:52] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:11:52] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:11:52] [Log] [World] Exit started: sakuramachi#14
+[2026/10/5 15:11:52] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:11:52] [Log] [World] Scene handle released: sakuramachi#14
+[2026/10/5 15:11:52] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:11:52] [Log] [World] Exit completed: sakuramachi#14
+[2026/10/5 15:11:52] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:11:52] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:11:53] [Log] [M1-7 Sample] Cycle=14, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=624.0MB, UnityAllocated=1143.7MB, UnityReserved=1620.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:53] [Log] [M1-7] ===== Cycle 15/20 =====
+[2026/10/5 15:11:53] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:11:53] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:11:53] [Log] [World] Enter accepted: sakuramachi#15
+[2026/10/5 15:11:53] [Log] [World] Scene handle attached: sakuramachi#15
+[2026/10/5 15:11:53] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:11:53] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:11:53] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:11:53] [Log] [World] Enter completed: sakuramachi#15
+[2026/10/5 15:11:53] [Log] [M1-7 Sample] Cycle=15, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=624.7MB, UnityAllocated=1165.3MB, UnityReserved=1636.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:55] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:11:55] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:11:55] [Log] [World] Exit started: sakuramachi#15
+[2026/10/5 15:11:55] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:11:55] [Log] [World] Scene handle released: sakuramachi#15
+[2026/10/5 15:11:55] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:11:55] [Log] [World] Exit completed: sakuramachi#15
+[2026/10/5 15:11:55] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:11:55] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:11:55] [Log] [M1-7 Sample] Cycle=15, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=559.6MB, UnityAllocated=1160.9MB, UnityReserved=1636.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:55] [Log] [M1-7] ===== Cycle 16/20 =====
+[2026/10/5 15:11:55] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:11:55] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:11:55] [Log] [World] Enter accepted: sakuramachi#16
+[2026/10/5 15:11:55] [Log] [World] Scene handle attached: sakuramachi#16
+[2026/10/5 15:11:55] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:11:55] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:11:55] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:11:55] [Log] [World] Enter completed: sakuramachi#16
+[2026/10/5 15:11:55] [Log] [M1-7 Sample] Cycle=16, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=560.0MB, UnityAllocated=1182.3MB, UnityReserved=1652.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:57] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:11:57] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:11:57] [Log] [World] Exit started: sakuramachi#16
+[2026/10/5 15:11:57] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:11:57] [Log] [World] Scene handle released: sakuramachi#16
+[2026/10/5 15:11:57] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:11:57] [Log] [World] Exit completed: sakuramachi#16
+[2026/10/5 15:11:57] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:11:57] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:11:58] [Log] [M1-7 Sample] Cycle=16, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=567.7MB, UnityAllocated=1181.6MB, UnityReserved=1652.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:11:58] [Log] [M1-7] ===== Cycle 17/20 =====
+[2026/10/5 15:11:58] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:11:58] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:11:58] [Log] [World] Enter accepted: sakuramachi#17
+[2026/10/5 15:11:58] [Log] [World] Scene handle attached: sakuramachi#17
+[2026/10/5 15:11:58] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:11:58] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:11:58] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:11:58] [Log] [World] Enter completed: sakuramachi#17
+[2026/10/5 15:11:58] [Log] [M1-7 Sample] Cycle=17, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=568.2MB, UnityAllocated=1203.2MB, UnityReserved=1668.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:12:00] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:12:00] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:12:00] [Log] [World] Exit started: sakuramachi#17
+[2026/10/5 15:12:00] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:12:00] [Log] [World] Scene handle released: sakuramachi#17
+[2026/10/5 15:12:00] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:12:00] [Log] [World] Exit completed: sakuramachi#17
+[2026/10/5 15:12:00] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:12:00] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:12:00] [Log] [M1-7 Sample] Cycle=17, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=577.7MB, UnityAllocated=1202.0MB, UnityReserved=1668.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:12:00] [Log] [M1-7] ===== Cycle 18/20 =====
+[2026/10/5 15:12:00] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:12:00] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:12:00] [Log] [World] Enter accepted: sakuramachi#18
+[2026/10/5 15:12:00] [Log] [World] Scene handle attached: sakuramachi#18
+[2026/10/5 15:12:00] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:12:00] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:12:00] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:12:00] [Log] [World] Enter completed: sakuramachi#18
+[2026/10/5 15:12:00] [Log] [M1-7 Sample] Cycle=18, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=578.3MB, UnityAllocated=1223.2MB, UnityReserved=1700.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:12:02] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:12:02] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:12:02] [Log] [World] Exit started: sakuramachi#18
+[2026/10/5 15:12:02] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:12:03] [Log] [World] Scene handle released: sakuramachi#18
+[2026/10/5 15:12:03] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:12:03] [Log] [World] Exit completed: sakuramachi#18
+[2026/10/5 15:12:03] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:12:03] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:12:03] [Log] [M1-7 Sample] Cycle=18, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=586.7MB, UnityAllocated=1221.8MB, UnityReserved=1700.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:12:03] [Log] [M1-7] ===== Cycle 19/20 =====
+[2026/10/5 15:12:03] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:12:03] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:12:03] [Log] [World] Enter accepted: sakuramachi#19
+[2026/10/5 15:12:03] [Log] [World] Scene handle attached: sakuramachi#19
+[2026/10/5 15:12:03] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:12:03] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:12:03] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:12:03] [Log] [World] Enter completed: sakuramachi#19
+[2026/10/5 15:12:03] [Log] [M1-7 Sample] Cycle=19, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=587.3MB, UnityAllocated=1242.4MB, UnityReserved=1716.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:12:06] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:12:06] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:12:06] [Log] [World] Exit started: sakuramachi#19
+[2026/10/5 15:12:06] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:12:06] [Log] [World] Scene handle released: sakuramachi#19
+[2026/10/5 15:12:06] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:12:06] [Log] [World] Exit completed: sakuramachi#19
+[2026/10/5 15:12:06] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:12:06] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:12:06] [Log] [M1-7 Sample] Cycle=19, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=595.2MB, UnityAllocated=1241.0MB, UnityReserved=1717.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:12:06] [Log] [M1-7] ===== Cycle 20/20 =====
+[2026/10/5 15:12:06] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:12:06] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:12:06] [Log] [World] Enter accepted: sakuramachi#20
+[2026/10/5 15:12:06] [Log] [World] Scene handle attached: sakuramachi#20
+[2026/10/5 15:12:06] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:12:06] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:12:06] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:12:06] [Log] [World] Enter completed: sakuramachi#20
+[2026/10/5 15:12:06] [Log] [M1-7 Sample] Cycle=20, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=595.8MB, UnityAllocated=1262.9MB, UnityReserved=1733.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:12:08] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:12:08] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:12:08] [Log] [World] Exit started: sakuramachi#20
+[2026/10/5 15:12:08] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:12:08] [Log] [World] Scene handle released: sakuramachi#20
+[2026/10/5 15:12:08] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:12:08] [Log] [World] Exit completed: sakuramachi#20
+[2026/10/5 15:12:08] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:12:08] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:12:09] [Log] [M1-7 Sample] Cycle=20, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=605.6MB, UnityAllocated=1261.6MB, UnityReserved=1733.4MB, ProcessPrivate=0.0MB
+[2026/10/5 15:12:09] [Log] [M1-7] CSV saved: C:/Users/30290/AppData/LocalLow/Cab/AIDesktopPetty\m1-world-stress-20261005-151209.csv
+[2026/10/5 15:12:09] [Log] [M1-7 Timing]
+Enter P50=0.062s
+Enter P95=0.106s
+Exit P50=0.041s
+Exit P95=0.056s
+[2026/10/5 15:12:09] [Log] [M1-7] PASS: 20 次 World 往返完成，结构性生命周期检查全部通过。
+[2026/10/5 15:29:10] [Log] Database initialized: C:/Users/30290/AppData/LocalLow/Cab/AIDesktopPetty\iroha_ai.db
+[2026/10/5 15:29:10] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:29:18] [Log] [M1-7 Environment]
+Unity=2021.3.21f1c1
+DebugBuild=True
+OS=Windows 11  (10.0.22631) 64bit
+CPU=Intel(R) Core(TM) i5-14500HX
+RAM=32472 MB
+GPU=NVIDIA GeForce RTX 4060 Laptop GPU
+GraphicsAPI=Direct3D11
+VRAM=7957 MB
+Resolution=455x939
+Quality=Ultra
+VSync=1
+TargetFPS=-1
+[2026/10/5 15:29:19] [Log] [M1-7 Sample] Cycle=0, Phase=DesktopBaseline, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=571.4MB, UnityAllocated=286.5MB, UnityReserved=663.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:19] [Log] [M1-7] ===== Cycle 1/20 =====
+[2026/10/5 15:29:19] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:29:19] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:29:19] [Log] [World] Enter accepted: sakuramachi#1
+[2026/10/5 15:29:20] [Log] [World] Scene handle attached: sakuramachi#1
+[2026/10/5 15:29:20] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:29:20] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:29:20] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:29:20] [Log] [World] Enter completed: sakuramachi#1
+[2026/10/5 15:29:20] [Log] [M1-7 Sample] Cycle=1, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=572.2MB, UnityAllocated=492.1MB, UnityReserved=847.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:22] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:29:22] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:29:22] [Log] [World] Exit started: sakuramachi#1
+[2026/10/5 15:29:22] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:29:22] [Log] [World] Scene handle released: sakuramachi#1
+[2026/10/5 15:29:22] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:29:22] [Log] [World] Exit completed: sakuramachi#1
+[2026/10/5 15:29:22] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:29:22] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:29:23] [Log] [M1-7 Sample] Cycle=1, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=582.9MB, UnityAllocated=493.8MB, UnityReserved=847.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:23] [Log] [M1-7] ===== Cycle 2/20 =====
+[2026/10/5 15:29:23] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:29:23] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:29:23] [Log] [World] Enter accepted: sakuramachi#2
+[2026/10/5 15:29:23] [Log] [World] Scene handle attached: sakuramachi#2
+[2026/10/5 15:29:23] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:29:23] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:29:23] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:29:23] [Log] [World] Enter completed: sakuramachi#2
+[2026/10/5 15:29:23] [Log] [M1-7 Sample] Cycle=2, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=583.6MB, UnityAllocated=515.7MB, UnityReserved=879.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:25] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:29:25] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:29:25] [Log] [World] Exit started: sakuramachi#2
+[2026/10/5 15:29:25] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:29:25] [Log] [World] Scene handle released: sakuramachi#2
+[2026/10/5 15:29:25] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:29:25] [Log] [World] Exit completed: sakuramachi#2
+[2026/10/5 15:29:25] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:29:25] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:29:26] [Log] [M1-7 Sample] Cycle=2, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=592.1MB, UnityAllocated=513.8MB, UnityReserved=879.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:26] [Log] [M1-7] ===== Cycle 3/20 =====
+[2026/10/5 15:29:26] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:29:26] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:29:26] [Log] [World] Enter accepted: sakuramachi#3
+[2026/10/5 15:29:26] [Log] [World] Scene handle attached: sakuramachi#3
+[2026/10/5 15:29:26] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:29:26] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:29:26] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:29:26] [Log] [World] Enter completed: sakuramachi#3
+[2026/10/5 15:29:26] [Log] [M1-7 Sample] Cycle=3, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=592.8MB, UnityAllocated=535.5MB, UnityReserved=895.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:28] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:29:28] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:29:28] [Log] [World] Exit started: sakuramachi#3
+[2026/10/5 15:29:28] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:29:28] [Log] [World] Scene handle released: sakuramachi#3
+[2026/10/5 15:29:28] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:29:28] [Log] [World] Exit completed: sakuramachi#3
+[2026/10/5 15:29:28] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:29:28] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:29:28] [Log] [M1-7 Sample] Cycle=3, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=601.4MB, UnityAllocated=533.6MB, UnityReserved=895.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:28] [Log] [M1-7] ===== Cycle 4/20 =====
+[2026/10/5 15:29:28] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:29:28] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:29:28] [Log] [World] Enter accepted: sakuramachi#4
+[2026/10/5 15:29:28] [Log] [World] Scene handle attached: sakuramachi#4
+[2026/10/5 15:29:28] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:29:28] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:29:28] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:29:28] [Log] [World] Enter completed: sakuramachi#4
+[2026/10/5 15:29:28] [Log] [M1-7 Sample] Cycle=4, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=602.1MB, UnityAllocated=553.9MB, UnityReserved=911.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:30] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:29:30] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:29:30] [Log] [World] Exit started: sakuramachi#4
+[2026/10/5 15:29:30] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:29:30] [Log] [World] Scene handle released: sakuramachi#4
+[2026/10/5 15:29:30] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:29:30] [Log] [World] Exit completed: sakuramachi#4
+[2026/10/5 15:29:30] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:29:30] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:29:31] [Log] [M1-7 Sample] Cycle=4, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=611.3MB, UnityAllocated=553.4MB, UnityReserved=911.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:31] [Log] [M1-7] ===== Cycle 5/20 =====
+[2026/10/5 15:29:31] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:29:31] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:29:31] [Log] [World] Enter accepted: sakuramachi#5
+[2026/10/5 15:29:31] [Log] [World] Scene handle attached: sakuramachi#5
+[2026/10/5 15:29:31] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:29:31] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:29:31] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:29:31] [Log] [World] Enter completed: sakuramachi#5
+[2026/10/5 15:29:31] [Log] [M1-7 Sample] Cycle=5, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=612.0MB, UnityAllocated=575.4MB, UnityReserved=927.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:33] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:29:33] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:29:33] [Log] [World] Exit started: sakuramachi#5
+[2026/10/5 15:29:33] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:29:33] [Log] [World] Scene handle released: sakuramachi#5
+[2026/10/5 15:29:33] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:29:33] [Log] [World] Exit completed: sakuramachi#5
+[2026/10/5 15:29:33] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:29:33] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:29:34] [Log] [M1-7 Sample] Cycle=5, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=621.4MB, UnityAllocated=573.2MB, UnityReserved=927.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:34] [Log] [M1-7] ===== Cycle 6/20 =====
+[2026/10/5 15:29:34] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:29:34] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:29:34] [Log] [World] Enter accepted: sakuramachi#6
+[2026/10/5 15:29:34] [Log] [World] Scene handle attached: sakuramachi#6
+[2026/10/5 15:29:34] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:29:34] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:29:34] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:29:34] [Log] [World] Enter completed: sakuramachi#6
+[2026/10/5 15:29:34] [Log] [M1-7 Sample] Cycle=6, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=622.1MB, UnityAllocated=593.5MB, UnityReserved=943.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:36] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:29:36] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:29:36] [Log] [World] Exit started: sakuramachi#6
+[2026/10/5 15:29:36] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:29:36] [Log] [World] Scene handle released: sakuramachi#6
+[2026/10/5 15:29:36] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:29:36] [Log] [World] Exit completed: sakuramachi#6
+[2026/10/5 15:29:36] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:29:36] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:29:36] [Log] [M1-7 Sample] Cycle=6, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=558.8MB, UnityAllocated=589.0MB, UnityReserved=943.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:36] [Log] [M1-7] ===== Cycle 7/20 =====
+[2026/10/5 15:29:36] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:29:36] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:29:36] [Log] [World] Enter accepted: sakuramachi#7
+[2026/10/5 15:29:36] [Log] [World] Scene handle attached: sakuramachi#7
+[2026/10/5 15:29:36] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:29:36] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:29:36] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:29:36] [Log] [World] Enter completed: sakuramachi#7
+[2026/10/5 15:29:36] [Log] [M1-7 Sample] Cycle=7, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=559.2MB, UnityAllocated=609.5MB, UnityReserved=975.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:38] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:29:38] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:29:38] [Log] [World] Exit started: sakuramachi#7
+[2026/10/5 15:29:38] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:29:38] [Log] [World] Scene handle released: sakuramachi#7
+[2026/10/5 15:29:38] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:29:38] [Log] [World] Exit completed: sakuramachi#7
+[2026/10/5 15:29:38] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:29:38] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:29:39] [Log] [M1-7 Sample] Cycle=7, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=566.3MB, UnityAllocated=608.8MB, UnityReserved=975.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:39] [Log] [M1-7] ===== Cycle 8/20 =====
+[2026/10/5 15:29:39] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:29:39] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:29:39] [Log] [World] Enter accepted: sakuramachi#8
+[2026/10/5 15:29:39] [Log] [World] Scene handle attached: sakuramachi#8
+[2026/10/5 15:29:39] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:29:39] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:29:39] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:29:39] [Log] [World] Enter completed: sakuramachi#8
+[2026/10/5 15:29:39] [Log] [M1-7 Sample] Cycle=8, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=566.8MB, UnityAllocated=629.8MB, UnityReserved=991.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:41] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:29:41] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:29:41] [Log] [World] Exit started: sakuramachi#8
+[2026/10/5 15:29:41] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:29:41] [Log] [World] Scene handle released: sakuramachi#8
+[2026/10/5 15:29:41] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:29:41] [Log] [World] Exit completed: sakuramachi#8
+[2026/10/5 15:29:41] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:29:41] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:29:41] [Log] [M1-7 Sample] Cycle=8, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=575.9MB, UnityAllocated=629.5MB, UnityReserved=991.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:41] [Log] [M1-7] ===== Cycle 9/20 =====
+[2026/10/5 15:29:41] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:29:41] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:29:41] [Log] [World] Enter accepted: sakuramachi#9
+[2026/10/5 15:29:41] [Log] [World] Scene handle attached: sakuramachi#9
+[2026/10/5 15:29:41] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:29:41] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:29:41] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:29:41] [Log] [World] Enter completed: sakuramachi#9
+[2026/10/5 15:29:41] [Log] [M1-7 Sample] Cycle=9, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=576.5MB, UnityAllocated=649.7MB, UnityReserved=1007.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:43] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:29:43] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:29:43] [Log] [World] Exit started: sakuramachi#9
+[2026/10/5 15:29:43] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:29:44] [Log] [World] Scene handle released: sakuramachi#9
+[2026/10/5 15:29:44] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:29:44] [Log] [World] Exit completed: sakuramachi#9
+[2026/10/5 15:29:44] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:29:44] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:29:44] [Log] [M1-7 Sample] Cycle=9, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=586.0MB, UnityAllocated=649.4MB, UnityReserved=1007.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:44] [Log] [M1-7] ===== Cycle 10/20 =====
+[2026/10/5 15:29:44] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:29:44] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:29:44] [Log] [World] Enter accepted: sakuramachi#10
+[2026/10/5 15:29:44] [Log] [World] Scene handle attached: sakuramachi#10
+[2026/10/5 15:29:44] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:29:44] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:29:44] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:29:44] [Log] [World] Enter completed: sakuramachi#10
+[2026/10/5 15:29:44] [Log] [M1-7 Sample] Cycle=10, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=586.6MB, UnityAllocated=671.0MB, UnityReserved=1023.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:46] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:29:46] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:29:46] [Log] [World] Exit started: sakuramachi#10
+[2026/10/5 15:29:46] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:29:46] [Log] [World] Scene handle released: sakuramachi#10
+[2026/10/5 15:29:46] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:29:46] [Log] [World] Exit completed: sakuramachi#10
+[2026/10/5 15:29:46] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:29:46] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:29:47] [Log] [M1-7 Sample] Cycle=10, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=596.3MB, UnityAllocated=669.3MB, UnityReserved=1023.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:47] [Log] [M1-7] ===== Cycle 11/20 =====
+[2026/10/5 15:29:47] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:29:47] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:29:47] [Log] [World] Enter accepted: sakuramachi#11
+[2026/10/5 15:29:47] [Log] [World] Scene handle attached: sakuramachi#11
+[2026/10/5 15:29:47] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:29:47] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:29:47] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:29:47] [Log] [World] Enter completed: sakuramachi#11
+[2026/10/5 15:29:47] [Log] [M1-7 Sample] Cycle=11, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=596.9MB, UnityAllocated=690.0MB, UnityReserved=1039.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:49] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:29:49] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:29:49] [Log] [World] Exit started: sakuramachi#11
+[2026/10/5 15:29:49] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:29:49] [Log] [World] Scene handle released: sakuramachi#11
+[2026/10/5 15:29:49] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:29:49] [Log] [World] Exit completed: sakuramachi#11
+[2026/10/5 15:29:49] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:29:49] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:29:49] [Log] [M1-7 Sample] Cycle=11, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=607.0MB, UnityAllocated=689.1MB, UnityReserved=1039.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:49] [Log] [M1-7] ===== Cycle 12/20 =====
+[2026/10/5 15:29:49] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:29:49] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:29:49] [Log] [World] Enter accepted: sakuramachi#12
+[2026/10/5 15:29:49] [Log] [World] Scene handle attached: sakuramachi#12
+[2026/10/5 15:29:49] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:29:49] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:29:49] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:29:49] [Log] [World] Enter completed: sakuramachi#12
+[2026/10/5 15:29:49] [Log] [M1-7 Sample] Cycle=12, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=607.6MB, UnityAllocated=709.7MB, UnityReserved=1071.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:51] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:29:51] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:29:51] [Log] [World] Exit started: sakuramachi#12
+[2026/10/5 15:29:51] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:29:51] [Log] [World] Scene handle released: sakuramachi#12
+[2026/10/5 15:29:51] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:29:51] [Log] [World] Exit completed: sakuramachi#12
+[2026/10/5 15:29:51] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:29:51] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:29:52] [Log] [M1-7 Sample] Cycle=12, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=617.4MB, UnityAllocated=709.0MB, UnityReserved=1071.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:52] [Log] [M1-7] ===== Cycle 13/20 =====
+[2026/10/5 15:29:52] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:29:52] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:29:52] [Log] [World] Enter accepted: sakuramachi#13
+[2026/10/5 15:29:52] [Log] [World] Scene handle attached: sakuramachi#13
+[2026/10/5 15:29:52] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:29:52] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:29:52] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:29:52] [Log] [World] Enter completed: sakuramachi#13
+[2026/10/5 15:29:52] [Log] [M1-7 Sample] Cycle=13, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=618.1MB, UnityAllocated=729.2MB, UnityReserved=1087.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:54] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:29:54] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:29:54] [Log] [World] Exit started: sakuramachi#13
+[2026/10/5 15:29:54] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:29:54] [Log] [World] Scene handle released: sakuramachi#13
+[2026/10/5 15:29:54] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:29:54] [Log] [World] Exit completed: sakuramachi#13
+[2026/10/5 15:29:54] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:29:54] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:29:55] [Log] [M1-7 Sample] Cycle=13, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=630.9MB, UnityAllocated=728.9MB, UnityReserved=1087.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:55] [Log] [M1-7] ===== Cycle 14/20 =====
+[2026/10/5 15:29:55] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:29:55] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:29:55] [Log] [World] Enter accepted: sakuramachi#14
+[2026/10/5 15:29:55] [Log] [World] Scene handle attached: sakuramachi#14
+[2026/10/5 15:29:55] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:29:55] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:29:55] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:29:55] [Log] [World] Enter completed: sakuramachi#14
+[2026/10/5 15:29:55] [Log] [M1-7 Sample] Cycle=14, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=631.6MB, UnityAllocated=749.3MB, UnityReserved=1103.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:57] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:29:57] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:29:57] [Log] [World] Exit started: sakuramachi#14
+[2026/10/5 15:29:57] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:29:57] [Log] [World] Scene handle released: sakuramachi#14
+[2026/10/5 15:29:57] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:29:57] [Log] [World] Exit completed: sakuramachi#14
+[2026/10/5 15:29:57] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:29:57] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:29:57] [Log] [M1-7 Sample] Cycle=14, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=564.4MB, UnityAllocated=745.7MB, UnityReserved=1103.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:57] [Log] [M1-7] ===== Cycle 15/20 =====
+[2026/10/5 15:29:57] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:29:57] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:29:57] [Log] [World] Enter accepted: sakuramachi#15
+[2026/10/5 15:29:57] [Log] [World] Scene handle attached: sakuramachi#15
+[2026/10/5 15:29:57] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:29:57] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:29:57] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:29:57] [Log] [World] Enter completed: sakuramachi#15
+[2026/10/5 15:29:57] [Log] [M1-7 Sample] Cycle=15, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=564.8MB, UnityAllocated=767.0MB, UnityReserved=1119.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:29:59] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:29:59] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:29:59] [Log] [World] Exit started: sakuramachi#15
+[2026/10/5 15:29:59] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:29:59] [Log] [World] Scene handle released: sakuramachi#15
+[2026/10/5 15:29:59] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:29:59] [Log] [World] Exit completed: sakuramachi#15
+[2026/10/5 15:29:59] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:29:59] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:30:00] [Log] [M1-7 Sample] Cycle=15, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=573.4MB, UnityAllocated=765.8MB, UnityReserved=1119.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:30:00] [Log] [M1-7] ===== Cycle 16/20 =====
+[2026/10/5 15:30:00] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:30:00] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:30:00] [Log] [World] Enter accepted: sakuramachi#16
+[2026/10/5 15:30:00] [Log] [World] Scene handle attached: sakuramachi#16
+[2026/10/5 15:30:00] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:30:00] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:30:00] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:30:00] [Log] [World] Enter completed: sakuramachi#16
+[2026/10/5 15:30:00] [Log] [M1-7 Sample] Cycle=16, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=574.0MB, UnityAllocated=786.6MB, UnityReserved=1135.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:30:02] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:30:02] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:30:02] [Log] [World] Exit started: sakuramachi#16
+[2026/10/5 15:30:02] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:30:02] [Log] [World] Scene handle released: sakuramachi#16
+[2026/10/5 15:30:02] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:30:02] [Log] [World] Exit completed: sakuramachi#16
+[2026/10/5 15:30:02] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:30:02] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:30:02] [Log] [M1-7 Sample] Cycle=16, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=584.5MB, UnityAllocated=785.7MB, UnityReserved=1135.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:30:02] [Log] [M1-7] ===== Cycle 17/20 =====
+[2026/10/5 15:30:02] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:30:02] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:30:02] [Log] [World] Enter accepted: sakuramachi#17
+[2026/10/5 15:30:02] [Log] [World] Scene handle attached: sakuramachi#17
+[2026/10/5 15:30:02] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:30:02] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:30:02] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:30:02] [Log] [World] Enter completed: sakuramachi#17
+[2026/10/5 15:30:02] [Log] [M1-7 Sample] Cycle=17, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=585.1MB, UnityAllocated=807.6MB, UnityReserved=1167.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:30:04] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:30:04] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:30:04] [Log] [World] Exit started: sakuramachi#17
+[2026/10/5 15:30:04] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:30:04] [Log] [World] Scene handle released: sakuramachi#17
+[2026/10/5 15:30:04] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:30:04] [Log] [World] Exit completed: sakuramachi#17
+[2026/10/5 15:30:04] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:30:04] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:30:05] [Log] [M1-7 Sample] Cycle=17, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=596.1MB, UnityAllocated=805.6MB, UnityReserved=1167.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:30:05] [Log] [M1-7] ===== Cycle 18/20 =====
+[2026/10/5 15:30:05] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:30:05] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:30:05] [Log] [World] Enter accepted: sakuramachi#18
+[2026/10/5 15:30:05] [Log] [World] Scene handle attached: sakuramachi#18
+[2026/10/5 15:30:05] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:30:05] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:30:05] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:30:05] [Log] [World] Enter completed: sakuramachi#18
+[2026/10/5 15:30:05] [Log] [M1-7 Sample] Cycle=18, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=596.7MB, UnityAllocated=825.9MB, UnityReserved=1183.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:30:07] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:30:07] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:30:07] [Log] [World] Exit started: sakuramachi#18
+[2026/10/5 15:30:07] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:30:07] [Log] [World] Scene handle released: sakuramachi#18
+[2026/10/5 15:30:07] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:30:07] [Log] [World] Exit completed: sakuramachi#18
+[2026/10/5 15:30:07] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:30:07] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:30:08] [Log] [M1-7 Sample] Cycle=18, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=607.6MB, UnityAllocated=825.6MB, UnityReserved=1183.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:30:08] [Log] [M1-7] ===== Cycle 19/20 =====
+[2026/10/5 15:30:08] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:30:08] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:30:08] [Log] [World] Enter accepted: sakuramachi#19
+[2026/10/5 15:30:08] [Log] [World] Scene handle attached: sakuramachi#19
+[2026/10/5 15:30:08] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:30:08] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:30:08] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:30:08] [Log] [World] Enter completed: sakuramachi#19
+[2026/10/5 15:30:08] [Log] [M1-7 Sample] Cycle=19, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=608.3MB, UnityAllocated=847.2MB, UnityReserved=1199.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:30:10] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:30:10] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:30:10] [Log] [World] Exit started: sakuramachi#19
+[2026/10/5 15:30:10] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:30:10] [Log] [World] Scene handle released: sakuramachi#19
+[2026/10/5 15:30:10] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:30:10] [Log] [World] Exit completed: sakuramachi#19
+[2026/10/5 15:30:10] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:30:10] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:30:10] [Log] [M1-7 Sample] Cycle=19, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=619.3MB, UnityAllocated=845.5MB, UnityReserved=1199.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:30:10] [Log] [M1-7] ===== Cycle 20/20 =====
+[2026/10/5 15:30:10] [Log] [World] State: Desktop -> Entering
+[2026/10/5 15:30:10] [Log] [World Test] Desktop -> Entering
+[2026/10/5 15:30:10] [Log] [World] Enter accepted: sakuramachi#20
+[2026/10/5 15:30:10] [Log] [World] Scene handle attached: sakuramachi#20
+[2026/10/5 15:30:10] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 15:30:10] [Log] [World] State: Entering -> Explore
+[2026/10/5 15:30:10] [Log] [World Test] Entering -> Explore
+[2026/10/5 15:30:10] [Log] [World] Enter completed: sakuramachi#20
+[2026/10/5 15:30:10] [Log] [M1-7 Sample] Cycle=20, Phase=Explore, Scenes=2, Active=3DScene, WorldBindings=1, Loops=1, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=619.9MB, UnityAllocated=865.7MB, UnityReserved=1215.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:30:12] [Log] [World] State: Explore -> Exiting
+[2026/10/5 15:30:12] [Log] [World Test] Explore -> Exiting
+[2026/10/5 15:30:12] [Log] [World] Exit started: sakuramachi#20
+[2026/10/5 15:30:12] [Log] [WorldPresentation] ActiveScene: 3DScene -> SampleScene
+[2026/10/5 15:30:12] [Log] [World] Scene handle released: sakuramachi#20
+[2026/10/5 15:30:12] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 15:30:12] [Log] [World] Exit completed: sakuramachi#20
+[2026/10/5 15:30:12] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 15:30:12] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 15:30:13] [Log] [M1-7 Sample] Cycle=20, Phase=DesktopAfterExit, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=631.8MB, UnityAllocated=865.4MB, UnityReserved=1215.3MB, ProcessPrivate=0.0MB
+[2026/10/5 15:30:13] [Log] [M1-7] CSV saved: C:/Users/30290/AppData/LocalLow/Cab/AIDesktopPetty\m1-world-stress-20261005-153013.csv
+[2026/10/5 15:30:13] [Log] [M1-7 Timing]
+Enter P50=0.053s
+Enter P95=0.100s
+Exit P50=0.037s
+Exit P95=0.051s
+[2026/10/5 15:30:13] [Log] [M1-7] PASS: 20 次 World 往返完成，结构性生命周期检查全部通过。
+[2026/10/5 15:30:17] [Log] [M1-7] Diagnostic cleanup start.
+[2026/10/5 15:30:18] [Log] [M1-7 Sample] Cycle=999, Phase=AfterDiagnosticCleanup, Scenes=1, Active=SampleScene, WorldBindings=0, Loops=0, Cameras=1, Listeners=1, PlayingAudio=0, Subscribers=2, Managed=550.0MB, UnityAllocated=285.1MB, UnityReserved=751.3MB, ProcessPrivate=0.0MB

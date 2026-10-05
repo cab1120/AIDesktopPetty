@@ -44,6 +44,16 @@ namespace AIDesktopPetty.Application.World
         public event Action<
             WorldState,
             WorldState> StateChanged;
+        
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+
+        public int DebugStateChangedSubscriberCount =>
+            StateChanged?
+                .GetInvocationList()
+                .Length
+            ?? 0;
+
+#endif
 
         private void Awake()
         {

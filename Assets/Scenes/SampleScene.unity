@@ -5244,6 +5244,7 @@ GameObject:
   - component: {fileID: 1371000734}
   - component: {fileID: 1371000733}
   - component: {fileID: 1371000732}
+  - component: {fileID: 1371000736}
   m_Layer: 0
   m_Name: Test
   m_TagString: Untagged
@@ -5264,8 +5265,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inner: {fileID: 1379137610}
-  faultMode: 1
-  completionDelaySeconds: 0
+  faultMode: 0
+  completionDelaySeconds: 3
   oneShot: 1
 --- !u!114 &1371000733
 MonoBehaviour:
@@ -5311,6 +5312,24 @@ Transform:
   m_Father: {fileID: 1500052307}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1371000736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1371000731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f692f2870bccb4e4fb601866d90cfb8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coordinator: {fileID: 1379137606}
+  worldId: sakuramachi
+  cycles: 20
+  exploreHoldSeconds: 2
+  desktopSettleSeconds: 0.5
+  transitionTimeoutSeconds: 30
 --- !u!1 &1379137604
 GameObject:
   m_ObjectHideFlags: 0
@@ -5358,7 +5377,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldCatalog: {fileID: 11400000, guid: 13efebc536e4c1e4387dcf8c17f15d2f, type: 2}
-  resourceService: {fileID: 1371000732}
+  resourceService: {fileID: 1379137610}
   presentationController: {fileID: 1379137609}
 --- !u!114 &1379137609
 MonoBehaviour:
