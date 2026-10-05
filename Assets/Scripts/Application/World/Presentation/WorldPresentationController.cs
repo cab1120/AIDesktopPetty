@@ -510,18 +510,22 @@ namespace AIDesktopPetty.Application.World
         // Exit
         // =====================================================
 
-        public void PrepareWorldForExit(
-            WorldScope scope)
+        public bool TryPrepareWorldForExit(
+            WorldScope scope,
+            out string error)
         {
             if (scope == null)
             {
-                return;
+                error =
+                    "WorldScope 不能为空。";
+
+                return false;
             }
 
 
-            // =====================================================
-            // 1. World loses Camera / Audio / Input ownership
-            // =====================================================
+            // ==========================================
+            // 1. World relinquishes Camera/Input/Audio
+            // ==========================================
 
             if (scope.RuntimeBindings != null)
             {
@@ -529,34 +533,34 @@ namespace AIDesktopPetty.Application.World
                     .SetControlEnabled(false);
 
 
-                // =================================================
-                // 2. World-specific content releases ownership
-                // =================================================
+                // ======================================
+                // 2. World content relinquishes
+                //    environment ownership
+                // ======================================
 
-                /*
-                 * SkyboxRotator 会在这里销毁自己的
-                 * Runtime Material。
-                 */
                 scope.RuntimeBindings
                     .DeactivateContent();
             }
 
 
-            // =====================================================
+            // ==========================================
             // 3. Restore previous Active Scene
-            // =====================================================
+            // ==========================================
 
-            /*
-             * 一定要发生在 Unload 3DScene 之前。
-             */
             if (!RestorePreviousActiveScene(
                     scope))
             {
-                Debug.LogError(
-                    $"[WorldPresentation] " +
-                    $"无法恢复 Previous Active Scene：" +
-                    $"{scope}");
+                error =
+                    $"无法恢复进入 World 前的 " +
+                    $"Active Scene：{scope}";
+
+                return false;
             }
+
+
+            error = null;
+
+            return true;
         }
         
         private bool RestorePreviousActiveScene(

@@ -567,8 +567,27 @@ namespace AIDesktopPetty.Application.World
             // World immediately gives up presentation ownership
             // =====================================================
 
-            presentationController
-                .PrepareWorldForExit(scope);
+            if (!presentationController
+                    .TryPrepareWorldForExit(
+                        scope,
+                        out string prepareError))
+            {
+                Debug.LogError(
+                    $"[World] Prepare exit failed: " +
+                    $"{prepareError}");
+
+                /*
+                 * 不假装退出成功。
+                 *
+                 * 保持：
+                 * State = Exiting
+                 * Scope = current
+                 *
+                 * 下一次 RequestExit
+                 * 可以重新尝试。
+                 */
+                yield break;
+            }
 
 
             /*

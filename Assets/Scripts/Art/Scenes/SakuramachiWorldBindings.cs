@@ -170,6 +170,16 @@ namespace AIDesktopPetty.Art.Scenes
 
                 return false;
             }
+            
+            if (director.timeUpdateMode
+                != DirectorUpdateMode.UnscaledGameTime)
+            {
+                error =
+                    "PlayableDirector 必须继续使用 " +
+                    "UnscaledGameTime。";
+
+                return false;
+            }
 
 
             if (!director.playOnAwake)
@@ -294,6 +304,15 @@ namespace AIDesktopPetty.Art.Scenes
              */
             sakuraWeather.SetTargetCamera(
                 runtimeBindings.WorldCamera);
+            
+            if (!sakuraWeather.isActiveAndEnabled)
+            {
+                error =
+                    "SakuraWeatherController 当前不可用，" +
+                    "请检查 Profile、VFX 引用和接口配置。";
+
+                return false;
+            }
 
 
             /*

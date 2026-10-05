@@ -1,0 +1,66 @@
+[2026/10/5 14:17:03] [Log] Database initialized: C:/Users/30290/AppData/LocalLow/Cab/AIDesktopPetty\iroha_ai.db
+[2026/10/5 14:17:03] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 14:17:07] [Log] [DesktopPetLayoutController] Layout=PetCollapsed, Window=180x250, Reference=180x250
+[2026/10/5 14:17:11] [Log] [World] State: Desktop -> Entering
+[2026/10/5 14:17:11] [Log] [World Test] Desktop -> Entering
+[2026/10/5 14:17:11] [Log] [World] Enter accepted: sakuramachi#1
+[2026/10/5 14:17:11] [Error] [World] Enter failed: sakuramachi#1; [Injected] Load failure.
+UnityEngine.Debug:LogError (object)
+AIDesktopPetty.Application.World.WorldCoordinator:FailEnterWithoutLoadedScene (AIDesktopPetty.Application.World.WorldScope,string) (at Assets/Scripts/Application/World/WorldCoordinator.cs:774)
+AIDesktopPetty.Application.World.WorldCoordinator/<EnterRoutine>d__19:MoveNext () (at Assets/Scripts/Application/World/WorldCoordinator.cs:381)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+[2026/10/5 14:17:11] [Log] [World] State: Entering -> Exiting
+[2026/10/5 14:17:11] [Log] [World Test] Entering -> Exiting
+[2026/10/5 14:17:11] [Log] [DesktopPetLayoutController] Layout=PetCollapsed, Window=180x250, Reference=180x250
+[2026/10/5 14:17:11] [Log] [World] Exit completed: sakuramachi#1
+[2026/10/5 14:17:11] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 14:17:11] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 14:17:14] [Log] 正在检测：AIDesktopPetty - SampleScene - Windows, Mac, Linux - Unity 2021.3.21f1c1 Personal <DX11>
+[2026/10/5 14:18:36] [Log] Database initialized: C:/Users/30290/AppData/LocalLow/Cab/AIDesktopPetty\iroha_ai.db
+[2026/10/5 14:18:36] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 14:18:44] [Log] [World] State: Desktop -> Entering
+[2026/10/5 14:18:44] [Log] [World Test] Desktop -> Entering
+[2026/10/5 14:18:44] [Log] [World] Enter accepted: sakuramachi#1
+[2026/10/5 14:18:48] [Log] [World] Exit requested while entering: sakuramachi#1
+[2026/10/5 14:18:48] [Log] [World Test] Exit accepted = True
+[2026/10/5 14:18:51] [Log] [World] Scene handle attached: sakuramachi#1
+[2026/10/5 14:18:51] [Log] [World] Scene loaded, but Exit was already requested: sakuramachi#1
+[2026/10/5 14:18:51] [Log] [World] State: Entering -> Exiting
+[2026/10/5 14:18:51] [Log] [World Test] Entering -> Exiting
+[2026/10/5 14:18:51] [Log] [World] Scene handle released: sakuramachi#1
+[2026/10/5 14:18:51] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 14:18:51] [Log] [World] Exit completed: sakuramachi#1
+[2026/10/5 14:18:51] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 14:18:51] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 14:18:57] [Log] [DesktopPetLayoutController] Layout=PetCollapsed, Window=180x250, Reference=180x250
+[2026/10/5 14:18:58] [Log] [World] State: Desktop -> Entering
+[2026/10/5 14:18:58] [Log] [World Test] Desktop -> Entering
+[2026/10/5 14:18:58] [Log] [World] Enter accepted: sakuramachi#2
+[2026/10/5 14:19:14] [Log] Database initialized: C:/Users/30290/AppData/LocalLow/Cab/AIDesktopPetty\iroha_ai.db
+[2026/10/5 14:19:14] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 14:19:18] [Log] [World] State: Desktop -> Entering
+[2026/10/5 14:19:18] [Log] [World Test] Desktop -> Entering
+[2026/10/5 14:19:18] [Log] [World] Enter accepted: sakuramachi#1
+[2026/10/5 14:19:20] [Log] [World] Exit requested while entering: sakuramachi#1
+[2026/10/5 14:19:20] [Log] [World Test] Exit accepted = True
+[2026/10/5 14:19:21] [Log] [World] Scene handle attached: sakuramachi#1
+[2026/10/5 14:19:21] [Log] [World] Scene loaded, but Exit was already requested: sakuramachi#1
+[2026/10/5 14:19:21] [Log] [World] State: Entering -> Exiting
+[2026/10/5 14:19:21] [Log] [World Test] Entering -> Exiting
+[2026/10/5 14:19:21] [Log] [World] Scene handle released: sakuramachi#1
+[2026/10/5 14:19:21] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 14:19:21] [Log] [World] Exit completed: sakuramachi#1
+[2026/10/5 14:19:21] [Log] [World] State: Exiting -> Desktop
+[2026/10/5 14:19:21] [Log] [World Test] Exiting -> Desktop
+[2026/10/5 14:22:12] [Log] Database initialized: C:/Users/30290/AppData/LocalLow/Cab/AIDesktopPetty\iroha_ai.db
+[2026/10/5 14:22:12] [Log] [DesktopPetLayoutController] Layout=Login, Window=250x250, Reference=180x180
+[2026/10/5 14:22:13] [Log] [DesktopPetLayoutController] Layout=PetCollapsed, Window=180x250, Reference=180x250
+[2026/10/5 14:22:14] [Log] [World] State: Desktop -> Entering
+[2026/10/5 14:22:14] [Log] [World Test] Desktop -> Entering
+[2026/10/5 14:22:14] [Log] [World] Enter accepted: sakuramachi#1
+[2026/10/5 14:22:15] [Log] [World] Scene handle attached: sakuramachi#1
+[2026/10/5 14:22:15] [Log] [WorldPresentation] ActiveScene: SampleScene -> 3DScene
+[2026/10/5 14:22:15] [Log] [World] State: Entering -> Explore
+[2026/10/5 14:22:15] [Log] [World Test] Entering -> Explore
+[2026/10/5 14:22:15] [Log] [World] Enter completed: sakuramachi#1
