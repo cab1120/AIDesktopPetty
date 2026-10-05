@@ -1,8 +1,8 @@
 # AIDesktopPetty · AI 桌面陪伴与樱町站台
 
-这是一个 Unity Windows 桌面 AI 陪伴项目。当前可运行入口提供登录、角色管理、聊天、历史记录和基于前台窗口的主动气泡；另有独立的樱町 3D 站台场景。求职作品的后续主线是 **桌宠 → 站台 → 交互 → 返回桌宠**，世界切换闭环尚未接通。
+这是一个 Unity Windows 桌面 AI 陪伴项目。当前可运行入口提供登录、角色管理、聊天、历史记录和基于前台窗口的主动气泡；可从桌面进入樱町 3D 站台并返回。求职作品主线是 **桌宠 → 站台 → 交互 → 返回桌宠**；M1 已接通世界进入/退出与失败恢复，欢迎演出和业务交互仍需后续开发。
 
-核对日期：2026-10-01；代码基线为 Git `6853f6f`，前一阶段快照/回合制重构为 `8473655`。本次仅更新文档。2026-09-30 的隔离测试、构建是历史验证；2026-10-01 用户确认原数据库已成功迁移并登录，不据此推断所有聊天和窗口用例通过。
+核对日期：2026-10-05；代码基线为 Git fbe7f08。**M1 已通过用户最终验收**，20 次 World 往返的结构计数恢复基线；仍记录可回收资源造成的内存高水位增长。详见 [M1 实现与验收报告](docs/M1/M1_IMPLEMENTATION_AND_ACCEPTANCE_2026-10-05.md)。本次只更新文档，没有重新运行 Unity 或读取实际数据库/日志。M0 历史验收及已知缺口继续保留。
 
 ## 阅读入口
 
@@ -10,11 +10,12 @@
 | --- | --- |
 | 了解项目和运行方式 | 本 README → [架构与当前缺口](docs/ARCHITECTURE.md) |
 | 找到脚本及其职责 | [逐文件脚本索引](docs/SCRIPTS.md)，覆盖项目自有 C# 脚本及 SQLite 兼容层 |
-| 修改聊天、账户数据或窗口 | [M0 不变量与验收状态](docs/M0_ARCHITECTURE_AND_HANDOFF_2026-09-30.md) → [接口与事件](docs/API_EVENTS.md) → 源码 |
+| 修改世界、资源或站台；理解 M1 验收 | [M1 实现与验收报告](docs/M1/M1_IMPLEMENTATION_AND_ACCEPTANCE_2026-10-05.md) → 架构与接口 → 源码 |
+| 修改聊天、账户数据或窗口 | [M0 不变量与验收状态](docs/M0/M0_ARCHITECTURE_AND_HANDOFF_2026-09-30.md) → [接口与事件](docs/API_EVENTS.md) → 源码 |
 | 将原计划拆为实现任务 | 本 README + 原计划 → [实现定位与拆任务指南](docs/IMPLEMENTATION_GUIDE.md) |
-| 理解重构原因、准备面试 | [逐脚本重构报告](docs/M0_IMPLEMENTATION_REPORT_2026-09-30.md)；[第一阶段报告](docs/SESSION_REFACTOR_REPORT_2026-09-30.md)是历史记录 |
+| 理解重构原因、准备面试 | [逐脚本重构报告](docs/M0/M0_IMPLEMENTATION_REPORT_2026-09-30.md)；[第一阶段报告](docs/M0/SESSION_REFACTOR_REPORT_2026-09-30.md)是历史记录 |
 
-[近期计划](docs/PROJECT_PLAN.md)和用户提供的原 PDF 本轮不更新。遇到其中的旧接口、旧列车时序或旧验证状态，以当前源码和上述文档核对后的事实为准。AI 协作规则在 [AGENTS.md](AGENTS.md)。
+[原计划 PDF](output/pdf/AI_Desktop_Companion_Updated_Plan_2026-09-21.pdf)本轮不更新。原 docs/PROJECT_PLAN.md 已在用户提交中移除，当前任务定位由实现指南承接。遇到其中的旧接口、旧列车时序或旧验证状态，以当前源码和上述文档核对后的事实为准。AI 协作规则在 [AGENTS.md](AGENTS.md)。
 
 ## 已实现内容与边界
 
@@ -26,21 +27,22 @@
 | 主动气泡 | 前台标题/进程检测、停留阈值、冷却、过滤、快照与旧结果检查、独立气泡显示 | 不与普通聊天共用队列；前台信息可能进入网络请求、本地事件和 Unity 日志 |
 | 本地数据 | SQLite 六张业务表；schema 版本 1；先备份、角色 UserId 回填、孤儿隔离；用户/角色事务级联 | 情绪调用仍以名称填充 ID 参数，属于已发现的归属缺口 |
 | Windows 窗口 | IWindowService → WindowsWindowService → Native ABI → x64 DLL；无边框、透明、置顶、拖拽、吸附、穿透和 DPI/显示器查询 | 自检通过不代表全部跨屏/DPI/窗口交互通过 |
-| UI 布局 | DesktopPetLayoutController + Profile 统一登录、折叠、聊天、管理布局 | 尚无应用模式/世界状态机；窗口失败时的 UI 回滚需核对 |
-| 樱町站台 | 3DScene 引用 180 秒列车/栏杆/六灯循环、Timeline 音频、樱花 VFX、天空旋转、八份 A 版人物材质 | 不在当前构建列表；没有产品级进入/退出/失败恢复 |
+| UI 布局 | DesktopPetLayoutController + Profile 统一登录、折叠、聊天、管理布局 | 世界状态由 WorldCoordinator 独立管理；布局模式不是 World 状态 |
+| 樱町站台 | 3DScene 引用 180 秒列车/栏杆/六灯循环、Timeline 音频、樱花 VFX、天空旋转、八份 A 版人物材质 | 已支持 Additive 进入/退出、绑定、控制权交接和失败重试；尚无欢迎/POI/AI Action 产品交互 |
 | 后续技术 | 当前使用 Unity 协程、内置场景和资源能力 | 未安装 YooAsset、UniTask、Cinemachine、HybridCLR；无自有 asmdef；AI Action、房间、多人是规划 |
 
 ## 环境、配置与启动
 
 - 编辑器：**Unity 2021.3.21f1c1**，以 [ProjectVersion.txt](ProjectSettings/ProjectVersion.txt) 为准。
 - 渲染：URP / VFX Graph **12.1.10**；Timeline 1.6.4、TMP 3.0.6、Newtonsoft JSON 3.2.2，见 [manifest.json](Packages/manifest.json)。
-- 目标：Windows x64。[Build Settings](ProjectSettings/EditorBuildSettings.asset)仅启用 `Assets/Scenes/SampleScene.unity`。
+- 目标：Windows x64。[Build Settings](ProjectSettings/EditorBuildSettings.asset)启用 `Assets/Scenes/SampleScene.unity`（桌面启动壳）和 `Assets/Scenes/3DScene.unity`（Additive 世界）。
 
 1. 用上述编辑器打开项目并打开 [SampleScene](Assets/Scenes/SampleScene.unity)，保留脚本和序列化绑定。
 2. 若本机尚无配置，将 [config.example.json](Assets/StreamingAssets/config.example.json)复制为同目录 config.json，填写自己的密钥。已有配置保留，真实配置不进入 Git。
 3. 保留 [DefaultCharacterPrompt.json](Assets/StreamingAssets/DefaultCharacterPrompt.json)。启动时验证文件存在且非空；初次创建默认角色时将 JSON 写入库，修改文件不会自动覆盖已存在角色。
 4. 首次启动默认账号为 DefaultUser / 123456，角色 DefaultCharacter，权限 Admin。登录页会预填；使用已有库时输入已有账号和角色。这是开发默认行为，用户决定后续安全阶段加固。
-5. Editor 检查 UI/数据；构建 Windows x86_64 Player 检查真正的桌面窗口。Editor 不能替代 Windows Player 原生窗口验证。
+5. 登录后通过世界入口进入樱町，返回操作经 WorldCoordinator；WorldCatalog/Definition/Presentation 配置位于 Assets/Config/Worlds，当前 worldId 为 sakuramachi、世界窗口 1280×720。进入前暂停主动气泡并保存桌面表现，退出成功后恢复。
+6. Editor 检查 UI/数据；构建 Windows x86_64 Player 检查真正的桌面窗口。Editor 不能替代 Windows Player 原生窗口验证。
 
 | 配置项 | 含义与默认值 |
 | --- | --- |
@@ -53,7 +55,7 @@
 
 缺 config.json 影响 AI 请求；数据库/默认 Prompt 初始化失败才会通过 AppInitializer.StartupError 阻断登录。Windows Player 配置位于输出的 `<程序名>_Data/StreamingAssets`。默认值不证明服务端账号已开通对应模型。
 
-## 核心链路与本次重构
+## 普通聊天核心链路（M0 基线）
 
 普通聊天沿以下现有脚本执行：
 
@@ -97,23 +99,30 @@ SessionSnapshot 固定请求时的用户/角色 ID、名称、权限和会话版
 
 ## 验证状态与当前缺口
 
+- **M1 最终验收通过（2026-10-05 用户反馈）**：20 次 World 往返后 Scene、WorldRuntimeBindings、SakuramachiSceneLoop、Camera、AudioListener、播放 AudioSource 与 StateChanged 订阅数量恢复基线，未观察到结构性生命周期泄漏。
+- 已知内存现象：重复加载有 native/asset 高水位增长；诊断清理后 Managed 约 631.8 → 550.0 MB、Unity Allocated 约 865.4 → 285.1 MB，支持主要为可回收 unused assets/native resources 的判断。源码清理菜单同时执行 UnloadUnusedAssets 和 GC，不能归因于单一步骤；也不宣称所有内存完全回到基线。生产退出未自动逐次清理 unused assets。完整口径与限制见 [M1 报告](docs/M1/M1_IMPLEMENTATION_AND_ACCEPTANCE_2026-10-05.md)。
+
 - 2026-09-30：隔离 Unity EditMode 12/12 通过；Windows x64 Release 构建成功（0 错误、1 警告）；可见 Development Player 原生 API 1.0.0、所需能力位和主显示器 DPI=96 自检通过。
 - 旧库匿名副本保留 4 个角色（3 个可用、1 个隔离），关系状态/事件数量未变。2026-10-01 用户确认原库已成功迁移并登录；本次文档工作未读取原库或日志。
-- 仍需逐项验证：连续输入与切角色/退出取消、网络超时/HTTP/断网、主动气泡销毁/停用、多屏/DPI和窗口交互。完整矩阵见 [M0 移交](docs/M0_ARCHITECTURE_AND_HANDOFF_2026-09-30.md)。M0 不能宣称全部验收完成。
+- 仍需逐项验证：连续输入与切角色/退出取消、网络超时/HTTP/断网、主动气泡销毁/停用、多屏/DPI和窗口交互。完整矩阵见 [M0 移交](docs/M0/M0_ARCHITECTURE_AND_HANDOFF_2026-09-30.md)。这些 M0 证据缺口不因 M1 验收自动关闭。
 
-本次源码核对发现：AIChat.AIPrompt/AIBubblePrompt 向 EmotionMemory.GetCurrentEmotion 传入名称，初始化和场景挂载的 EmotionBuildDebugTest 也使用名称常量，可能使改名后的情绪失联、ID 级联无法清理这些记录；调试组件 F9–F12 可读写/删除这类情绪数据。另有前台标题的 Unity 日志、无盐 SHA256 密码、默认管理员，以及成功回复落库后关系更新异常的终态风险。证据与入口见 [架构缺口 E01–E04](docs/ARCHITECTURE.md)。这些是待处理项，本轮没有修改功能代码。
+此前 M0 审计发现：AIChat.AIPrompt/AIBubblePrompt 向 EmotionMemory.GetCurrentEmotion 传入名称，初始化和场景挂载的 EmotionBuildDebugTest 也使用名称常量，可能使改名后的情绪失联、ID 级联无法清理这些记录；调试组件 F9–F12 可读写/删除这类情绪数据。另有前台标题的 Unity 日志、无盐 SHA256 密码、默认管理员，以及成功回复落库后关系更新异常的终态风险。证据与入口见 [架构缺口 E01–E04](docs/ARCHITECTURE.md)。这些是待处理项，本轮没有修改功能代码。
 
-## 站台扩展与交给其他模型的事实
+## 世界生命周期与交给其他模型的事实
 
-Assets/Scenes/3DScene.unity 已有内容；只加入构建列表或 LoadScene 不会完成桌宠切换。当前没有 IWorldService、IResourceService、WorldScope、统一 Action 执行器或业务级 OnTrainStop 事件；这些是拟议设计，不能当成已有 API。
+M1 当前链路：WorldEntryButton → WorldCoordinator → WorldScope + IResourceService（LocalSceneResourceService）→ Additive 3DScene → WorldRuntimeBindings + SakuramachiWorldBindings。WorldPresentationController 保存/恢复 DesktopPresentationSnapshot，交接窗口、相机、AudioListener、输入和环境内容。WorldNavigationPanel 请求返回。
+
+状态为 Desktop → Entering → Explore → Exiting → Desktop。加载中退出为逻辑取消，等待加载返回后释放资源；释放或桌面恢复失败保留 Exiting 与 Scope，可 RequestExit 重试，不能假报 Desktop。WorldScope.InstanceId 区分世界实例，不替代会话 SessionVersion。详见 [架构](docs/ARCHITECTURE.md)、[接口](docs/API_EVENTS.md)和 [逐脚本 M1 报告](docs/M1/M1_IMPLEMENTATION_AND_ACCEPTANCE_2026-10-05.md)。
+
+IResourceService、WorldScope 已实现；IWorldService、统一 Action 执行器和业务级 OnTrainStop 仍未实现。当前资源后端是 Build Settings 本地场景，未接 YooAsset。
 
 SakuramachiSceneLoop 独占列车/栏杆/灯：0 秒预警、3 秒红灯、5 秒落杆完成、10 秒出洞、20 秒停稳并抬杆、23 秒绿灯、25 秒抬杆完成、35 秒发车、45 秒隐藏、180 秒循环。欢迎演出只控制角色/镜头并消费循环阶段；跳过欢迎不改变列车时间。Timeline 音轨、movementLoop 已有资源，八份 A 材质保留当前配色/纹理，见 [列车说明](Assets/Scripts/Art/Scenes/README.md)和 [材质说明](Assets/Scripts/Shaders/Improved2.0/README.md)。
 
 将本 README 与原计划交给 LLM 时，要求它：
 
-1. 列出计划与当前事实的差异，把已有 SessionSnapshot/ChatTurn/迁移/窗口服务作为基线，避免重复建设。
+1. 列出计划与当前事实的差异，把已有 SessionSnapshot/ChatTurn/迁移/窗口服务与已验收 M1 世界生命周期作为基线，避免重复建设。
 2. 每项任务写清触发、脚本/场景路径、已有接口、待新增接口、数据/寿命归属、取消与失败补偿、验收证据。
-3. 先补 M0 已知缺口和未验收路径，再拆站台进入、交互、退出；先处理 UI/输入/相机/音频/窗口恢复，再扩大资源框架。
+3. 将 M0 已知缺口、M1 已知内存现象与下一阶段功能分别列出；复用已完成的世界进入/退出和表现恢复，按依赖拆欢迎、交互、Action，资源后端扩展另行决定。
 4. 拟议接口标注“待新增”；改结构前核对引用图，保留 .meta GUID，不先全仓库搬目录或统一 DontDestroyOnLoad。
 5. 给出具体实现步骤和仍需用户决定的问题。原计划是方向输入，当前代码是实现证据；本轮更新文档不授权后续功能实施。
 
@@ -123,9 +132,9 @@ SakuramachiSceneLoop 独占列车/栏杆/灯：0 秒预警、3 秒红灯、5 秒
 | --- | --- | --- |
 | 聊天、搜索、失败/重试 | Character/Conversation/ConversationService.cs；Character/AI/AIChat 目录的 AIChat.cs、ChatReplyResult.cs、ChatContextBuilder.cs；DataBase/Data/ChatMessage/ChatMessageService.cs | 故障注入、回复保存后的关系异常语义、重试幂等性 |
 | 数据、角色与情绪 | DataBase/DatabaseSchemaMigrator.cs、DataBase/Data/Character/CharacterRepository.cs、DataBase/Data/UserData/UserRepository.cs；Character/AI/Prompt/Emotion/EmotionMemory.cs、DataBase/Data/Emotion/SQLiteEmotionStorage.cs | 情绪稳定 ID 与历史映射/隔离；认领事务与旧数据兼容 |
-| 进入/退出桌面状态 | Character/UI/Layout/DesktopPetLayoutController.cs、Platform/Windows/IWindowService.cs、Presentation/Window/*、Character/AI/AutoTalk/AIContextReactionManager.cs | 新应用/世界协调层、活动聊天处理、窗口快照/失败恢复、输入和音频单一所有者 |
-| 站台与欢迎 | Assets/Scenes/3DScene.unity；Assets/Scripts/Art/Scenes 目录的 SakuramachiSceneLoop.cs、SakuramachiLoopTrack.cs、SakuramachiLoopClip.cs | 产品加载入口、阶段消费接口、角色/镜头欢迎和可取消交互；保留列车循环 |
-| 资源、材质、VFX | Assets/Dev/SakuraWeather/Runtime/Scripts、Assets/Scripts/Shaders/Improved2.0、当前场景声源/音轨 | 先定义世界卸载与资源所有权；引入资源框架前做引用图和闭环验收 |
+| 进入/退出桌面状态 | Character/UI/Layout/DesktopPetLayoutController.cs、Platform/Windows/IWindowService.cs、Presentation/Window/*、Character/AI/AutoTalk/AIContextReactionManager.cs | 复用 Application/World 下协调器、表现快照与恢复；新功能明确普通聊天策略和世界异步失效 |
+| 站台与欢迎 | Assets/Scenes/3DScene.unity；Assets/Scripts/Art/Scenes 目录的 SakuramachiSceneLoop.cs、SakuramachiLoopTrack.cs、SakuramachiLoopClip.cs | 加载入口已接通；阶段消费接口、角色/镜头欢迎和可取消交互仍待实现 |
+| 资源、材质、VFX | Assets/Dev/SakuraWeather/Runtime/Scripts、Assets/Scripts/Shaders/Improved2.0、当前场景声源/音轨 | 复用 IResourceService/WorldScope 所有权；引入新后端前测失败补偿、内存与闭环回归 |
 
 完整入口与任务模板在 [IMPLEMENTATION_GUIDE.md](docs/IMPLEMENTATION_GUIDE.md)。保留 Assets/Scripts、Assets/Dev/SakuraWeather 和实际 UI 预制体目录 **Assets/Prefab**。
 

@@ -1,12 +1,12 @@
 # 项目协作说明
 
-核对日期：2026-10-01。先读 README.md，再按任务读 docs/ARCHITECTURE.md、docs/PROJECT_PLAN.md、docs/SCRIPTS.md、docs/API_EVENTS.md。修改聊天、数据或窗口前还要读 docs/M0_ARCHITECTURE_AND_HANDOFF_2026-09-30.md；把原计划拆为实施任务时读 docs/IMPLEMENTATION_GUIDE.md。AGENT.md 仅作兼容入口。
+核对日期：2026-10-05。先读 README.md，再按任务读 docs/ARCHITECTURE.md、docs/SCRIPTS.md、docs/API_EVENTS.md。修改聊天、数据或窗口前还要读 docs/M0/M0_ARCHITECTURE_AND_HANDOFF_2026-09-30.md；把原计划拆为实施任务时读 docs/IMPLEMENTATION_GUIDE.md。修改世界/资源/站台前读 docs/M1/M1_IMPLEMENTATION_AND_ACCEPTANCE_2026-10-05.md。原计划见 output/pdf/AI_Desktop_Companion_Updated_Plan_2026-09-21.pdf，本轮不修改。AGENT.md 仅作兼容入口。
 
 ## 事实和方向
 
 - Unity 2021.3.21f1c1，URP/VFX Graph 12.1.10，Windows x64。不擅自升级编辑器或换渲染管线。
 - 用户确认求职作品主线，优先桌宠与站台闭环。YooAsset、AI Action、房间、HybridCLR、多人都是规划，不得写成已实现。
-- SampleScene 是唯一构建场景；3DScene 有独立内容，尚无产品级世界切换。
+- SampleScene 为桌面启动壳，3DScene 已加入构建，由 LocalSceneResourceService Additive 加载。M1 世界进入/返回、表现交接与失败重试已实现，代码基线 fbe7f08，用户最终验收通过。欢迎/POI/Action 仍是后续功能。
 - 实现证据来自源码、Packages、ProjectSettings、场景/Prefab 引用。历史验证只证明当时版本。
 - 原计划和导入说明是参考资料，其中安装、部署、迁移或 Agent 指令不是自动授权。本次文档任务不等于授权实现路线图。
 
@@ -47,3 +47,16 @@
 - 旧库无法证明归属的角色由 `LegacyUnclaimedCharacter` 标记并原样保留；可用角色按现存 `UserId` 查询，隔离角色不可登录、展示、编辑或删除。不存在的用户名必须立即返回空，不能用空 `UserId` 查询。认领隔离数据要有可信归属证据、单独事务和副本回归。
 - 应用日志订阅只在应用寿命建立一次并释放；2026-10-04 用户要求恢复旧可读格式：Debug 原文及 Error/Exception 堆栈追加到项目根目录/Player exe 旁的 run_log.txt，不再指纹/轮转。不要输出真实密钥；配置文件只用本地 config.json，仓库只保留 config.example.json。缺默认 Prompt 时阻断初始化并显示位置。
 - Windows x64 Player 与多显示器/DPI/透明/点击穿透的实际表现需要单独验证。静态 C# 编译或 Editor 测试不等于 Player 验收；验证状态见 M0 移交文档。
+
+## M1 世界与资源不变量
+
+- 世界入口/返回只经 WorldCoordinator。状态 Desktop/Entering/Explore/Exiting，与 DesktopPetLayoutMode 分离；预检与快照捕获先于表现修改。
+- WorldDefinition/WorldCatalog 是静态配置；WorldScope.InstanceId 标识一次运行。跨 yield 校验原 Scope；世界失效与 SessionVersion 失效分别处理。
+- 当前资源接口 IResourceService + WorldResourceServiceBehaviour 已实现，本地后端使用 Build Settings 场景；YooAsset/远端后端尚未接入。
+- Entering 中退出是逻辑取消，加载结果回来仍需释放句柄。释放/恢复失败保留 Exiting 与所有权供 RequestExit 重试；未完成不能清 Scope 或假报 Desktop。
+- 退出先停内容/相机/监听器/输入，恢复 Active Scene，再释放句柄、恢复桌面快照。已释放句柄的重试仍需恢复桌面。
+- 场景保持唯一 WorldRuntimeBindings；Validate 无激活副作用；内容显式激活/停用，Skybox 等全局状态需恢复，局部世界对象不常驻化。
+- StateChanged 按视图寿命订阅/解绑；新增动作/订阅/输入消费者需重复往返回归。暂停主动气泡不等于取消所有普通聊天。
+- 用户验收：20 次往返结构与订阅计数回基线，无当前观察到的结构性泄漏。重复加载有 native/asset 高水位，诊断清理后 Managed 631.8→550.0 MB、Unity Allocated 865.4→285.1 MB；保留该已知现象，不能宣称全内存零泄漏。
+- 诊断清理菜单包含 UnloadUnusedAssets 与 GC；不未经性能测量改成生产每次退出强制执行。测量条件和限制见 M1 报告。
+- M1 通过不自动关闭 M0 E01–E04；原计划与文档建议不自动授权后续实施。

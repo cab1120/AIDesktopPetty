@@ -1,6 +1,6 @@
 # 当前接口、事件与调用约束
 
-核对日期：2026-10-01，代码基线 Git 6853f6f。这里只列现有契约；参数/返回以源码为准。文件定位见 [SCRIPTS.md](SCRIPTS.md)，责任/异常缺口见 [ARCHITECTURE.md](ARCHITECTURE.md)。IWorldService、IResourceService、ActionQueue、worldInstanceId 和 OnTrainStop 均是待设计内容。
+核对日期：2026-10-05，代码基线 Git fbe7f08。这里只列现有契约；参数/返回以源码为准。文件定位见 [SCRIPTS.md](SCRIPTS.md)，责任/异常缺口见 [ARCHITECTURE.md](ARCHITECTURE.md)。IResourceService、WorldScope.InstanceId 已实现；IWorldService、ActionQueue 和 OnTrainStop 仍是待设计内容。
 
 ## 启动、数据与身份
 
@@ -85,4 +85,29 @@ ChatTurn 是不可变契约：TurnId、UserMessageId、Input、Session、Created
 | SakuraWeatherController.ApplyProfile / SetProfile / SetTargetCamera | 应用分层 VFX 配置与相机 | 局部 Demo 指标不能证明整机性能 |
 | Application.logMessageReceived | AppLogService 应用级唯一订阅/退出解绑 | 2026-10-04 按用户要求恢复旧可读格式和根目录 run_log.txt；原文日志，Error/Exception 附堆栈，不再指纹或轮转 |
 
-新增世界阶段通知和 Action 结果时，先定义 World 寿命、取消、请求 ID 与失败补偿，不能在文档中把待设计接口写成现有 API。
+## M1 世界命令、资源与表现
+
+| 接口/事件 | 契约与调用约束 |
+| --- | --- |
+| WorldCoordinator.TryEnterWorld(worldId,out error) | bool 表示接受，不是加载成功；仅 Desktop 且无遗留 Scope 可进入；先预检再捕获快照和创建实例 |
+| WorldCoordinator.RequestExit() | Desktop 幂等成功；Entering 标记逻辑取消；Explore 启动退出；Exiting 有活动清理时不重复启动，失败结束后可重试 |
+| State / CurrentScope / HasActiveWorld | 观察状态与当前所有权；Exiting 失败仍可能拥有 Scope，不能视作 Desktop |
+| StateChanged | event Action<WorldState,WorldState>，参数为旧/新状态；视图按寿命订阅/解绑；单个监听异常被隔离 |
+| DebugStateChangedSubscriberCount | 仅 Editor/Development 提供订阅数量，不作为 Release API |
+| WorldScope | InstanceId、Definition/WorldId、ExitRequested、SceneHandle、DesktopSnapshot、RuntimeBindings、PreviousActiveScene；附加/移除操作由内部协调流程管理 |
+| WorldDefinition.TryValidate / WorldCatalog.TryValidate、TryGet | 配置与目录校验、按 worldId 查询；Build Settings 可加载检查由资源后端负责 |
+| IResourceService.CanLoadWorldScene(definition,out error) | 加载前能力检查；预检失败不先改变桌面表现 |
+| IResourceService.LoadWorldScene(definition,completed) | IEnumerator + Action<WorldSceneLoadResult>；一次操作一次明确结果；成功交付 WorldSceneHandle |
+| IResourceService.ReleaseWorldScene(handle,completed) | IEnumerator + Action<WorldSceneReleaseResult>；按原句柄释放；Local 后端已释放/场景已不存在可幂等成功 |
+| WorldResourceServiceBehaviour | MonoBehaviour 抽象后端，Inspector 序列化入口；Local 实现当前使用 Build Settings + Additive |
+| WorldPresentationController.TryCaptureDesktop | 捕获 DesktopPresentationSnapshot，先于表现修改；世界表现失败仍需靠快照恢复 |
+| TrySuspendDesktopForEntering / TryBindLoadedWorld / TryActivateWorld | 暂停桌面主动气泡及窗口行为、解析场景绑定、交接世界表现；每步 bool/out error |
+| TryPrepareWorldForExit / TryRestoreDesktop | 先放弃世界控制并恢复 Active Scene，再在释放后恢复桌面；失败保留 Exiting 供重试 |
+| WorldRuntimeBindingsResolver.TryResolve(scene,out bindings,out error) | 只在目标 Scene 根对象内解析绑定并校验；每世界场景应保持唯一入口 |
+| WorldRuntimeBindings.TryValidate / TryActivateContent / DeactivateContent / SetControlEnabled | 校验与副作用分离；显式管理 Camera/AudioListener/Input 和内容寿命 |
+| WorldContentBindingsBehaviour.TryValidate / TryActivate / Deactivate | 内容适配抽象；Sakuramachi 实现对接列车/Director/樱花/天空，不承担场景加载 |
+| SkyboxRotator.TryActivate / Deactivate | 显式天空材质激活、停用和恢复；禁止加载尚未提交就覆盖全局环境 |
+
+World InstanceId 与会话版本不是同一令牌。资源操作暂无真实中断 Unity 场景加载的取消接口；Entering 中请求退出后等待结果并释放。释放失败保留句柄，桌面恢复失败保留快照与 Scope；只有全部完成才广播 Desktop。普通聊天取消策略不能从暂停主动气泡推断。
+
+压力工具与故障后端存在，但不把工具存在写成所有故障验收通过；已确认结论、内存口径与下一阶段准则见 [M1 报告](M1/M1_IMPLEMENTATION_AND_ACCEPTANCE_2026-10-05.md)。新增阶段通知与 Action 需复用世界寿命，另定义请求 ID、取消和补偿。

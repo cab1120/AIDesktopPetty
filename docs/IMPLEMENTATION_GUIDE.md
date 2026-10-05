@@ -1,64 +1,58 @@
 # 从当前代码与原计划拆出实现任务
 
-核对日期：2026-10-01，代码基线 Git 6853f6f。这是实现定位指南，不替代或更新 [PROJECT_PLAN.md](PROJECT_PLAN.md)与用户的原 PDF，也不表示后续功能已获实施授权。先读 [README](../README.md)、[架构](ARCHITECTURE.md)、[M0 不变量](M0_ARCHITECTURE_AND_HANDOFF_2026-09-30.md)与 [接口](API_EVENTS.md)。
+核对日期：2026-10-05，代码基线 Git fbe7f08。本文是实施定位指南；[原计划 PDF](../output/pdf/AI_Desktop_Companion_Updated_Plan_2026-09-21.pdf)本轮不改。原 docs/PROJECT_PLAN.md 已被移除，不再作为当前实施入口。先读 [README](../README.md)、[架构](ARCHITECTURE.md)、[M0 移交](M0/M0_ARCHITECTURE_AND_HANDOFF_2026-09-30.md)、[M1 实现与验收](M1/M1_IMPLEMENTATION_AND_ACCEPTANCE_2026-10-05.md)和 [现有接口](API_EVENTS.md)。
 
-## 用计划时先校准事实
+## 校准阶段状态
 
-| 原计划可能提出的工作 | 当前事实 | 拆任务时怎样处理 |
+| 范围 | 当前事实 | 下一阶段怎样处理 |
 | --- | --- | --- |
-| 捕获身份、串行、旧请求失效 | SessionSnapshot、ChatTurn、ConversationService 和 AIChat 已实现 | 核对提交边界并补运行验收，不另建普通聊天入口 |
-| 数据归属与删除 | CharacterProfile 有 UserId、schema v1、事务删除和旧孤儿隔离；用户确认原库登录恢复 | 先处理情绪仍传名称的缺口；新表/认领需独立迁移，不自动清理原数据 |
-| Windows 能力隔离 | IWindowService、WindowsWindowService、Native ABI 和前台平台服务存在 | 扩展接口或适配消费者，禁止把 Win32 放回业务层 |
-| 站台/欢迎演出 | 3DScene 已有循环、Timeline 音频、材质和樱花 | 复用场景，补产品进入/退出，不重建列车轨道 |
-| 旧列车时间或 OnTrainStop | 20 秒停稳、35 秒发车、45 秒隐藏；无业务 OnTrainStop | 阶段消费接口待新增，要定义跳转/重复行为 |
-| YooAsset/UniTask/Cinemachine/HybridCLR | 未安装，当前使用协程和 Unity 场景/资源能力 | 先证明闭环，再按原计划与用户决定引入 |
-| asmdef、World/Resource/Action | 自有脚本在默认程序集；相关服务不存在 | 先画引用图和最小消费者，逐模块拆分并保留 GUID |
+| M0 身份与普通聊天 | SessionSnapshot/ChatTurn/FIFO、输入去重、旧请求取消与提交校验存在 | 复用入口；独立处理 E01–E04 与未完运行验收，不因 M1 通过宣称全部缺口关闭 |
+| M0 数据 | 稳定 ID、schema v1、事务删除、旧孤儿隔离；用户确认原库迁移/登录成功 | 新迁移先备份和副本回归；禁止猜测孤儿归属 |
+| M1 世界闭环 | WorldCoordinator/Scope、IResourceService 本地 Additive 后端、表现快照、入口/导航、内容绑定已实现；用户最终验收通过 | 不重复创建世界状态机；在现有边界上扩展 |
+| M1 内存记录 | 20 次往返结构计数回基线；native/asset 高水位诊断清理后明显回落 | 保留已知 retention；性能任务另测趋势和清理耗时，不能直接每次退出强制 GC |
+| 站台/欢迎/交互 | 站台循环已有；欢迎产品流程、POI、统一 Action 和业务阶段事件尚未实现 | 列出待新增接口；复用世界激活/停用，列车只由现有 Loop 写入 |
+| 资源框架/程序集 | 未接 YooAsset/UniTask/Cinemachine/HybridCLR，无自有 asmdef | 资源替换接 IResourceService；拆程序集先分析引用/GUID，不按计划文字推断已安装 |
 
-## 按功能定位修改入口
+## 按功能定位
 
-路径相对仓库；以下 Character、DataBase、Presentation、Platform、Art 均位于 Assets/Scripts 下。逐文件职责见 [SCRIPTS.md](SCRIPTS.md)。
+所有下列脚本前缀为 Assets/Scripts；具体逐文件含义见 [SCRIPTS](SCRIPTS.md)。
 
-| 工作 | 入口与必须追踪的链路 | 实现/验收应包含 |
+| 工作 | 现有入口 | 必须考虑 |
 | --- | --- | --- |
-| 普通输入/回复/重试 | Character/UI/UIManager.cs → Character/Conversation/ConversationService.cs → Character/AI/AIChat/AIChat.cs → DataBase/Data/ChatMessage/ChatMessageService.cs | 保留 TurnId/消息 ID；定义重试是否复用已保存输入；跨 yield 校验快照；FIFO、三态终结与防重复落库 |
-| 模型/搜索协议 | AIChat/ChatReplyResult.cs、ChatReplyParser.cs、SearchDecison/SearchDecisionService.cs、SearchDecisonMode/SearchRuleFilter.cs、SearchCacheService.cs | 配置端点/模型/单请求超时；搜索失败不能当“不搜索”；HTTP 错误体不能保存为 Assistant；假服务故障注入 |
-| 角色 Prompt | Character/AI/Prompt/CharacterPromptLoader.cs → CharacterPromptBuilder.cs；DataBase/Data/Character/CharacterProfileData.cs | 区分角色 JSON 和运行上下文；用快照；默认文件仅初次创建入库；定义编辑对版本的影响 |
-| 情绪归属缺口 E01 | AIChat.AIPrompt/AIBubblePrompt、Prompt/Emotion/EmotionMemory.cs、DataBase/Data/Emotion/SQLiteEmotionStorage.cs、Test/EmotionBuildDebugTest.cs | 改用稳定 ID；明确登录前是否生成情绪；历史名称键映射前检查歧义；无法认领者保留隔离；新/旧库、改名、级联用副本回归 |
-| 账户/角色/数据库 | DataBase/AuthService.cs、DatabaseManager.cs、DatabaseSchemaMigrator.cs、Data/UserData/UserRepository.cs、Data/Character/CharacterRepository.cs | 启动错误门槛；备份、版本迁移；隔离标记一致性；删除事务成功后刷新；不凭名称猜测归属 |
-| 主动搭话 | Presentation/DesktopContextManager.cs → Character/AI/AutoTalk/AIContextReactionManager.cs → AIChat.GetAIBubbleReply → Character/UI/BubbleUIManager.cs、DataBase/Data/InteractionEvent/InteractionEventService.cs | 停留/过滤/冷却、锁、停用/销毁/换角色、旧气泡隐藏；当前不具备普通聊天的结构化结果协议 |
-| 前台/窗口/布局 | Platform/Windows/IWindowService.cs、WindowsWindowService.cs、WindowsForegroundContextService.cs；Presentation/Window/*；Character/UI/Layout/* | logical size 与 physical bounds；服务失败时 UI/窗口恢复；可见 Player、多屏/不同 DPI |
-| 日志/安全 | DataBase/AppLogService.cs、AIContextReactionManager.cs、InteractionEventService.cs、Tools/PasswordHasher.cs、登录与默认初始化 | 区分自定义日志、Unity 日志、事件库、网络发送；密码升级涉及旧哈希兼容；默认管理员加固被用户延期 |
-| 世界进入/退出 | **待新增应用/世界协调层**；现有 SampleScene、3DScene、DesktopPetLayoutController、对话/气泡、窗口接口 | 加载失败恢复、重复进入/退出、输入与音频单一所有者、会话与世界取消边界 |
-| 欢迎/站台交互 | Art/Scenes/SakuramachiSceneLoop.cs、SakuramachiLoopTrack.cs、SakuramachiLoopClip.cs、3DScene 的 Director 和角色/相机引用 | 循环独占列车/杆/灯；欢迎只写角色/镜头；跳过保留列车时间；阶段事件待新增 |
-| 樱花/材质/音频 | Assets/Dev/SakuraWeather/Runtime/Scripts/*、Shaders/Improved2.0/Editor/CharacterStyleAMaterials.cs、Art/Skybox/SkyboxRotator.cs、已有音轨 | 保留 A 材质配色/纹理和音轨；配置工具可能保存/覆盖资源，先查目标；当前 Player 性能实测 |
+| 普通输入、网络和重试 | Character/UI/UIManager.cs、Character/Conversation/ConversationService.cs、Character/AI/AIChat/*、DataBase/Data/ChatMessage/* | TurnId、输入去重、结构化结果、终态一次、关系更新异常 |
+| 情绪 E01 | AIChat、Character/AI/Prompt/Emotion/EmotionMemory.cs、DataBase/Data/Emotion/SQLiteEmotionStorage.cs、Test/EmotionBuildDebugTest.cs | 名称/ID 混用、历史归属歧义、登录前初始化、改名与级联副本回归 |
+| 数据账户 | DataBase/AuthService.cs、DatabaseSchemaMigrator.cs、Data/UserData/UserRepository.cs、Data/Character/CharacterRepository.cs | 初始化门槛、稳定 ID、事务与隔离、兼容旧库 |
+| 前台气泡与日志 | Presentation/DesktopContextManager.cs、Character/AI/AutoTalk/AIContextReactionManager.cs、BubbleUIManager.cs、InteractionEventService.cs、DataBase/AppLogService.cs | 普通队列与气泡不同；世界暂停后的锁释放；原文日志/事件/网络策略分别定义 |
+| 世界状态/加载/退出 | Application/World/WorldCoordinator.cs、WorldScope.cs、Resource/*、Definition/* | 预检、Scope 校验、逻辑取消、原句柄、释放失败与恢复失败重试 |
+| 世界表现/输入/窗口 | Application/World/Presentation/*、Platform/Windows/IWindowService.cs、Character/UI/Layout/* | 快照先捕获；唯一相机/监听器/输入所有者；窗口服务失败；Player/DPI验收 |
+| 樱町内容/欢迎 | Art/Scenes/SakuramachiWorldBindings.cs、SakuramachiSceneLoop.cs、SakuramachiLoopTrack.cs、3DScene 的 Director | 世界提交后激活，退出可取消；欢迎只写角色/镜头，不能双写列车 |
+| 樱花/天空/配置 | Art/Skybox/SkyboxRotator.cs、Assets/Dev/SakuraWeather、Assets/Config/ScenesVFX、Assets/Config/Worlds | 全局环境恢复、运行材质释放、配置 GUID、资源引用与清理边界 |
+| 故障与压力回归 | Test/World/FaultInjectingResourceService.cs、WorldCoordinatorDebugHarness.cs、ResourceServiceDebugHarness.cs、WorldM1StressRunner.cs | 加载中退出、失败释放重试、恢复失败、反复往返、订阅与结构基线、内存口径 |
 
-## 站台闭环怎样拆成可实现步骤
+## 后续功能建议拆法（实施需单独授权）
 
-这是将原计划转为工程任务的建议顺序；协调层、接口和阶段事件均**待新增**，不是已有实现。
+1. 对照原计划列出剩余目标；把已验收 M1 标为基线，把 M0 缺口及 M1 内存记录独立列出，避免重复建设。
+2. 欢迎流程先定义开始/完成/跳过/世界退出时的行为。消费世界已激活结果，新增角色/镜头演出；不要让 Timeline.stopped 直接代表业务完成。
+3. 若需列车阶段消费接口，先定义 20 秒停稳等事件如何处理跳时、回卷、180 秒循环与重复订阅；列车/杆/灯控制权保留给 SakuramachiSceneLoop。
+4. 最小 POI/交互明确输入所有者、触发与可取消动作，挂在当前 WorldScope；退出前停止它们，过期返回不得修改新世界对象。
+5. AI Action 用白名单与可取消执行器，明确 SessionSnapshot + 世界实例 + 请求 ID 校验，不执行模型输出脚本/对象路径。
+6. 新增世界配置需 WorldDefinition/Catalog、Build Settings、唯一 RuntimeBindings、内容绑定和表现配置，并测试缺绑定、加载失败及往返基线。
+7. 资源后端替换须保持 IResourceService 句柄/结果契约、失败所有权与释放幂等；性能清理策略先测停顿和内存趋势，不能从 M1 高水位记录直接推导强制清理。
+8. 新功能回归 M1 进入/退出、重复请求、加载中退出、释放/恢复失败重试与 20 次往返；多屏/DPI、联网、欢迎完整流程另有独立运行验收。
 
-1. **冻结桌面基线与入口。** 定义进入按钮、应用模式、活动聊天完成或取消、主动气泡暂停策略。检查 SampleScene 引用，记录窗口 bounds、布局、透明、置顶、穿透及 UI 状态。
-2. **定义世界寿命。** 区分应用、用户会话、站台世界、UI 视图。用最小协调层建立“桌面 → 加载 → 站台 → 返回”与失败状态。WindowsPlatformBootstrap 已常驻，数据库由 AppInitializer 管理，不把所有 Manager 都常驻化。
-3. **加载一次并具备补偿。** 常驻桌面壳 + Additive 是当前建议，最终方式需按原计划/用户决定。等待加载与有效绑定后再转输入/窗口；异常、取消、重复点击、中途退出都恢复桌面快照。保证单一有效输入、相机和 AudioListener。
-4. **接入现有 3DScene。** 核对 Loop、Director、相机、角色、声源、VFX、材质；完成切换方案后才改构建列表。保留循环时间与轨道，避免双写列车。
-5. **欢迎与最小交互。** 先做可完成/可跳过的角色和相机演出，再接一个可取消 POI。阶段通知需定义跳时、回卷、停止、多次订阅；Timeline stopped 不代表欢迎成功。
-6. **退出和故障恢复。** 停世界请求/动作/Timeline/音频/VFX，解绑、卸载，再恢复桌面窗口/输入。退出会话和退出世界不同；旧世界结果需独立有效性判断。
-7. **闭环验收后扩展。** 测进入、交互、跳过、取消、反复进出、换角色、失焦、加载失败和不同 DPI；再按原计划考虑资源框架、AI Action 或房间。
+## 每项任务的交付模板
 
-未来 Action 经白名单与可取消执行器，不执行 LLM 返回的脚本或对象路径。若引入 worldInstanceId/requestId，须定义创建者、失效条件和提交校验，不能仅用 sessionVersion 替代。
-
-## 实现任务的交付模板
-
-- **触发与行为：** 用户做什么，成功/失败/取消后看到什么。
-- **当前证据：** 现有文件、方法、场景/Prefab 绑定；规划接口不算证据。
-- **修改清单：** 逐文件责任变化、依赖方向、序列化与 GUID 影响。
-- **身份与寿命：** App/Session/World/View 谁拥有状态，跨 yield 捕获什么，谁取消和清理。
-- **持久化：** 归属 ID、事务、版本、备份与历史兼容。
-- **失败补偿：** 每个中间步骤怎样释放请求、队列、订阅、场景、输入和窗口。
-- **验收：** 可重复输入、故障注入、期望记录/事件/UI；说明 Editor/Player/网络/硬件/副本条件。
-- **待用户决定：** 只列无法从代码获取且影响产品语义的分支。
+- 触发、成功/失败/取消后的可见行为。
+- 当前文件/方法/场景与配置证据；待新增接口明确标注。
+- 逐文件修改、依赖方向、GUID/序列化影响。
+- App/Session/World/View 状态归属；跨 yield 捕获、有效性校验与释放责任。
+- 数据归属、迁移、备份、旧数据兼容。
+- 每个中间步骤的失败补偿和重试语义。
+- 可重复验收输入、故障注入、基线与测量口径；注明 Editor/Player、硬件与网络条件。
+- 仅列代码无法确定且影响产品语义的用户决策。
 
 ## 可直接交给其他 LLM 的请求
 
-> 请结合本仓库 README 与原计划制定下一阶段具体实现步骤。校准已实现内容、验证证据和已知缺口，按依赖排列任务。每项给出文件/方法、待新增接口、状态与寿命归属、取消/失败恢复、数据兼容和验收。不要另建普通聊天队列，不把世界/资源/Action 规划写成已有实现，不改列车时序。指出必须由开发者决定的问题。本请求用于制定步骤，实施另行授权。
+> 请结合 README、原计划和 M1 移交报告制定下一阶段具体实施步骤。M1 世界生命周期已实现并通过用户验收；复用现有协调器、Scope、资源契约、快照和绑定，不重复搭建。保留内存高水位及 M0 E01–E04 记录。按依赖给出文件/方法、现有与待新增接口、身份/寿命归属、取消/失败重试、数据兼容和验收。不要把欢迎、Action、YooAsset 或阶段事件写成已实现，不改变列车时序。此请求用于制定步骤，实施另行授权。
 
-若仅拿到 README 与原计划而不能读仓库，把文件/方法作为定位线索，列明需核对的源码，不虚构签名、绑定或测试。可访问仓库时按 [AGENTS.md](../AGENTS.md)先验证再落地。
+仅有文档时，方法和绑定是定位线索，仍需源码核对；不虚构签名或运行证据。可访问仓库时遵循 [AGENTS.md](../AGENTS.md)。

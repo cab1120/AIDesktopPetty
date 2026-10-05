@@ -1,14 +1,45 @@
 # 逐文件脚本索引
 
-核对日期：2026-10-01；代码基线 Git 6853f6f。共 119 份 C# 文件，范围是 Assets/Scripts 与 Assets/Dev/SakuraWeather；不逐项解释 Unity Package 或外部美术包自带代码。文件链接相对本目录，方法签名以源码为准。
+核对日期：2026-10-05；代码基线 Git fbe7f08。共 143 份 C# 文件，范围是 Assets/Scripts 与 Assets/Dev/SakuraWeather；不逐项解释 Unity Package 或外部美术包自带代码。文件链接相对本目录，方法签名以源码为准。
 
 先读 [架构](ARCHITECTURE.md)理解数据流，再用本表定位；具体接口在 [API_EVENTS.md](API_EVENTS.md)，后续任务拆分在 [IMPLEMENTATION_GUIDE.md](IMPLEMENTATION_GUIDE.md)。
 
 ## 怎样判断脚本是否在运行
 
-SampleScene 序列化挂载了 AppInitializer、WindowsPlatformBootstrap、AIChat、ConversationService、UI、窗口表现、前台/气泡和 EmotionBuildDebugTest。Data/Repository/Service/Prompt 静态类由调用链使用，不能因为未挂场景就认定无效。3DScene 挂载循环、天空和 SakuraWeather；它不在构建列表。Prefab 位于 Assets/Prefab。Editor 工具不进入 Player；默认脚本程序集仍使用，未发现自有 asmdef。
+SampleScene 序列化挂载了 AppInitializer、WindowsPlatformBootstrap、AIChat、ConversationService、UI、窗口表现、前台/气泡和 EmotionBuildDebugTest。Data/Repository/Service/Prompt 静态类由调用链使用，不能因为未挂场景就认定无效。SampleScene 还接入 M1 协调/资源/表现后端及入口导航；3DScene 已在构建列表，挂载 WorldRuntimeBindings、SakuramachiWorldBindings、循环、天空和 SakuraWeather，由本地后端 Additive 加载。Prefab 位于 Assets/Prefab。Editor 工具不进入 Player；默认脚本程序集仍使用，未发现自有 asmdef。
 
 旧 IrohaPromptBuilder 未发现当前主链直接调用；IrohaPromptJsonExporter 未发现自动调用，调用会覆盖默认文件。情绪名称键与原文日志缺口见 [架构 E01–E04](ARCHITECTURE.md)，不要把本表的职责描述理解为全链已满足所有不变量。
+
+## M1 世界生命周期、表现与验收
+
+职责与设计原因详见 [M1 移交](M1/M1_IMPLEMENTATION_AND_ACCEPTANCE_2026-10-05.md)。以下 24 份脚本为本阶段新增；SkyboxRotator、SceneLoop 和应用日志的调整也分别反映在原索引。
+
+| 文件 | 含义、调用关系与限制 |
+| --- | --- |
+| [Application/World/WorldState.cs](<../Assets/Scripts/Application/World/WorldState.cs>) | Desktop/Entering/Explore/Exiting；世界寿命与桌面 UI 布局状态分离 |
+| [Application/World/WorldScope.cs](<../Assets/Scripts/Application/World/WorldScope.cs>) | 一次进入的 InstanceId、Definition、ExitRequested、句柄、桌面快照、运行绑定与原 Active Scene；退出仍需知道自己拥有何物 |
+| [Application/World/WorldCoordinator.cs](<../Assets/Scripts/Application/World/WorldCoordinator.cs>) | 唯一进入/退出协调、状态迁移、过期结果处理、分阶段清理/重试与 StateChanged；UI 不直接加载场景 |
+| [Application/World/WorldContentBindingsBehaviour.cs](<../Assets/Scripts/Application/World/WorldContentBindingsBehaviour.cs>) | 内容侧校验/激活/停用抽象；世界层不硬编码樱町内容 |
+| [Application/World/Definition/WorldDefinition.cs](<../Assets/Scripts/Application/World/Definition/WorldDefinition.cs>) | 静态 WorldId、展示名、完整 ScenePath 与配置校验；不存运行句柄 |
+| [Application/World/Definition/WorldCatalog.cs](<../Assets/Scripts/Application/World/Definition/WorldCatalog.cs>) | 世界配置集合与查询/校验；入口按 ID 选择世界 |
+| [Application/World/Resource/IResourceService.cs](<../Assets/Scripts/Application/World/Resource/IResourceService.cs>) | 可加载检查、加载和释放协程契约；协调器不依赖具体资源来源 |
+| [Application/World/Resource/WorldResourceServiceBehaviour.cs](<../Assets/Scripts/Application/World/Resource/WorldResourceServiceBehaviour.cs>) | MonoBehaviour 抽象实现接口，供 Inspector 序列化后端引用 |
+| [Application/World/Resource/LocalSceneResourceService.cs](<../Assets/Scripts/Application/World/Resource/LocalSceneResourceService.cs>) | Build Settings 检查、Additive Load/Unload、释放幂等；当前后端是 Unity 本地场景，不是 YooAsset |
+| [Application/World/Resource/WorldSceneHandle.cs](<../Assets/Scripts/Application/World/Resource/WorldSceneHandle.cs>) | 已加载场景及释放标记；退出必须释放原句柄而非猜场景名 |
+| [Application/World/Resource/WorldSceneLoadResult.cs](<../Assets/Scripts/Application/World/Resource/WorldSceneLoadResult.cs>) | 成功句柄/失败原因；加载完成不能只靠协程结束猜测 |
+| [Application/World/Resource/WorldSceneReleaseResult.cs](<../Assets/Scripts/Application/World/Resource/WorldSceneReleaseResult.cs>) | 释放成功/失败；明确失败后仍保留 Scope 所有权 |
+| [Application/World/Presentation/DesktopPresentationSnapshot.cs](<../Assets/Scripts/Application/World/Presentation/DesktopPresentationSnapshot.cs>) | 进入前布局、窗口/显示器信息、相机/监听器及桌面行为启用状态；恢复实际进入前状态 |
+| [Application/World/Presentation/WorldPresentationProfile.cs](<../Assets/Scripts/Application/World/Presentation/WorldPresentationProfile.cs>) | 世界窗口尺寸和当前显示器居中配置；不把 UI Layout 当世界状态 |
+| [Application/World/Presentation/WorldPresentationController.cs](<../Assets/Scripts/Application/World/Presentation/WorldPresentationController.cs>) | Capture/Suspend/Bind/Activate/PrepareExit/Restore；统一窗口、输入、相机、音频控制权交接 |
+| [Application/World/Presentation/WorldRuntimeBindings.cs](<../Assets/Scripts/Application/World/Presentation/WorldRuntimeBindings.cs>) | 场景提供相机、监听器、输入行为与内容入口；Additive 加载初期避免自动抢控制权 |
+| [Application/World/Presentation/WorldRuntimeBindingsResolver.cs](<../Assets/Scripts/Application/World/Presentation/WorldRuntimeBindingsResolver.cs>) | 在目标 Scene 根对象中定位并验证绑定；不跨世界全局 Find |
+| [Application/World/Presentation/WorldEntryButton.cs](<../Assets/Scripts/Application/World/Presentation/WorldEntryButton.cs>) | 只请求进入，按世界状态切换按钮可用性；不持有资源 |
+| [Application/World/Presentation/WorldNavigationPanel.cs](<../Assets/Scripts/Application/World/Presentation/WorldNavigationPanel.cs>) | 世界返回导航及状态订阅/解绑；清理重试仍经协调器 |
+| [Art/Scenes/SakuramachiWorldBindings.cs](<../Assets/Scripts/Art/Scenes/SakuramachiWorldBindings.cs>) | 校验并接入 Loop、Director、SakuraWeather、Skybox；内容停用时停止音频/演出并恢复 |
+| [Test/World/ResourceServiceDebugHarness.cs](<../Assets/Scripts/Test/World/ResourceServiceDebugHarness.cs>) | 资源服务手动加载/释放验证入口；测试工具不作为业务所有者 |
+| [Test/World/WorldCoordinatorDebugHarness.cs](<../Assets/Scripts/Test/World/WorldCoordinatorDebugHarness.cs>) | 手动验证状态机、进入/退出与异常路径 |
+| [Test/World/FaultInjectingResourceService.cs](<../Assets/Scripts/Test/World/FaultInjectingResourceService.cs>) | 包装真实后端，注入加载/释放失败与完成延迟；证明失败路径不是靠运气执行 |
+| [Test/World/WorldM1StressRunner.cs](<../Assets/Scripts/Test/World/WorldM1StressRunner.cs>) | 20 次往返、基线比较、耗时与内存采样、诊断清理；仅 Editor/Development 编译 |
 
 ## 数据库、身份与业务数据
 
@@ -161,8 +192,8 @@ SampleScene 序列化挂载了 AppInitializer、WindowsPlatformBootstrap、AICha
 | [Art/Scenes/Editor/SakuramachiLoopValidation.cs](<../Assets/Scripts/Art/Scenes/Editor/SakuramachiLoopValidation.cs>) | 隔离项目的 Editor/batch 检查和播放验证入口；路径/写入行为需先核对，历史结果不代表当前场景通过。 |
 | [Art/Scenes/SakuramachiLoopClip.cs](<../Assets/Scripts/Art/Scenes/SakuramachiLoopClip.cs>) | Timeline PlayableAsset 与片段能力，创建循环 Playable。 |
 | [Art/Scenes/SakuramachiLoopTrack.cs](<../Assets/Scripts/Art/Scenes/SakuramachiLoopTrack.cs>) | Timeline Track 与 Mixer，将时间/速度交给场景循环，处理播放与恢复。 |
-| [Art/Scenes/SakuramachiSceneLoop.cs](<../Assets/Scripts/Art/Scenes/SakuramachiSceneLoop.cs>) | 以统一时间直接求列车/栏杆/六灯状态，裁剪、曲线、运动音频和原状态恢复；现行 180 秒循环所有者。 |
-| [Art/Skybox/SkyboxRotator.cs](<../Assets/Scripts/Art/Skybox/SkyboxRotator.cs>) | 实例化并按时间旋转天空材质，销毁时恢复/释放。 |
+| [Art/Scenes/SakuramachiSceneLoop.cs](<../Assets/Scripts/Art/Scenes/SakuramachiSceneLoop.cs>) | 以统一时间直接求列车/栏杆/六灯状态，裁剪、曲线、运动音频和原状态恢复；现行 180 秒循环所有者；增加 Editor/Development 验收观察。 |
+| [Art/Skybox/SkyboxRotator.cs](<../Assets/Scripts/Art/Skybox/SkyboxRotator.cs>) | 世界内容显式 TryActivate/Deactivate；实例化并旋转天空材质，停用/销毁恢复并释放，防止 Additive 未提交就改全局天空。 |
 | [Shaders/Basic/SetFaceMaterialHeadVector.cs](<../Assets/Scripts/Shaders/Basic/SetFaceMaterialHeadVector.cs>) | 把角色头部方向传给面部 Shader 以计算阴影；不能假设所有当前材质都使用它。 |
 | [Shaders/Improved2.0/Editor/CharacterStyleAMaterials.cs](<../Assets/Scripts/Shaders/Improved2.0/Editor/CharacterStyleAMaterials.cs>) | Editor A 版材质创建、切换/恢复工具；保留当前 Ramp/纹理/GUID。 |
 
@@ -186,4 +217,4 @@ SampleScene 序列化挂载了 AppInitializer、WindowsPlatformBootstrap、AICha
 
 ## 反向定位常见需求
 
-修改输入/回复顺序先看 ConversationService；修改角色设定先看 CharacterPromptProfile/Loader/Builder；修改归属与删除先看 UserRepository/CharacterRepository/Migrator；修改情绪先核对 E01；修改窗口先看 IWindowService，再找 Presentation 消费者；修改站台先看循环说明和世界寿命建议。不要把旧字符串重载或专用 Iroha 构建器作为新异步功能的入口。
+修改输入/回复顺序先看 ConversationService；修改角色设定先看 CharacterPromptProfile/Loader/Builder；修改归属与删除先看 UserRepository/CharacterRepository/Migrator；修改情绪先核对 E01；修改窗口先看 IWindowService，再找 Presentation 消费者；修改站台先看循环说明和已实现 WorldScope 与内容绑定。不要把旧字符串重载或专用 Iroha 构建器作为新异步功能的入口。

@@ -1,11 +1,11 @@
 # 架构、数据流与当前扩展边界
 
-核对日期：2026-10-01，代码基线 Git 6853f6f。本文件描述当前代码，建议接口另行标注。[逐脚本索引](SCRIPTS.md)、[现有接口](API_EVENTS.md)、[M0 验收](M0_ARCHITECTURE_AND_HANDOFF_2026-09-30.md)、[实现指南](IMPLEMENTATION_GUIDE.md)分别提供定位、契约、证据和拆任务方法。
+核对日期：2026-10-05，代码基线 Git fbe7f08。本文件描述当前代码，建议接口另行标注。[逐脚本索引](SCRIPTS.md)、[现有接口](API_EVENTS.md)、[M0 验收](M0/M0_ARCHITECTURE_AND_HANDOFF_2026-09-30.md)、[实现指南](IMPLEMENTATION_GUIDE.md)分别提供定位、契约、证据和拆任务方法。
 
 ## 运行入口与场景
 
-- SampleScene 是唯一启用的构建场景，挂载桌宠初始化、登录/管理/聊天、ConversationService、AIChat、前台/主动气泡和 Windows 表现组件。
-- 3DScene 是独立站台内容，已有循环/Timeline 音频/樱花/天空/角色材质，不在构建列表，也没有产品级进入与返回服务。
+- SampleScene 是桌面启动场景，挂载桌宠初始化、登录/管理/聊天、ConversationService、AIChat、前台/主动气泡和 Windows 表现组件。
+- 3DScene 已启用构建，由本地资源后端 Additive 加载；已有循环/Timeline 音频/樱花/天空/角色材质，M1 世界进入/返回与表现恢复已实现。
 - Assets/Prefab 是 UI Prefab 目录；目录拼写以实际路径为准。Test、LargeScene、樱花 Demo 等不作为桌宠启动契约。
 - 自有脚本无 asmdef，当前按默认程序集编译。拆分前需分析静态服务、UI、平台和 Editor 的引用，不能直接从自定义程序集引用仍在 Assembly-CSharp 的类型。
 
@@ -26,9 +26,13 @@
 | BubbleUIManager | 单个主动气泡及布局/隐藏协程 | 会话变更隐藏，默认显示 5 秒 |
 | DesktopPetLayoutController | LayoutProfile、Canvas 和 CurrentMode | 模式是 UI/窗口布局，不是应用/世界状态 |
 | SakuramachiSceneLoop + Director | 列车/杆/灯、裁剪与运行音频，原状态快照 | 3DScene 局部；统一 180 秒时间求值与停止恢复 |
+| WorldCoordinator / WorldScope | 世界状态、当前实例与句柄所有权 | 桌面壳持有协调器；每次进入新 Scope，完成清理与恢复后释放 |
+| WorldPresentationController / Snapshot | 桌面与世界表现控制权、原状态恢复 | Capture 在修改前；失败退出保留恢复信息 |
+| IResourceService / LocalSceneResourceService | 当前本地 Additive 场景加载/释放 | Scope 持有加载句柄；释放失败保持所有权并重试 |
+| WorldRuntimeBindings / SakuramachiWorldBindings | 场景相机/音频/输入、内容显式激活和停用 | World 局部，退出先停用再卸载 |
 | SakuraWeather / Skybox | VFX 分层配置/相机关系与天空材质 | 3DScene 局部，不作为应用常驻 Manager |
 
-实际控制来自 MonoBehaviour 与静态服务的组合。App/Session/World/View 的划分是未来整理方向；当前只有部分寿命边界，不能说完整 Scope 框架已经存在。
+实际控制来自 MonoBehaviour 与静态服务的组合。M1 已实现 WorldScope；应用/会话仍使用现有初始化器和静态服务，不据此宣称完整通用 Scope 框架已建成。
 
 ## 启动、登录和会话变化
 
@@ -96,10 +100,14 @@ AppLogService 从 2026-10-04 恢复旧 AIChat.RunLog 格式：本地时间、类
 
 另需运行验收：真实请求体输入去重、连续输入/换角色/退出、HTTP/超时/断网、停用/销毁锁释放、布局失败恢复、多屏/DPI/透明/穿透、日志写盘失败。12 项 EditMode 不覆盖这些全部场景。2026-10-01 用户确认原库迁移/登录成功；本轮不重跑 Unity，也不读取真实库或日志。
 
-## 待新增的世界/资源结构
+## 已实现的 M1 世界/资源结构
 
-常驻桌面壳 + Additive 世界是建议；IWorldService、IResourceService、WorldScope、ActionQueue、worldInstanceId 均未实现。App/Session/World/View 应分别管理配置/数据、身份请求、场景交互、界面订阅；不建没有消费者的通用 EventBus 或巨型 IDataService。
+常驻桌面壳 + Additive 世界已接通。WorldCoordinator 拥有 Desktop/Entering/Explore/Exiting 状态；WorldDefinition/WorldCatalog 描述静态世界，WorldScope.InstanceId 描述一次运行。IResourceService 隔离加载后端，当前 LocalSceneResourceService 使用 Build Settings 中的完整路径，WorldResourceServiceBehaviour 供 Inspector 绑定。IWorldService、ActionQueue 仍不存在。
 
-进入世界需保存窗口/布局状态、暂停桌面气泡并定义活动聊天策略、保证单输入/相机/AudioListener；加载失败、取消和退出都恢复。世界失效与会话失效不同，未来结果需相应边界。
+进入先校验与捕获 DesktopPresentationSnapshot，再暂停主动气泡/窗口行为并加载。成功后解析目标 Scene 的 WorldRuntimeBindings，设置 Active Scene，交接相机、AudioListener、输入、窗口和内容。请求时的 Scope 在异步提交前核对；加载中退出是逻辑取消，不能假装 Unity LoadSceneAsync 已停止，得到的资源仍应释放。
 
-SakuramachiSceneLoop 独占列车/杆/灯。当前时序为 0/3/5/10/20/23/25/35/45/180 秒；欢迎只写角色/相机且跳过不改列车时间。Timeline.stopped 不是剧情成功事件；阶段事件需新增，定义时间跳跃和回卷。现有音轨、movementLoop、A 材质与樱花应复用。具体拆法见 [IMPLEMENTATION_GUIDE.md](IMPLEMENTATION_GUIDE.md)。
+退出依次停用内容与控制权、恢复 Active Scene、释放场景句柄、恢复桌面。释放或恢复失败留在 Exiting，下一次 RequestExit 可重试；句柄已释放后仍要继续恢复桌面。清理成功前禁止新进入，不清 Scope 或伪报 Desktop。世界边界不替代会话边界：普通聊天仍由 ConversationService 所有，暂停主动气泡不是取消全部聊天。
+
+SakuramachiWorldBindings 组织 Loop/Director/SakuraWeather/Skybox；SkyboxRotator 显式激活与恢复全局天空。列车时序仍为 0/3/5/10/20/23/25/35/45/180 秒；欢迎只写角色/相机且跳过不改列车时间。业务阶段事件与 Action 执行器待新增。
+
+**M1 用户最终验收通过**：20 次往返的结构和订阅计数回基线；重复加载的 native/asset 高水位在诊断清理后明显回落，作为可回收资源 retention 的已知现象记录，不据此证明全类型内存零泄漏。完整数值、测量口径、逐文件职责和扩展准则见 [M1 移交报告](M1/M1_IMPLEMENTATION_AND_ACCEPTANCE_2026-10-05.md)。M0 E01–E04 保持独立待处理状态。
